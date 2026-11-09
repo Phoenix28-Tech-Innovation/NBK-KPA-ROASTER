@@ -32,7 +32,7 @@ jobs:
             const notes = details.filter(line =>
               !/^(?:co-authored-by|signed-off-by|reviewed-by|tested-by|change-id):/i.test(line)
             );
-            const securityPattern = /\b(secur(?:e|ity|ity-related)|verified(?:-email)?|email verification|permission|access control|privacy|credential|vulnerab|protect(?:ion|ed)?|firestore rules|two-factor|multi-factor)\b/i;
+            const securityPattern = /\b(security\s+(?:fix|update|patch|improvement|hardening)|(?:fix|patch|harden)\w*\s+security|vulnerab\w*|firestore rules|two-factor|multi-factor|(?:require|enforce|restrict|gate|protect)\w*.{0,50}(?:verified users?|email verification|permission|access control|auth)|(?:verified users?|email verification).{0,50}(?:access|auth|permission))\b/i;
             const security = notes
               .filter(line => /^\[security\]\s*/i.test(line) ||
                 (!/^\[feature\]\s*/i.test(line) && securityPattern.test(line)))
@@ -42,7 +42,7 @@ jobs:
                 (!/^\[security\]\s*/i.test(line) && !securityPattern.test(line)))
               .map(line => line.replace(/^\[feature\]\s*/i, ''));
             if (!security.length) {
-              security.push('Verified-email checks continue to protect update prompts and release notes.');
+              security.push('Ongoing safeguard: verified-email checks gate update prompts and release notes.');
             }
             fs.writeFileSync('update.json', JSON.stringify({
               version: context.sha,

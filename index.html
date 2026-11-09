@@ -4142,7 +4142,7 @@
                 <ul id="releaseFeaturesList" class="release-notes-list"></ul>
             </section>
             <section class="release-notes-section" data-kind="security" aria-labelledby="releaseSecurityTitle">
-                <h3 class="release-notes-section-heading" id="releaseSecurityTitle"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Security & reliability</h3>
+                <h3 class="release-notes-section-heading" id="releaseSecurityTitle"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Security updates & safeguards</h3>
                 <ul id="releaseSecurityList" class="release-notes-list"></ul>
             </section>
         </div>
@@ -4171,7 +4171,7 @@
             const features = Array.isArray(release.features) ? release.features : [];
             const security = Array.isArray(release.security) ? release.security : [];
             const legacyNotes = Array.isArray(release.notes) ? release.notes : [];
-            const securityPattern = /\b(secur(?:e|ity|ity-related)|verified(?:-email)?|email verification|permission|access control|privacy|credential|vulnerab|protect(?:ion|ed)?|firestore rules|two-factor|multi-factor)\b/i;
+            const securityPattern = /\b(security\s+(?:fix|update|patch|improvement|hardening)|(?:fix|patch|harden)\w*\s+security|vulnerab\w*|firestore rules|two-factor|multi-factor|(?:require|enforce|restrict|gate|protect)\w*.{0,50}(?:verified users?|email verification|permission|access control|auth)|(?:verified users?|email verification).{0,50}(?:access|auth|permission))\b/i;
             const featureNotes = features.length ? features : legacyNotes.filter(note => !securityPattern.test(note));
             const securityNotes = security.length ? security : legacyNotes.filter(note => securityPattern.test(note));
             renderReleaseNotes('releaseFeaturesList', featureNotes, 'No new features were listed for this release.');
