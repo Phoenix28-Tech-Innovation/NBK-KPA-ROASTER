@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isVerified() {
+      return request.auth != null
+        && request.auth.token.email_verified == true;
+    }
+
+    function isRosterAdmin() {
+      return isVerified()
+        && request.auth.token.email == 'phoenix28.tech@gmail.com';
+    }
+
+    function hasRosterAccess() {
+      return isVerified()
+        && exists(/databases/$(database)/documents/rosterAccess/$(request.auth.uid))
+        && get(/databases/$(database)/documents/rosterAccess/$(request.auth.uid)).data.uid == request.auth.uid
+        && get(/databases/$(database)/documents/rosterAccess/$(request.auth.uid)).data.approved == true;
+    }
+
+    function canUseRoster() {
+      return isRosterAdmin() || hasRosterAccess();
+    }
+
+    function isOwnAccessRequest(uid) {
+      return isVerified()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email;
+    }
+
+    function isOwnSignupRequest(uid) {
+      return request.auth != null
+        && request.auth.token.email_verified == false
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'displayName', 'status', 'requestedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'uid', 'email', 'displayName', 'status', 'requestedAt'
+        ])
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.status == 'awaiting_verification'
+        && request.resource.data.requestedAt == request.time;
+    }
+
+    match /rosters/{rosterId} {
+      allow get: if canUseRoster()
+        && rosterId in ['island-mombasa', 'mainland-likoni', 'main'];
+      allow create, update: if isRosterAdmin()
+        && rosterId in ['island-mombasa', 'mainland-likoni'];
+    }
+
+    match /rosterAccess/{uid} {
+      allow get: if isRosterAdmin()
+        || (isVerified() && request.auth.uid == uid);
+      allow list: if isRosterAdmin();
+      allow create, update, delete: if isRosterAdmin();
+    }
+
+    match /rosterAccessRequests/{uid} {
+      allow get: if isRosterAdmin()
+        || (request.auth != null && request.auth.uid == uid);
+      allow list: if isRosterAdmin();
+
+      allow create: if isOwnSignupRequest(uid)
+        || (isOwnAccessRequest(uid)
+          && request.resource.data.keys().hasOnly([
+            'uid', 'email', 'displayName', 'status', 'requestedAt'
+          ])
+          && request.resource.data.keys().hasAll([
+            'uid', 'email', 'displayName', 'status', 'requestedAt'
+          ])
+          && request.resource.data.displayName is string
+          && request.resource.data.displayName.size() >= 2
+          && request.resource.data.displayName.size() <= 40
+          && request.resource.data.status == 'pending'
+          && request.resource.data.requestedAt == request.time);
+
+      allow update: if isRosterAdmin()
+        || (isOwnAccessRequest(uid)
+          && resource.data.status in ['awaiting_verification', 'rejected']
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['status', 'requestedAt'])
+          && request.resource.data.status == 'pending'
+          && request.resource.data.requestedAt == request.time);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
