@@ -1,18 +1,21 @@
 {
-  "version": "8df8081f4d1193ae0b187db369c0eba8f2973c8f",
-  "versionLabel": "System version 8df8081",
-  "title": "Improve release note categorization",
+  "version": "46dc7bec4d30a3c50a7f08df9a4195d9318cb962",
+  "versionLabel": "System version 46dc7be",
+  "title": "Personalize update prompt and show download progress",
   "notes": [
-    "Separate feature notes from account-protection details",
-    "Label the ongoing verified-email safeguard when no new fixes are listed",
-    "Show a readable system version"
+    "Greet verified users by their Firebase display name and show the system version",
+    "Dismiss Later prompts for the current page only",
+    "Track downloaded bytes and show file size before applying the release",
+    "Keep release notes after the completed download and refreshed app"
   ],
   "features": [
-    "Separate feature notes from account-protection details",
-    "Label the ongoing verified-email safeguard when no new fixes are listed",
-    "Show a readable system version"
+    "Greet verified users by their Firebase display name and show the system version",
+    "Dismiss Later prompts for the current page only",
+    "Track downloaded bytes and show file size before applying the release",
+    "Keep release notes after the completed download and refreshed app"
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
-  ]
+  ],
+  "sizeBytes": 311483
 }
