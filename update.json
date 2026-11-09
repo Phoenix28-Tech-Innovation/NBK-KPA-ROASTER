@@ -1,8 +1,17 @@
 {
-  "version": "55f6d8010b894087a48b77cec246fd7769e0d562",
-  "title": "Publish release metadata to GitHub Pages source",
+  "version": "0230968618d67d39ad2c17c773cab1c6295883f7",
+  "versionLabel": "System version 0230968",
+  "title": "Redesign release notes with liquid glass styling",
   "notes": [
-    "Commit the version-stamped page and update manifest to main",
-    "Match the branch-based GitHub Pages publishing source"
+    "Organize What's New details into features and security sections",
+    "Show a human-readable system version and full build identifier",
+    "Generate categorized feature and verified-email safeguard notes"
+  ],
+  "features": [
+    "Show a human-readable system version and full build identifier"
+  ],
+  "security": [
+    "Organize What's New details into features and security sections",
+    "Generate categorized feature and verified-email safeguard notes"
   ]
 }
