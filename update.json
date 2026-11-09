@@ -1,21 +1,16 @@
 {
-  "version": "46dc7bec4d30a3c50a7f08df9a4195d9318cb962",
-  "versionLabel": "System version 46dc7be",
-  "title": "Personalize update prompt and show download progress",
+  "version": "02cce827b7cc8bc921e9357425a445aa679b112c",
+  "versionLabel": "v8.8.0",
+  "deployedAt": "2026-11-09T15:13:10.544Z",
+  "title": "Add semantic release details",
   "notes": [
-    "Greet verified users by their Firebase display name and show the system version",
-    "Dismiss Later prompts for the current page only",
-    "Track downloaded bytes and show file size before applying the release",
-    "Keep release notes after the completed download and refreshed app"
+    "General improvements and fixes."
   ],
   "features": [
-    "Greet verified users by their Firebase display name and show the system version",
-    "Dismiss Later prompts for the current page only",
-    "Track downloaded bytes and show file size before applying the release",
-    "Keep release notes after the completed download and refreshed app"
+    "General improvements and maintenance."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "sizeBytes": 311483
+  "sizeBytes": 312133
 }
