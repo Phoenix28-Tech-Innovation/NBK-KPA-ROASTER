@@ -299,46 +299,205 @@
         }
 
         .release-dialog {
-            width: min(28rem, calc(100% - 2rem));
-            padding: 2rem;
-            border: 0;
-            border-radius: 1.5rem;
-            color: #0f172a;
-            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.3);
+            width: min(42rem, calc(100% - 2rem));
+            max-height: min(88vh, 52rem);
+            padding: 0;
+            overflow: auto;
+            border: 1px solid rgba(255,255,255,0.72);
+            border-radius: 1.75rem;
+            background:
+                radial-gradient(ellipse at 12% 0%, rgba(147,197,253,0.42), transparent 40%),
+                radial-gradient(ellipse at 100% 100%, rgba(110,231,183,0.24), transparent 38%),
+                linear-gradient(145deg, rgba(255,255,255,0.88), rgba(241,247,255,0.78));
+            color: #10233f;
+            box-shadow: 0 36px 100px rgba(4,17,38,0.38), inset 0 1px 0 rgba(255,255,255,0.9);
+            backdrop-filter: blur(28px) saturate(155%);
+            -webkit-backdrop-filter: blur(28px) saturate(155%);
+            animation: release-dialog-arrive 320ms cubic-bezier(0.2,0.75,0.25,1) both;
         }
         .release-dialog::backdrop {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(4px);
+            background: rgba(9,20,39,0.58);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .release-dialog:not(#releaseNotesDialog) {
+            padding: 2rem;
+        }
+        .release-notes-shell {
+            position: relative;
+            padding: clamp(1.25rem, 5vw, 2.4rem);
+        }
+        .release-notes-topline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .release-notes-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+        .release-notes-mark {
+            display: grid;
+            width: 3.2rem;
+            height: 3.2rem;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 1.1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(215,232,255,0.72));
+            box-shadow: 0 9px 24px rgba(50,103,182,0.16), inset 0 1px 0 #fff;
+            color: #3478e5;
+            font-size: 1.2rem;
+        }
+        .release-notes-eyebrow {
+            margin: 0 0 0.2rem;
+            color: #547298;
+            font-size: 0.64rem;
+            font-weight: 850;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
         }
         .release-dialog h2 {
-            margin: 0 0 0.75rem;
-            font-size: 1.35rem;
+            margin: 0;
+            color: #10233f;
+            font-size: clamp(1.55rem, 4vw, 2rem);
+            font-weight: 850;
+            letter-spacing: -0.045em;
+        }
+        .release-version-pill {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.72rem;
+            border: 1px solid rgba(255,255,255,0.86);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.58);
+            box-shadow: 0 5px 16px rgba(31,59,101,0.08), inset 0 1px 0 #fff;
+            color: #476487;
+            font-size: 0.68rem;
             font-weight: 800;
+            white-space: nowrap;
         }
-        .release-dialog p,
-        .release-dialog li {
-            color: #475569;
-            line-height: 1.6;
+        .release-notes-summary {
+            margin: 1rem 0 1.4rem;
+            color: #536984;
+            font-size: 0.88rem;
+            line-height: 1.65;
         }
-        .release-dialog ul {
-            margin: 1rem 0 1.5rem;
-            padding-left: 1.25rem;
+        .release-notes-sections {
+            display: grid;
+            gap: 0.85rem;
+        }
+        .release-notes-section {
+            padding: 1rem 1.1rem;
+            border: 1px solid rgba(255,255,255,0.84);
+            border-radius: 1.1rem;
+            background: rgba(255,255,255,0.5);
+            box-shadow: 0 8px 24px rgba(36,61,97,0.06), inset 0 1px 0 rgba(255,255,255,0.88);
+        }
+        .release-notes-section[data-kind="features"] {
+            border-color: rgba(96,165,250,0.3);
+            background: linear-gradient(135deg, rgba(239,247,255,0.72), rgba(255,255,255,0.46));
+        }
+        .release-notes-section[data-kind="security"] {
+            border-color: rgba(52,211,153,0.3);
+            background: linear-gradient(135deg, rgba(236,253,245,0.75), rgba(255,255,255,0.46));
+        }
+        .release-notes-section-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.62rem;
+            margin: 0 0 0.65rem;
+            color: #263d5a;
+            font-size: 0.82rem;
+            font-weight: 850;
+        }
+        .release-notes-section-heading i {
+            color: #3478e5;
+        }
+        .release-notes-section[data-kind="security"] .release-notes-section-heading i {
+            color: #0d9b6c;
+        }
+        .release-notes-list {
+            display: grid;
+            gap: 0.52rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .release-notes-list li {
+            position: relative;
+            padding-left: 1.15rem;
+            color: #536984;
+            font-size: 0.78rem;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+        }
+        .release-notes-list li::before {
+            position: absolute;
+            top: 0.52em;
+            left: 0.12rem;
+            width: 0.38rem;
+            height: 0.38rem;
+            border-radius: 50%;
+            background: #4e8ff0;
+            content: "";
+        }
+        .release-notes-section[data-kind="security"] .release-notes-list li::before {
+            background: #18a879;
+        }
+        .release-notes-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(111,137,171,0.16);
+        }
+        .release-notes-build {
+            max-width: 62%;
+            overflow: hidden;
+            color: #8292a7;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.62rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .release-dialog button {
-            border: 0;
-            border-radius: 0.75rem;
-            padding: 0.7rem 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.85rem;
+            padding: 0.68rem 1rem;
             font: inherit;
-            font-weight: 700;
+            font-size: 0.78rem;
+            font-weight: 800;
             cursor: pointer;
+            transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        }
+        .release-dialog button:hover {
+            transform: translateY(-1px);
+        }
+        .release-dialog button:focus-visible {
+            outline: 3px solid rgba(59,130,246,0.45);
+            outline-offset: 3px;
         }
         .release-primary {
-            background: #2563eb;
+            border-color: rgba(255,255,255,0.24) !important;
+            background: linear-gradient(135deg, #3478ef, #275ec4);
+            box-shadow: 0 8px 19px rgba(37,99,235,0.23), inset 0 1px 0 rgba(255,255,255,0.25);
             color: #fff;
         }
+        .release-primary:hover {
+            box-shadow: 0 11px 24px rgba(37,99,235,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
         .release-secondary {
-            background: #e2e8f0;
-            color: #334155;
+            border-color: rgba(255,255,255,0.78) !important;
+            background: rgba(255,255,255,0.55);
+            box-shadow: 0 5px 14px rgba(31,59,101,0.06), inset 0 1px 0 #fff;
+            color: #47617f;
         }
         .release-progress-track {
             height: 0.45rem;
@@ -358,8 +517,22 @@
             from { transform: translateX(-110%); }
             to { transform: translateX(260%); }
         }
+        @keyframes release-dialog-arrive {
+            from { opacity: 0; transform: translateY(12px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (max-width: 520px) {
+            .release-dialog { width: calc(100% - 1rem); border-radius: 1.25rem; }
+            .release-dialog:not(#releaseNotesDialog) { padding: 1.35rem; }
+            .release-notes-topline { flex-direction: column; }
+            .release-version-pill { margin-left: 4.05rem; }
+            .release-notes-section { padding: 0.85rem; }
+            .release-notes-footer { align-items: flex-end; }
+        }
         @media (prefers-reduced-motion: reduce) {
             .release-progress-bar { animation-duration: 3s; }
+            .release-dialog { animation: none; }
+            .release-dialog button { transition: none; }
         }
 
         .location-badge {
@@ -3951,11 +4124,32 @@
     <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
-    <h2 id="releaseNotesTitle">What’s new</h2>
-    <p id="releaseNotesHeading"></p>
-    <ul id="releaseNotesList"></ul>
-    <div class="flex justify-end">
-        <button type="button" class="release-primary" id="releaseNotesDoneButton">Got it</button>
+    <div class="release-notes-shell">
+        <div class="release-notes-topline">
+            <div class="release-notes-brand">
+                <span class="release-notes-mark" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+                <div>
+                    <p class="release-notes-eyebrow">Roster system update</p>
+                    <h2 id="releaseNotesTitle">What’s new</h2>
+                </div>
+            </div>
+            <span class="release-version-pill"><i class="fa-solid fa-code-branch" aria-hidden="true"></i><span id="releaseNotesVersion">Version —</span></span>
+        </div>
+        <p id="releaseNotesHeading" class="release-notes-summary"></p>
+        <div class="release-notes-sections">
+            <section class="release-notes-section" data-kind="features" aria-labelledby="releaseFeaturesTitle">
+                <h3 class="release-notes-section-heading" id="releaseFeaturesTitle"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>New features & improvements</h3>
+                <ul id="releaseFeaturesList" class="release-notes-list"></ul>
+            </section>
+            <section class="release-notes-section" data-kind="security" aria-labelledby="releaseSecurityTitle">
+                <h3 class="release-notes-section-heading" id="releaseSecurityTitle"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Security & reliability</h3>
+                <ul id="releaseSecurityList" class="release-notes-list"></ul>
+            </section>
+        </div>
+        <div class="release-notes-footer">
+            <span class="release-notes-build" id="releaseNotesBuild"></span>
+            <button type="button" class="release-primary" id="releaseNotesDoneButton">Got it</button>
+        </div>
     </div>
 </dialog>
 
@@ -3973,15 +4167,32 @@
 
         function showNotes(release) {
             document.getElementById('releaseNotesTitle').textContent = 'What’s new';
-            document.getElementById('releaseNotesHeading').textContent = release.title;
-            const list = document.getElementById('releaseNotesList');
+            document.getElementById('releaseNotesHeading').textContent = release.title || 'The latest improvements are ready.';
+            const features = Array.isArray(release.features) ? release.features : [];
+            const security = Array.isArray(release.security) ? release.security : [];
+            const legacyNotes = Array.isArray(release.notes) ? release.notes : [];
+            const securityPattern = /\b(secur(?:e|ity|ity-related)|verified(?:-email)?|email verification|permission|access control|privacy|credential|vulnerab|protect(?:ion|ed)?|firestore rules|two-factor|multi-factor)\b/i;
+            const featureNotes = features.length ? features : legacyNotes.filter(note => !securityPattern.test(note));
+            const securityNotes = security.length ? security : legacyNotes.filter(note => securityPattern.test(note));
+            renderReleaseNotes('releaseFeaturesList', featureNotes, 'No new features were listed for this release.');
+            renderReleaseNotes('releaseSecurityList', securityNotes, 'No security-specific changes were listed for this release.');
+            const versionLabel = release.versionLabel ||
+                (typeof release.version === 'string' ? `Version ${release.version.slice(0, 7)}` : 'Version unavailable');
+            document.getElementById('releaseNotesVersion').textContent = versionLabel;
+            document.getElementById('releaseNotesBuild').textContent =
+                typeof release.version === 'string' ? `Build ${release.version}` : '';
+            notesDialog.showModal();
+        }
+
+        function renderReleaseNotes(listId, entries, emptyMessage) {
+            const list = document.getElementById(listId);
             list.replaceChildren();
-            release.notes.forEach(note => {
+            const notes = entries.length ? entries : [emptyMessage];
+            notes.forEach(note => {
                 const item = document.createElement('li');
                 item.textContent = note;
                 list.appendChild(item);
             });
-            notesDialog.showModal();
         }
 
         function readPendingRelease() {
@@ -3995,7 +4206,11 @@
                 if (release.version === requestedVersion &&
                     typeof release.title === 'string' &&
                     Array.isArray(release.notes) &&
-                    release.notes.every(note => typeof note === 'string')) {
+                    release.notes.every(note => typeof note === 'string') &&
+                    (!release.features || (Array.isArray(release.features) &&
+                        release.features.every(note => typeof note === 'string'))) &&
+                    (!release.security || (Array.isArray(release.security) &&
+                        release.security.every(note => typeof note === 'string')))) {
                     pendingNotesRelease = release;
                 } else {
                     sessionStorage.removeItem(pendingReleaseKey);
@@ -4041,7 +4256,11 @@
                 if (!response.ok) throw new Error(`Update check failed with HTTP ${response.status}`);
                 const release = await response.json();
                 if (typeof release.version !== 'string' || typeof release.title !== 'string' ||
-                    !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string')) {
+                    !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string') ||
+                    (release.features && (!Array.isArray(release.features) ||
+                        release.features.some(note => typeof note !== 'string'))) ||
+                    (release.security && (!Array.isArray(release.security) ||
+                        release.security.some(note => typeof note !== 'string')))) {
                     throw new Error('The update manifest has an invalid format.');
                 }
                 const currentVersion = document.querySelector('meta[name="app-build-version"]').content;

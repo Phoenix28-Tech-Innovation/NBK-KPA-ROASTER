@@ -32,10 +32,25 @@ jobs:
             const notes = details.filter(line =>
               !/^(?:co-authored-by|signed-off-by|reviewed-by|tested-by|change-id):/i.test(line)
             );
+            const securityPattern = /\b(secur(?:e|ity|ity-related)|verified(?:-email)?|email verification|permission|access control|privacy|credential|vulnerab|protect(?:ion|ed)?|firestore rules|two-factor|multi-factor)\b/i;
+            const security = notes
+              .filter(line => /^\[security\]\s*/i.test(line) ||
+                (!/^\[feature\]\s*/i.test(line) && securityPattern.test(line)))
+              .map(line => line.replace(/^\[security\]\s*/i, ''));
+            const features = notes
+              .filter(line => /^\[feature\]\s*/i.test(line) ||
+                (!/^\[security\]\s*/i.test(line) && !securityPattern.test(line)))
+              .map(line => line.replace(/^\[feature\]\s*/i, ''));
+            if (!security.length) {
+              security.push('Verified-email checks continue to protect update prompts and release notes.');
+            }
             fs.writeFileSync('update.json', JSON.stringify({
               version: context.sha,
+              versionLabel: `System version ${context.sha.slice(0, 7)}`,
               title,
-              notes: notes.length ? notes : ['General improvements and fixes.']
+              notes: notes.length ? notes : ['General improvements and fixes.'],
+              features: features.length ? features : ['General improvements and maintenance.'],
+              security
             }, null, 2));
             const html = fs.readFileSync('index.html', 'utf8');
             const versionTag = /<meta name="app-build-version" content="[^"]*" \/>/g;
