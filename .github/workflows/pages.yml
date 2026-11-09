@@ -39,13 +39,11 @@ jobs:
               title,
               notes: details
             }, null, 2));
-            for (const file of ['index.html', 'Roter Admin.html']) {
-              const html = fs.readFileSync(file, 'utf8');
-              fs.writeFileSync(file, html.replace(
-                '<meta name="app-build-version" content="development" />',
-                `<meta name="app-build-version" content="${context.sha}" />`
-              ));
-            }
+            const html = fs.readFileSync('index.html', 'utf8');
+            fs.writeFileSync('index.html', html.replace(
+              '<meta name="app-build-version" content="development" />',
+              `<meta name="app-build-version" content="${context.sha}" />`
+            ));
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
