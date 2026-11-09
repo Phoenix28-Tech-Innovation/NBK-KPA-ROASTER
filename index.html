@@ -1163,6 +1163,11 @@
             font-size: 0.73rem;
             font-weight: 750;
         }
+        .auth-field-hint {
+            margin: 0.35rem 0 0;
+            color: #718198;
+            font-size: 0.68rem;
+        }
         .auth-input-wrap {
             position: relative;
         }
@@ -3300,6 +3305,7 @@
                             <i class="fa-regular fa-user" aria-hidden="true"></i>
                             <input id="signUpUsername" name="username" type="text" autocomplete="nickname" minlength="2" maxlength="40" placeholder="How should we address you?" required />
                         </div>
+                        <p class="auth-field-hint">Your username will be displayed in uppercase.</p>
                     </div>
                     <div class="auth-field">
                         <label for="signUpEmail">Email address</label>
@@ -3955,13 +3961,14 @@
 
 <script>
     (function initializeReleaseUpdates() {
-        const appliedVersionKey = 'rosterAppliedRelease';
         const pendingReleaseKey = 'rosterPendingRelease';
         const snoozedVersionKey = 'rosterSnoozedRelease';
         const updateDialog = document.getElementById('releaseUpdateDialog');
         const progressDialog = document.getElementById('releaseProgressDialog');
         const notesDialog = document.getElementById('releaseNotesDialog');
         let availableRelease = null;
+        let pendingNotesRelease = null;
+        let isVerifiedUser = false;
         let checkInProgress = false;
 
         function showNotes(release) {
@@ -3985,30 +3992,47 @@
             const pending = sessionStorage.getItem(pendingReleaseKey);
             if (pending) {
                 const release = JSON.parse(pending);
-                if (release.version === requestedVersion) {
-                    localStorage.setItem(appliedVersionKey, release.version);
+                if (release.version === requestedVersion &&
+                    typeof release.title === 'string' &&
+                    Array.isArray(release.notes) &&
+                    release.notes.every(note => typeof note === 'string')) {
+                    pendingNotesRelease = release;
+                } else {
                     sessionStorage.removeItem(pendingReleaseKey);
-                    sessionStorage.removeItem(snoozedVersionKey);
-                    showNotes(release);
                 }
             }
             url.searchParams.delete('__update');
             history.replaceState(null, '', url.pathname + url.search + url.hash);
         }
 
+        function finishPendingRelease() {
+            if (!isVerifiedUser || !pendingNotesRelease) return;
+            const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
+            if (pendingNotesRelease.version !== currentVersion) {
+                sessionStorage.removeItem(pendingReleaseKey);
+                pendingNotesRelease = null;
+                return;
+            }
+            const release = pendingNotesRelease;
+            pendingNotesRelease = null;
+            sessionStorage.removeItem(pendingReleaseKey);
+            sessionStorage.removeItem(snoozedVersionKey);
+            showNotes(release);
+        }
+
         function showUpdatePrompt(release) {
-            if (localStorage.getItem(appliedVersionKey) === release.version ||
-                sessionStorage.getItem(snoozedVersionKey) === release.version ||
+            if (sessionStorage.getItem(snoozedVersionKey) === release.version ||
                 updateDialog.open) return;
             availableRelease = release;
-            document.getElementById('releaseUpdateTitle').textContent = release.title || 'A new update is available';
-            document.getElementById('releaseUpdateMessage').textContent = 'A new version is ready. Update now to load the latest changes.';
+            document.getElementById('releaseUpdateTitle').textContent = 'A new update is available';
+            document.getElementById('releaseUpdateMessage').textContent =
+                `${release.title} is ready. Update now to get the latest improvements.`;
             document.getElementById('releaseUpdateError').hidden = true;
             updateDialog.showModal();
         }
 
         async function checkForRelease() {
-            if (checkInProgress) return;
+            if (!isVerifiedUser || checkInProgress) return;
             checkInProgress = true;
             try {
                 const manifestUrl = new URL('update.json', window.location.href);
@@ -4021,7 +4045,7 @@
                     throw new Error('The update manifest has an invalid format.');
                 }
                 const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
-                if (release.version !== currentVersion && release.version !== localStorage.getItem(appliedVersionKey)) {
+                if (release.version !== currentVersion) {
                     showUpdatePrompt(release);
                 }
             } catch (error) {
@@ -4032,7 +4056,7 @@
         }
 
         async function downloadRelease() {
-            if (!availableRelease) return;
+            if (!availableRelease || !isVerifiedUser) return;
             const release = availableRelease;
             updateDialog.close();
             document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
@@ -4043,12 +4067,14 @@
                 const response = await fetch(updateUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`Update download failed with HTTP ${response.status}`);
                 await response.text();
+                if (!isVerifiedUser) return;
                 sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
                 document.getElementById('releaseProgressMessage').textContent = 'Update downloaded. Reloading…';
                 window.location.replace(updateUrl.href);
             } catch (error) {
                 console.error('Could not download the app update:', error);
                 progressDialog.close();
+                if (!isVerifiedUser) return;
                 document.getElementById('releaseUpdateError').textContent = 'The update could not be downloaded. Check your connection and try again.';
                 document.getElementById('releaseUpdateError').hidden = false;
                 updateDialog.showModal();
@@ -4060,8 +4086,24 @@
             if (availableRelease) sessionStorage.setItem(snoozedVersionKey, availableRelease.version);
             updateDialog.close();
         });
+        updateDialog.addEventListener('cancel', event => {
+            event.preventDefault();
+            if (availableRelease) sessionStorage.setItem(snoozedVersionKey, availableRelease.version);
+            updateDialog.close();
+        });
         document.getElementById('releaseNotesDoneButton').addEventListener('click', () => notesDialog.close());
         progressDialog.addEventListener('cancel', event => event.preventDefault());
+        window.addEventListener('roster-auth-status', event => {
+            isVerifiedUser = event.detail && event.detail.emailVerified === true;
+            if (isVerifiedUser) {
+                finishPendingRelease();
+                checkForRelease();
+                return;
+            }
+            availableRelease = null;
+            if (updateDialog.open) updateDialog.close();
+            if (progressDialog.open) progressDialog.close();
+        });
 
         function start() {
             try {
@@ -4069,7 +4111,6 @@
             } catch (error) {
                 console.error('Could not restore the completed app update:', error);
             }
-            checkForRelease();
             window.setInterval(checkForRelease, 60_000);
             window.addEventListener('focus', checkForRelease);
         }
@@ -5023,9 +5064,16 @@
             setFirestoreLoadStatus(message, 'loading');
         }
 
+        function publishReleaseAuthStatus(emailVerified) {
+            window.dispatchEvent(new CustomEvent('roster-auth-status', {
+                detail: { emailVerified }
+            }));
+        }
+
         async function handleAuthStateChange(user) {
             const generation = ++authFlowGeneration;
             if (!user) {
+                publishReleaseAuthStatus(false);
                 currentRosterUserIsAdmin = false;
                 document.getElementById('rosterApp').classList.remove('is-approved-viewer');
                 setFirestoreLoading(true, false);
@@ -5042,6 +5090,7 @@
                 return;
             }
 
+            publishReleaseAuthStatus(false);
             showLoadingScreen('Checking your account…');
             try {
                 await user.reload();
@@ -5056,6 +5105,7 @@
             }
             if (generation !== authFlowGeneration || !auth.currentUser) return;
             user = auth.currentUser;
+            publishReleaseAuthStatus(user.emailVerified);
 
             if (!user.emailVerified) {
                 document.getElementById('verificationEmailValue').textContent = user.email || '';
@@ -5570,7 +5620,9 @@
             event.preventDefault();
             if (authBusy) return;
             const form = event.currentTarget;
-            const username = document.getElementById('signUpUsername').value.trim();
+            const usernameInput = document.getElementById('signUpUsername');
+            const username = usernameInput.value.trim().toUpperCase();
+            usernameInput.value = username;
             const email = document.getElementById('signUpEmail').value.trim().toLowerCase();
             const password = document.getElementById('signUpPassword').value;
             const passwordConfirm = document.getElementById('signUpPasswordConfirm').value;
@@ -5702,6 +5754,19 @@
             document.getElementById('backToSignInLink').addEventListener('click', () => showAuthForm('signIn'));
             document.getElementById('signInForm').addEventListener('submit', submitSignIn);
             document.getElementById('signUpForm').addEventListener('submit', submitSignUp);
+            document.getElementById('signUpUsername').addEventListener('input', event => {
+                const input = event.currentTarget;
+                const { selectionStart, selectionEnd } = input;
+                const uppercaseValue = input.value.toUpperCase();
+                if (input.value === uppercaseValue) return;
+                input.value = uppercaseValue;
+                if (selectionStart !== null && selectionEnd !== null) {
+                    input.setSelectionRange(
+                        uppercaseValue.slice(0, selectionStart).length,
+                        uppercaseValue.slice(0, selectionEnd).length
+                    );
+                }
+            });
             document.getElementById('resetPasswordForm').addEventListener('submit', submitPasswordReset);
             document.getElementById('resendVerificationBtn').addEventListener('click', resendVerificationEmail);
             document.getElementById('checkVerificationBtn').addEventListener('click', checkEmailVerification);

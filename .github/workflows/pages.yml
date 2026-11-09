@@ -32,12 +32,15 @@ jobs:
             const [titleLine, ...descriptionLines] = commitMessage.split(/\\n|\r?\n/);
             const title = titleLine.trim() || 'Site update';
             const details = descriptionLines
-              .map(line => line.replace(/^\s*[-*]\s+/, '').trim())
+              .map(line => line.replace(/^\s*(?:[-*]|\d+\.)\s+/, '').trim())
               .filter(Boolean);
+            const notes = details.filter(line =>
+              !/^(?:co-authored-by|signed-off-by|reviewed-by|tested-by|change-id):/i.test(line)
+            );
             fs.writeFileSync('update.json', JSON.stringify({
               version: context.sha,
               title,
-              notes: details
+              notes: notes.length ? notes : ['General improvements and fixes.']
             }, null, 2));
             const html = fs.readFileSync('index.html', 'utf8');
             fs.writeFileSync('index.html', html.replace(
