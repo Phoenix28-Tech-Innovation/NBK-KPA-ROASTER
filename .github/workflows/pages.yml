@@ -29,7 +29,7 @@ jobs:
           script: |
             const fs = require('fs');
             const commitMessage = context.payload.head_commit?.message || `Deployment ${context.sha.slice(0, 7)}`;
-            const [titleLine, ...descriptionLines] = commitMessage.split(/\r?\n/);
+            const [titleLine, ...descriptionLines] = commitMessage.split(/\\n|\r?\n/);
             const title = titleLine.trim() || 'Site update';
             const details = descriptionLines
               .map(line => line.replace(/^\s*[-*]\s+/, '').trim())
