@@ -1,0 +1,8 @@
+{
+  "version": "55f6d8010b894087a48b77cec246fd7769e0d562",
+  "title": "Publish release metadata to GitHub Pages source",
+  "notes": [
+    "Commit the version-stamped page and update manifest to main",
+    "Match the branch-based GitHub Pages publishing source"
+  ]
+}
