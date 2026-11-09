@@ -44,14 +44,6 @@ jobs:
             if (!security.length) {
               security.push('Ongoing safeguard: verified-email checks gate update prompts and release notes.');
             }
-            fs.writeFileSync('update.json', JSON.stringify({
-              version: context.sha,
-              versionLabel: `System version ${context.sha.slice(0, 7)}`,
-              title,
-              notes: notes.length ? notes : ['General improvements and fixes.'],
-              features: features.length ? features : ['General improvements and maintenance.'],
-              security
-            }, null, 2));
             const html = fs.readFileSync('index.html', 'utf8');
             const versionTag = /<meta name="app-build-version" content="[^"]*" \/>/g;
             const matches = html.match(versionTag) || [];
@@ -62,6 +54,15 @@ jobs:
               versionTag,
               `<meta name="app-build-version" content="${context.sha}" />`
             ));
+            fs.writeFileSync('update.json', JSON.stringify({
+              version: context.sha,
+              versionLabel: `System version ${context.sha.slice(0, 7)}`,
+              title,
+              notes: notes.length ? notes : ['General improvements and fixes.'],
+              features: features.length ? features : ['General improvements and maintenance.'],
+              security,
+              sizeBytes: fs.statSync('index.html').size
+            }, null, 2));
       - name: Publish generated release files to GitHub Pages source
         run: |
           git config user.name "github-actions[bot]"

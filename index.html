@@ -323,6 +323,76 @@
         .release-dialog:not(#releaseNotesDialog) {
             padding: 2rem;
         }
+        #releaseUpdateDialog {
+            width: min(34rem, calc(100% - 2rem));
+            overflow: hidden;
+            text-align: center;
+        }
+        .release-update-mark {
+            display: grid;
+            width: 3.5rem;
+            height: 3.5rem;
+            margin: 0 auto 1rem;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 1.2rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(214,232,255,0.76));
+            box-shadow: 0 10px 24px rgba(49,105,187,0.16), inset 0 1px 0 #fff;
+            color: #3478e5;
+            font-size: 1.2rem;
+        }
+        #releaseUpdateTitle {
+            margin: 0;
+            color: #10233f;
+            font-size: clamp(1.5rem, 5vw, 1.9rem);
+            font-weight: 850;
+            letter-spacing: -0.045em;
+        }
+        #releaseUpdateMessage {
+            margin: 0.65rem 0 0;
+            color: #536984;
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+        .release-update-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.7rem;
+            margin-top: 1.5rem;
+        }
+        .release-download-track {
+            height: 0.7rem;
+            overflow: hidden;
+            margin-top: 1.35rem;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 999px;
+            background: rgba(215,230,250,0.72);
+            box-shadow: inset 0 2px 5px rgba(38,70,111,0.08);
+        }
+        .release-download-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #5ca3ff, #3678ea 58%, #39c5a1);
+            box-shadow: 0 0 14px rgba(59,130,246,0.25);
+            transition: width 1.1s cubic-bezier(0.2,0.65,0.25,1);
+        }
+        .release-download-track[data-indeterminate="true"] .release-download-fill {
+            width: 38%;
+            animation: release-download 2.8s ease-in-out infinite;
+        }
+        .release-download-details {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 0.55rem;
+            color: #6b7f99;
+            font-size: 0.68rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .release-download-details span:last-child {
+            text-align: right;
+        }
         .release-notes-shell {
             position: relative;
             padding: clamp(1.25rem, 5vw, 2.4rem);
@@ -499,23 +569,9 @@
             box-shadow: 0 5px 14px rgba(31,59,101,0.06), inset 0 1px 0 #fff;
             color: #47617f;
         }
-        .release-progress-track {
-            height: 0.45rem;
-            overflow: hidden;
-            margin-top: 1.25rem;
-            border-radius: 9999px;
-            background: #dbeafe;
-        }
-        .release-progress-bar {
-            width: 40%;
-            height: 100%;
-            border-radius: inherit;
-            background: #2563eb;
-            animation: release-download 1.2s ease-in-out infinite;
-        }
         @keyframes release-download {
             from { transform: translateX(-110%); }
-            to { transform: translateX(260%); }
+            to { transform: translateX(265%); }
         }
         @keyframes release-dialog-arrive {
             from { opacity: 0; transform: translateY(12px) scale(0.985); }
@@ -524,13 +580,19 @@
         @media (max-width: 520px) {
             .release-dialog { width: calc(100% - 1rem); border-radius: 1.25rem; }
             .release-dialog:not(#releaseNotesDialog) { padding: 1.35rem; }
+            #releaseUpdateDialog { padding: 1.5rem 1.15rem; }
+            .release-update-actions { flex-direction: column-reverse; }
+            .release-update-actions button { width: 100%; }
             .release-notes-topline { flex-direction: column; }
             .release-version-pill { margin-left: 4.05rem; }
             .release-notes-section { padding: 0.85rem; }
             .release-notes-footer { align-items: flex-end; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .release-progress-bar { animation-duration: 3s; }
+            .release-download-track[data-indeterminate="true"] .release-download-fill {
+                animation-duration: 3.8s;
+            }
+            .release-download-fill { transition-duration: 1.5s; }
             .release-dialog { animation: none; }
             .release-dialog button { transition: none; }
         }
@@ -4110,18 +4172,25 @@
 </dialog>
 
 <dialog id="releaseUpdateDialog" class="release-dialog" aria-labelledby="releaseUpdateTitle">
-    <h2 id="releaseUpdateTitle">A new update is available</h2>
-    <p id="releaseUpdateMessage">A new version of the roster app is ready.</p>
+    <div class="release-update-mark" aria-hidden="true"><i class="fa-solid fa-arrow-down-to-bracket"></i></div>
+    <h2 id="releaseUpdateTitle">Hello</h2>
+    <p id="releaseUpdateMessage">There is a new update available.</p>
     <p id="releaseUpdateError" role="alert" hidden></p>
-    <div class="mt-6 flex justify-end gap-3">
+    <div class="release-update-actions">
         <button type="button" class="release-secondary" id="releaseLaterButton">Later</button>
         <button type="button" class="release-primary" id="releaseNowButton">Update now</button>
     </div>
 </dialog>
 <dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
     <h2 id="releaseProgressTitle">Downloading update</h2>
-    <p id="releaseProgressMessage">Checking the latest version…</p>
-    <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
+    <p id="releaseProgressMessage">Preparing your update…</p>
+    <div class="release-download-track" id="releaseDownloadTrack" role="progressbar" aria-label="Update download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-indeterminate="true">
+        <div class="release-download-fill" id="releaseDownloadFill"></div>
+    </div>
+    <div class="release-download-details">
+        <span id="releaseDownloadPercent">Connecting…</span>
+        <span id="releaseDownloadSize">Preparing download</span>
+    </div>
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
     <div class="release-notes-shell">
@@ -4156,14 +4225,73 @@
 <script>
     (function initializeReleaseUpdates() {
         const pendingReleaseKey = 'rosterPendingRelease';
-        const snoozedVersionKey = 'rosterSnoozedRelease';
         const updateDialog = document.getElementById('releaseUpdateDialog');
         const progressDialog = document.getElementById('releaseProgressDialog');
         const notesDialog = document.getElementById('releaseNotesDialog');
+        const progressTrack = document.getElementById('releaseDownloadTrack');
+        const progressFill = document.getElementById('releaseDownloadFill');
         let availableRelease = null;
         let pendingNotesRelease = null;
         let isVerifiedUser = false;
+        let currentUsername = 'there';
+        let dismissedVersion = null;
         let checkInProgress = false;
+
+        function formatBytes(bytes) {
+            if (!Number.isFinite(bytes) || bytes < 0) return 'Size unavailable';
+            if (bytes < 1024) return `${bytes} B`;
+            const units = ['KB', 'MB', 'GB'];
+            let size = bytes / 1024;
+            let unitIndex = 0;
+            while (size >= 1024 && unitIndex < units.length - 1) {
+                size /= 1024;
+                unitIndex += 1;
+            }
+            return `${size.toFixed(size < 10 ? 1 : 0)} ${units[unitIndex]}`;
+        }
+
+        function setDownloadProgress(loaded, total = 0) {
+            const hasTotal = Number.isFinite(total) && total > 0;
+            progressTrack.dataset.indeterminate = String(!hasTotal);
+            if (!hasTotal) {
+                progressTrack.removeAttribute('aria-valuenow');
+                document.getElementById('releaseDownloadPercent').textContent = 'Downloading…';
+                document.getElementById('releaseDownloadSize').textContent = `${formatBytes(loaded)} downloaded`;
+                return;
+            }
+            const percent = Math.min(100, Math.round((loaded / total) * 100));
+            progressTrack.setAttribute('aria-valuenow', String(percent));
+            progressFill.style.width = `${percent}%`;
+            document.getElementById('releaseDownloadPercent').textContent = `${percent}%`;
+            document.getElementById('releaseDownloadSize').textContent =
+                `${formatBytes(loaded)} of ${formatBytes(total)}`;
+        }
+
+        async function readDownloadedHtml(response, expectedBytes) {
+            const total = expectedBytes || Number(response.headers.get('content-length')) || 0;
+            if (!response.body || typeof response.body.getReader !== 'function') {
+                const html = await response.text();
+                const loaded = new TextEncoder().encode(html).length;
+                setDownloadProgress(loaded, total || loaded);
+                return html;
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let html = '';
+            let loaded = 0;
+            setDownloadProgress(0, total);
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                loaded += value.byteLength;
+                html += decoder.decode(value, { stream: true });
+                setDownloadProgress(loaded, total);
+            }
+            html += decoder.decode();
+            setDownloadProgress(loaded, total || loaded);
+            return html;
+        }
 
         function showNotes(release) {
             document.getElementById('releaseNotesTitle').textContent = 'What’s new';
@@ -4207,6 +4335,7 @@
                     typeof release.title === 'string' &&
                     Array.isArray(release.notes) &&
                     release.notes.every(note => typeof note === 'string') &&
+                    (!release.sizeBytes || (Number.isSafeInteger(release.sizeBytes) && release.sizeBytes > 0)) &&
                     (!release.features || (Array.isArray(release.features) &&
                         release.features.every(note => typeof note === 'string'))) &&
                     (!release.security || (Array.isArray(release.security) &&
@@ -4231,17 +4360,16 @@
             const release = pendingNotesRelease;
             pendingNotesRelease = null;
             sessionStorage.removeItem(pendingReleaseKey);
-            sessionStorage.removeItem(snoozedVersionKey);
             showNotes(release);
         }
 
         function showUpdatePrompt(release) {
-            if (sessionStorage.getItem(snoozedVersionKey) === release.version ||
+            if (dismissedVersion === release.version ||
                 updateDialog.open) return;
             availableRelease = release;
-            document.getElementById('releaseUpdateTitle').textContent = 'A new update is available';
+            document.getElementById('releaseUpdateTitle').textContent = `Hello ${currentUsername}`;
             document.getElementById('releaseUpdateMessage').textContent =
-                `${release.title} is ready. Update now to get the latest improvements.`;
+                `There is a new update available: ${release.versionLabel || `System version ${release.version.slice(0, 7)}`}.`;
             document.getElementById('releaseUpdateError').hidden = true;
             updateDialog.showModal();
         }
@@ -4257,6 +4385,8 @@
                 const release = await response.json();
                 if (typeof release.version !== 'string' || typeof release.title !== 'string' ||
                     !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string') ||
+                    (release.sizeBytes !== undefined &&
+                        (!Number.isSafeInteger(release.sizeBytes) || release.sizeBytes < 1)) ||
                     (release.features && (!Array.isArray(release.features) ||
                         release.features.some(note => typeof note !== 'string'))) ||
                     (release.security && (!Array.isArray(release.security) ||
@@ -4278,17 +4408,31 @@
             if (!availableRelease || !isVerifiedUser) return;
             const release = availableRelease;
             updateDialog.close();
-            document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
+            document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest version…';
+            progressFill.style.width = '0%';
+            setDownloadProgress(0);
+            document.getElementById('releaseDownloadPercent').textContent = 'Starting…';
+            document.getElementById('releaseDownloadSize').textContent = 'Preparing download';
             progressDialog.showModal();
             try {
                 const updateUrl = new URL(window.location.href);
                 updateUrl.searchParams.set('__update', release.version);
                 const response = await fetch(updateUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`Update download failed with HTTP ${response.status}`);
-                await response.text();
+                const downloadedHtml = await readDownloadedHtml(response, release.sizeBytes);
+                const downloadedVersion = downloadedHtml.match(
+                    /<meta name="app-build-version" content="([^"]+)"/
+                )?.[1];
+                if (downloadedVersion !== release.version) {
+                    throw new Error('The downloaded page does not match the advertised release version.');
+                }
                 if (!isVerifiedUser) return;
                 sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
-                document.getElementById('releaseProgressMessage').textContent = 'Update downloaded. Reloading…';
+                document.getElementById('releaseProgressMessage').textContent = 'Download complete. Applying your update…';
+                document.getElementById('releaseDownloadPercent').textContent = 'Complete';
+                const downloadedBytes = new TextEncoder().encode(downloadedHtml).length;
+                setDownloadProgress(downloadedBytes, downloadedBytes);
+                await new Promise(resolve => window.setTimeout(resolve, 1100));
                 window.location.replace(updateUrl.href);
             } catch (error) {
                 console.error('Could not download the app update:', error);
@@ -4302,12 +4446,12 @@
 
         document.getElementById('releaseNowButton').addEventListener('click', downloadRelease);
         document.getElementById('releaseLaterButton').addEventListener('click', () => {
-            if (availableRelease) sessionStorage.setItem(snoozedVersionKey, availableRelease.version);
+            dismissedVersion = availableRelease && availableRelease.version;
             updateDialog.close();
         });
         updateDialog.addEventListener('cancel', event => {
             event.preventDefault();
-            if (availableRelease) sessionStorage.setItem(snoozedVersionKey, availableRelease.version);
+            dismissedVersion = availableRelease && availableRelease.version;
             updateDialog.close();
         });
         document.getElementById('releaseNotesDoneButton').addEventListener('click', () => notesDialog.close());
@@ -4315,11 +4459,13 @@
         window.addEventListener('roster-auth-status', event => {
             isVerifiedUser = event.detail && event.detail.emailVerified === true;
             if (isVerifiedUser) {
+                currentUsername = event.detail.username || 'there';
                 finishPendingRelease();
                 checkForRelease();
                 return;
             }
             availableRelease = null;
+            dismissedVersion = null;
             if (updateDialog.open) updateDialog.close();
             if (progressDialog.open) progressDialog.close();
         });
@@ -5283,9 +5429,9 @@
             setFirestoreLoadStatus(message, 'loading');
         }
 
-        function publishReleaseAuthStatus(emailVerified) {
+        function publishReleaseAuthStatus(emailVerified, username = '') {
             window.dispatchEvent(new CustomEvent('roster-auth-status', {
-                detail: { emailVerified }
+                detail: { emailVerified, username }
             }));
         }
 
@@ -5324,7 +5470,7 @@
             }
             if (generation !== authFlowGeneration || !auth.currentUser) return;
             user = auth.currentUser;
-            publishReleaseAuthStatus(user.emailVerified);
+            publishReleaseAuthStatus(user.emailVerified, user.emailVerified ? accountDisplayName(user) : '');
 
             if (!user.emailVerified) {
                 document.getElementById('verificationEmailValue').textContent = user.email || '';
