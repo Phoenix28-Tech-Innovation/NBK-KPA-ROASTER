@@ -528,14 +528,10 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(111,137,171,0.16);
         }
-        .release-notes-build {
-            max-width: 62%;
-            overflow: hidden;
+        .release-notes-deployed {
             color: #8292a7;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-            font-size: 0.62rem;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 0.7rem;
+            line-height: 1.5;
         }
         .release-dialog button {
             border: 1px solid transparent;
@@ -4216,7 +4212,7 @@
             </section>
         </div>
         <div class="release-notes-footer">
-            <span class="release-notes-build" id="releaseNotesBuild"></span>
+            <span class="release-notes-deployed" id="releaseNotesDeployed"></span>
             <button type="button" class="release-primary" id="releaseNotesDoneButton">Got it</button>
         </div>
     </div>
@@ -4304,11 +4300,19 @@
             const securityNotes = security.length ? security : legacyNotes.filter(note => securityPattern.test(note));
             renderReleaseNotes('releaseFeaturesList', featureNotes, 'No new features were listed for this release.');
             renderReleaseNotes('releaseSecurityList', securityNotes, 'No security-specific changes were listed for this release.');
-            const versionLabel = release.versionLabel ||
-                (typeof release.version === 'string' ? `Version ${release.version.slice(0, 7)}` : 'Version unavailable');
+            const versionLabel = typeof release.versionLabel === 'string' &&
+                /^v\d+\.\d+\.\d+$/.test(release.versionLabel)
+                ? release.versionLabel
+                : 'Version unavailable';
             document.getElementById('releaseNotesVersion').textContent = versionLabel;
-            document.getElementById('releaseNotesBuild').textContent =
-                typeof release.version === 'string' ? `Build ${release.version}` : '';
+            const deployedAt = new Date(release.deployedAt);
+            const deploymentLabel = Number.isNaN(deployedAt.getTime())
+                ? 'Deployment date unavailable'
+                : `Deployed by the developer on ${new Intl.DateTimeFormat(undefined, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                }).format(deployedAt)}`;
+            document.getElementById('releaseNotesDeployed').textContent = deploymentLabel;
             notesDialog.showModal();
         }
 
@@ -4335,6 +4339,8 @@
                     typeof release.title === 'string' &&
                     Array.isArray(release.notes) &&
                     release.notes.every(note => typeof note === 'string') &&
+                    (release.versionLabel === undefined || typeof release.versionLabel === 'string') &&
+                    (release.deployedAt === undefined || typeof release.deployedAt === 'string') &&
                     (!release.sizeBytes || (Number.isSafeInteger(release.sizeBytes) && release.sizeBytes > 0)) &&
                     (!release.features || (Array.isArray(release.features) &&
                         release.features.every(note => typeof note === 'string'))) &&
@@ -4369,7 +4375,7 @@
             availableRelease = release;
             document.getElementById('releaseUpdateTitle').textContent = `Hello ${currentUsername}`;
             document.getElementById('releaseUpdateMessage').textContent =
-                `There is a new update available: ${release.versionLabel || `System version ${release.version.slice(0, 7)}`}.`;
+                `There is a new update available: ${release.versionLabel || 'the latest system version'}.`;
             document.getElementById('releaseUpdateError').hidden = true;
             updateDialog.showModal();
         }
@@ -4385,6 +4391,9 @@
                 const release = await response.json();
                 if (typeof release.version !== 'string' || typeof release.title !== 'string' ||
                     !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string') ||
+                    (release.versionLabel !== undefined && typeof release.versionLabel !== 'string') ||
+                    (release.deployedAt !== undefined &&
+                        (typeof release.deployedAt !== 'string' || Number.isNaN(Date.parse(release.deployedAt)))) ||
                     (release.sizeBytes !== undefined &&
                         (!Number.isSafeInteger(release.sizeBytes) || release.sizeBytes < 1)) ||
                     (release.features && (!Array.isArray(release.features) ||

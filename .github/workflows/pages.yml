@@ -44,6 +44,16 @@ jobs:
             if (!security.length) {
               security.push('Ongoing safeguard: verified-email checks gate update prompts and release notes.');
             }
+            const previousManifest = fs.existsSync('update.json')
+              ? JSON.parse(fs.readFileSync('update.json', 'utf8'))
+              : null;
+            const previousVersion = typeof previousManifest?.versionLabel === 'string'
+              ? previousManifest.versionLabel.match(/^v?(\d+)\.(\d+)\.(\d+)$/)
+              : null;
+            const versionLabel = previousVersion
+              ? `v${previousVersion[1]}.${previousVersion[2]}.${Number(previousVersion[3]) + 1}`
+              : 'v8.8.0';
+            const deployedAt = new Date().toISOString();
             const html = fs.readFileSync('index.html', 'utf8');
             const versionTag = /<meta name="app-build-version" content="[^"]*" \/>/g;
             const matches = html.match(versionTag) || [];
@@ -56,7 +66,8 @@ jobs:
             ));
             fs.writeFileSync('update.json', JSON.stringify({
               version: context.sha,
-              versionLabel: `System version ${context.sha.slice(0, 7)}`,
+              versionLabel,
+              deployedAt,
               title,
               notes: notes.length ? notes : ['General improvements and fixes.'],
               features: features.length ? features : ['General improvements and maintenance.'],
