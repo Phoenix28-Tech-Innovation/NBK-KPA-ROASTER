@@ -91,6 +91,25 @@ service cloud.firestore {
           && request.resource.data.requestedAt == request.time);
     }
 
+    match /userReleaseState/{uid}/devices/{deviceId} {
+      allow get: if isVerified() && request.auth.uid == uid;
+      allow list: if false;
+      allow create, update: if isVerified()
+        && request.auth.uid == uid
+        && deviceId.matches('^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')
+        && request.resource.data.keys().hasOnly([
+          'uid', 'acceptedVersion', 'acceptedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'uid', 'acceptedVersion', 'acceptedAt'
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.acceptedVersion is string
+        && request.resource.data.acceptedVersion.matches('^[a-f0-9]{40}$')
+        && request.resource.data.acceptedAt == request.time;
+      allow delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

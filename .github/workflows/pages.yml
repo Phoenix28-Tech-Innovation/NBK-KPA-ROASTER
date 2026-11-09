@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message || '', 'Publish site release ')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,11 +75,24 @@ jobs:
               security,
               sizeBytes: fs.statSync('index.html').size
             }, null, 2));
+            const releaseDirectory = 'releases';
+            fs.mkdirSync(releaseDirectory, { recursive: true });
+            fs.writeFileSync(`${releaseDirectory}/${context.sha}.html`, fs.readFileSync('index.html'));
+            const serviceWorker = fs.readFileSync('service-worker.js', 'utf8');
+            const releaseVersionTag = /const RELEASE_VERSION = '[^']+';/g;
+            const serviceWorkerMatches = serviceWorker.match(releaseVersionTag) || [];
+            if (serviceWorkerMatches.length !== 1) {
+              throw new Error(`Expected one service worker release version, found ${serviceWorkerMatches.length}.`);
+            }
+            fs.writeFileSync('service-worker.js', serviceWorker.replace(
+              releaseVersionTag,
+              `const RELEASE_VERSION = '${context.sha}';`
+            ));
       - name: Publish generated release files to GitHub Pages source
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html update.json
+          git add index.html update.json service-worker.js "releases/${GITHUB_SHA}.html"
           if git diff --cached --quiet; then
             echo "Generated release files are already current."
           else

@@ -4230,8 +4230,37 @@
         let pendingNotesRelease = null;
         let isVerifiedUser = false;
         let currentUsername = 'there';
+        let currentUserId = null;
         let dismissedVersion = null;
         let checkInProgress = false;
+        let deviceInstallationId = null;
+        let acceptedVersionCache = null;
+        let acceptedVersionLoaded = false;
+
+        function createDeviceInstallationId() {
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+            return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+        }
+
+        function getDeviceInstallationId() {
+            const storageKey = 'rosterReleaseDeviceId';
+            const idPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+            const savedId = localStorage.getItem(storageKey);
+            if (savedId && idPattern.test(savedId)) return savedId;
+            const newId = createDeviceInstallationId();
+            localStorage.setItem(storageKey, newId);
+            return newId;
+        }
+
+        try {
+            deviceInstallationId = getDeviceInstallationId();
+        } catch (error) {
+            console.error('Could not identify this browser for update tracking:', error);
+        }
 
         function formatBytes(bytes) {
             if (!Number.isFinite(bytes) || bytes < 0) return 'Size unavailable';
@@ -4341,6 +4370,7 @@
                     release.notes.every(note => typeof note === 'string') &&
                     (release.versionLabel === undefined || typeof release.versionLabel === 'string') &&
                     (release.deployedAt === undefined || typeof release.deployedAt === 'string') &&
+                    (release.acceptedByUid === undefined || typeof release.acceptedByUid === 'string') &&
                     (!release.sizeBytes || (Number.isSafeInteger(release.sizeBytes) && release.sizeBytes > 0)) &&
                     (!release.features || (Array.isArray(release.features) &&
                         release.features.every(note => typeof note === 'string'))) &&
@@ -4355,7 +4385,7 @@
             history.replaceState(null, '', url.pathname + url.search + url.hash);
         }
 
-        function finishPendingRelease() {
+        async function finishPendingRelease() {
             if (!isVerifiedUser || !pendingNotesRelease) return;
             const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
             if (pendingNotesRelease.version !== currentVersion) {
@@ -4365,6 +4395,23 @@
             }
             const release = pendingNotesRelease;
             pendingNotesRelease = null;
+            if (deviceInstallationId && currentUserId && release.acceptedByUid === currentUserId) {
+                try {
+                    await firestore.collection('userReleaseState')
+                        .doc(currentUserId)
+                        .collection('devices')
+                        .doc(deviceInstallationId)
+                        .set({
+                            uid: currentUserId,
+                            acceptedVersion: release.version,
+                            acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    acceptedVersionCache = release.version;
+                    acceptedVersionLoaded = true;
+                } catch (error) {
+                    console.error('Could not save this device’s accepted app version:', error);
+                }
+            }
             sessionStorage.removeItem(pendingReleaseKey);
             showNotes(release);
         }
@@ -4403,7 +4450,27 @@
                     throw new Error('The update manifest has an invalid format.');
                 }
                 const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
-                if (release.version !== currentVersion) {
+                if (release.version === currentVersion) return;
+                if (!deviceInstallationId || !currentUserId) {
+                    showUpdatePrompt(release);
+                    return;
+                }
+                const checkingUserId = currentUserId;
+                if (!acceptedVersionLoaded) {
+                    try {
+                        const releaseState = await firestore.collection('userReleaseState')
+                            .doc(checkingUserId)
+                            .collection('devices')
+                            .doc(deviceInstallationId)
+                            .get({ source: 'server' });
+                        if (currentUserId !== checkingUserId) return;
+                        acceptedVersionCache = releaseState.data()?.acceptedVersion || null;
+                        acceptedVersionLoaded = true;
+                    } catch (error) {
+                        console.error('Could not read this device’s accepted app version; showing the update prompt:', error);
+                    }
+                }
+                if (currentUserId === checkingUserId && release.version !== acceptedVersionCache) {
                     showUpdatePrompt(release);
                 }
             } catch (error) {
@@ -4436,18 +4503,67 @@
                     throw new Error('The downloaded page does not match the advertised release version.');
                 }
                 if (!isVerifiedUser) return;
-                sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
                 document.getElementById('releaseProgressMessage').textContent = 'Download complete. Applying your update…';
                 document.getElementById('releaseDownloadPercent').textContent = 'Complete';
                 const downloadedBytes = new TextEncoder().encode(downloadedHtml).length;
                 setDownloadProgress(downloadedBytes, downloadedBytes);
                 await new Promise(resolve => window.setTimeout(resolve, 1100));
+                const registration = await navigator.serviceWorker?.getRegistration();
+                if (registration && navigator.serviceWorker.controller) {
+                    await registration.update();
+                    let waitingWorker = registration.waiting;
+                    if (!waitingWorker && registration.installing) {
+                        waitingWorker = await new Promise((resolve, reject) => {
+                            const installingWorker = registration.installing;
+                            const timeout = window.setTimeout(() => reject(
+                                new Error('The downloaded update is still being prepared. Please try again.')
+                            ), 20_000);
+                            const checkWorkerState = () => {
+                                if (registration.waiting) {
+                                    window.clearTimeout(timeout);
+                                    resolve(registration.waiting);
+                                } else if (installingWorker.state === 'redundant') {
+                                    window.clearTimeout(timeout);
+                                    reject(new Error('The downloaded update could not be installed.'));
+                                }
+                            };
+                            installingWorker.addEventListener('statechange', checkWorkerState);
+                            checkWorkerState();
+                        });
+                    }
+                    if (!waitingWorker) {
+                        throw new Error('The downloaded update is not ready to activate. Please try again.');
+                    }
+                    await new Promise((resolve, reject) => {
+                        const timeout = window.setTimeout(() => reject(
+                            new Error('The update did not finish activating. Please try again.')
+                        ), 20_000);
+                        navigator.serviceWorker.addEventListener('controllerchange', () => {
+                            window.clearTimeout(timeout);
+                            resolve();
+                        }, { once: true });
+                        waitingWorker.postMessage({
+                            type: 'ACTIVATE_RELEASE',
+                            version: release.version
+                        });
+                    });
+                    sessionStorage.setItem(pendingReleaseKey, JSON.stringify({
+                        ...release,
+                        acceptedByUid: currentUserId
+                    }));
+                    window.location.replace(updateUrl.href);
+                    return;
+                }
+                sessionStorage.setItem(pendingReleaseKey, JSON.stringify({
+                    ...release,
+                    acceptedByUid: currentUserId
+                }));
                 window.location.replace(updateUrl.href);
             } catch (error) {
                 console.error('Could not download the app update:', error);
                 progressDialog.close();
                 if (!isVerifiedUser) return;
-                document.getElementById('releaseUpdateError').textContent = 'The update could not be downloaded. Check your connection and try again.';
+                document.getElementById('releaseUpdateError').textContent = 'The update could not be applied. Check your connection and try again.';
                 document.getElementById('releaseUpdateError').hidden = false;
                 updateDialog.showModal();
             }
@@ -4467,6 +4583,13 @@
         progressDialog.addEventListener('cancel', event => event.preventDefault());
         window.addEventListener('roster-auth-status', event => {
             isVerifiedUser = event.detail && event.detail.emailVerified === true;
+            const nextUserId = isVerifiedUser ? event.detail.uid : null;
+            if (nextUserId !== currentUserId) {
+                acceptedVersionCache = null;
+                acceptedVersionLoaded = false;
+                dismissedVersion = null;
+            }
+            currentUserId = nextUserId;
             if (isVerifiedUser) {
                 currentUsername = event.detail.username || 'there';
                 finishPendingRelease();
@@ -4484,6 +4607,13 @@
                 readPendingRelease();
             } catch (error) {
                 console.error('Could not restore the completed app update:', error);
+            }
+            if ('serviceWorker' in navigator) {
+                const serviceWorkerUrl = new URL('service-worker.js', window.location.href);
+                const workerScope = new URL('.', window.location.href);
+                navigator.serviceWorker.register(serviceWorkerUrl.href, { scope: workerScope.pathname })
+                    .then(registration => registration.update())
+                    .catch(error => console.error('Could not prepare versioned app updates:', error));
             }
             window.setInterval(checkForRelease, 60_000);
             window.addEventListener('focus', checkForRelease);
@@ -5438,9 +5568,9 @@
             setFirestoreLoadStatus(message, 'loading');
         }
 
-        function publishReleaseAuthStatus(emailVerified, username = '') {
+        function publishReleaseAuthStatus(emailVerified, username = '', uid = null) {
             window.dispatchEvent(new CustomEvent('roster-auth-status', {
-                detail: { emailVerified, username }
+                detail: { emailVerified, username, uid }
             }));
         }
 
@@ -5479,7 +5609,11 @@
             }
             if (generation !== authFlowGeneration || !auth.currentUser) return;
             user = auth.currentUser;
-            publishReleaseAuthStatus(user.emailVerified, user.emailVerified ? accountDisplayName(user) : '');
+            publishReleaseAuthStatus(
+                user.emailVerified,
+                user.emailVerified ? accountDisplayName(user) : '',
+                user.emailVerified ? user.uid : null
+            );
 
             if (!user.emailVerified) {
                 document.getElementById('verificationEmailValue').textContent = user.email || '';
