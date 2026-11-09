@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="app-build-version" content="development" />
     <title>Admin · Roster Editor Pro</title>
 
     <!-- Tailwind CSS -->
@@ -295,6 +296,70 @@
         }
         .standard-day-row:hover {
             background-color: #f0fdf4 !important;
+        }
+
+        .release-dialog {
+            width: min(28rem, calc(100% - 2rem));
+            padding: 2rem;
+            border: 0;
+            border-radius: 1.5rem;
+            color: #0f172a;
+            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.3);
+        }
+        .release-dialog::backdrop {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+        }
+        .release-dialog h2 {
+            margin: 0 0 0.75rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+        }
+        .release-dialog p,
+        .release-dialog li {
+            color: #475569;
+            line-height: 1.6;
+        }
+        .release-dialog ul {
+            margin: 1rem 0 1.5rem;
+            padding-left: 1.25rem;
+        }
+        .release-dialog button {
+            border: 0;
+            border-radius: 0.75rem;
+            padding: 0.7rem 1rem;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .release-primary {
+            background: #2563eb;
+            color: #fff;
+        }
+        .release-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+        .release-progress-track {
+            height: 0.45rem;
+            overflow: hidden;
+            margin-top: 1.25rem;
+            border-radius: 9999px;
+            background: #dbeafe;
+        }
+        .release-progress-bar {
+            width: 40%;
+            height: 100%;
+            border-radius: inherit;
+            background: #2563eb;
+            animation: release-download 1.2s ease-in-out infinite;
+        }
+        @keyframes release-download {
+            from { transform: translateX(-110%); }
+            to { transform: translateX(260%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .release-progress-bar { animation-duration: 3s; }
         }
 
         .location-badge {
@@ -3864,6 +3929,158 @@
         <button type="button" class="auth-modal-close" id="authNoticeCloseBtn">Continue</button>
     </div>
 </dialog>
+
+<dialog id="releaseUpdateDialog" class="release-dialog" aria-labelledby="releaseUpdateTitle">
+    <h2 id="releaseUpdateTitle">A new update is available</h2>
+    <p id="releaseUpdateMessage">A new version of the roster app is ready.</p>
+    <p id="releaseUpdateError" role="alert" hidden></p>
+    <div class="mt-6 flex justify-end gap-3">
+        <button type="button" class="release-secondary" id="releaseLaterButton">Later</button>
+        <button type="button" class="release-primary" id="releaseNowButton">Update now</button>
+    </div>
+</dialog>
+<dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
+    <h2 id="releaseProgressTitle">Downloading update</h2>
+    <p id="releaseProgressMessage">Checking the latest version…</p>
+    <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
+</dialog>
+<dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
+    <h2 id="releaseNotesTitle">What’s new</h2>
+    <p id="releaseNotesHeading"></p>
+    <ul id="releaseNotesList"></ul>
+    <div class="flex justify-end">
+        <button type="button" class="release-primary" id="releaseNotesDoneButton">Got it</button>
+    </div>
+</dialog>
+
+<script>
+    (function initializeReleaseUpdates() {
+        const appliedVersionKey = 'rosterAppliedRelease';
+        const pendingReleaseKey = 'rosterPendingRelease';
+        const snoozedVersionKey = 'rosterSnoozedRelease';
+        const updateDialog = document.getElementById('releaseUpdateDialog');
+        const progressDialog = document.getElementById('releaseProgressDialog');
+        const notesDialog = document.getElementById('releaseNotesDialog');
+        let availableRelease = null;
+        let checkInProgress = false;
+
+        function showNotes(release) {
+            document.getElementById('releaseNotesTitle').textContent = 'What’s new';
+            document.getElementById('releaseNotesHeading').textContent = release.title;
+            const list = document.getElementById('releaseNotesList');
+            list.replaceChildren();
+            release.notes.forEach(note => {
+                const item = document.createElement('li');
+                item.textContent = note;
+                list.appendChild(item);
+            });
+            notesDialog.showModal();
+        }
+
+        function readPendingRelease() {
+            const url = new URL(window.location.href);
+            const requestedVersion = url.searchParams.get('__update');
+            if (!requestedVersion) return;
+
+            const pending = sessionStorage.getItem(pendingReleaseKey);
+            if (pending) {
+                const release = JSON.parse(pending);
+                if (release.version === requestedVersion) {
+                    localStorage.setItem(appliedVersionKey, release.version);
+                    sessionStorage.removeItem(pendingReleaseKey);
+                    sessionStorage.removeItem(snoozedVersionKey);
+                    showNotes(release);
+                }
+            }
+            url.searchParams.delete('__update');
+            history.replaceState(null, '', url.pathname + url.search + url.hash);
+        }
+
+        function showUpdatePrompt(release) {
+            if (localStorage.getItem(appliedVersionKey) === release.version ||
+                sessionStorage.getItem(snoozedVersionKey) === release.version ||
+                updateDialog.open) return;
+            availableRelease = release;
+            document.getElementById('releaseUpdateTitle').textContent = release.title || 'A new update is available';
+            document.getElementById('releaseUpdateMessage').textContent = 'A new version is ready. Update now to load the latest changes.';
+            document.getElementById('releaseUpdateError').hidden = true;
+            updateDialog.showModal();
+        }
+
+        async function checkForRelease() {
+            if (checkInProgress) return;
+            checkInProgress = true;
+            try {
+                const manifestUrl = new URL('update.json', window.location.href);
+                manifestUrl.searchParams.set('_', Date.now().toString());
+                const response = await fetch(manifestUrl, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Update check failed with HTTP ${response.status}`);
+                const release = await response.json();
+                if (typeof release.version !== 'string' || typeof release.title !== 'string' ||
+                    !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string')) {
+                    throw new Error('The update manifest has an invalid format.');
+                }
+                const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
+                if (release.version !== currentVersion && release.version !== localStorage.getItem(appliedVersionKey)) {
+                    showUpdatePrompt(release);
+                }
+            } catch (error) {
+                console.error('Could not check for app updates:', error);
+            } finally {
+                checkInProgress = false;
+            }
+        }
+
+        async function downloadRelease() {
+            if (!availableRelease) return;
+            const release = availableRelease;
+            updateDialog.close();
+            document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
+            progressDialog.showModal();
+            try {
+                const updateUrl = new URL(window.location.href);
+                updateUrl.searchParams.set('__update', release.version);
+                const response = await fetch(updateUrl, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Update download failed with HTTP ${response.status}`);
+                await response.text();
+                sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
+                document.getElementById('releaseProgressMessage').textContent = 'Update downloaded. Reloading…';
+                window.location.replace(updateUrl.href);
+            } catch (error) {
+                console.error('Could not download the app update:', error);
+                progressDialog.close();
+                document.getElementById('releaseUpdateError').textContent = 'The update could not be downloaded. Check your connection and try again.';
+                document.getElementById('releaseUpdateError').hidden = false;
+                updateDialog.showModal();
+            }
+        }
+
+        document.getElementById('releaseNowButton').addEventListener('click', downloadRelease);
+        document.getElementById('releaseLaterButton').addEventListener('click', () => {
+            if (availableRelease) sessionStorage.setItem(snoozedVersionKey, availableRelease.version);
+            updateDialog.close();
+        });
+        document.getElementById('releaseNotesDoneButton').addEventListener('click', () => notesDialog.close());
+        progressDialog.addEventListener('cancel', event => event.preventDefault());
+
+        function start() {
+            try {
+                readPendingRelease();
+            } catch (error) {
+                console.error('Could not restore the completed app update:', error);
+            }
+            checkForRelease();
+            window.setInterval(checkForRelease, 60_000);
+            window.addEventListener('focus', checkForRelease);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', start, { once: true });
+        } else {
+            start();
+        }
+    })();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
