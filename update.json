@@ -1,8 +1,8 @@
 {
-  "version": "02cce827b7cc8bc921e9357425a445aa679b112c",
-  "versionLabel": "v8.8.0",
-  "deployedAt": "2026-11-09T15:13:10.544Z",
-  "title": "Add semantic release details",
+  "version": "375258c7ef17697dc08742c889418f1cdbfeaf32",
+  "versionLabel": "v8.8.1",
+  "deployedAt": "2026-11-09T15:49:29.897Z",
+  "title": "Require explicit per-device app updates",
   "notes": [
     "General improvements and fixes."
   ],
@@ -12,5 +12,5 @@
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "sizeBytes": 312133
+  "sizeBytes": 319220
 }
