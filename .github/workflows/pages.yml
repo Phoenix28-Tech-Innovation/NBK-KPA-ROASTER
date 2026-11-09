@@ -1,4 +1,4 @@
-name: Deploy static site to GitHub Pages
+name: Publish static site from main
 
 on:
   push:
@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -16,9 +14,6 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,16 +38,23 @@ jobs:
               notes: notes.length ? notes : ['General improvements and fixes.']
             }, null, 2));
             const html = fs.readFileSync('index.html', 'utf8');
+            const versionTag = /<meta name="app-build-version" content="[^"]*" \/>/g;
+            const matches = html.match(versionTag) || [];
+            if (matches.length !== 1) {
+              throw new Error(`Expected one app build version tag in index.html, found ${matches.length}.`);
+            }
             fs.writeFileSync('index.html', html.replace(
-              '<meta name="app-build-version" content="development" />',
+              versionTag,
               `<meta name="app-build-version" content="${context.sha}" />`
             ));
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish generated release files to GitHub Pages source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html update.json
+          if git diff --cached --quiet; then
+            echo "Generated release files are already current."
+          else
+            git commit -m "Publish site release ${GITHUB_SHA:0:7}"
+            git push origin HEAD:main
+          fi
