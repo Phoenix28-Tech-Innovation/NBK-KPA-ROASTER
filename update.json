@@ -1,16 +1,17 @@
 {
-  "version": "375258c7ef17697dc08742c889418f1cdbfeaf32",
-  "versionLabel": "v8.8.1",
-  "deployedAt": "2026-11-09T15:49:29.897Z",
-  "title": "Require explicit per-device app updates",
+  "version": "241cf344d7f51f011c5b4fd42f5ed4f0ad4e9dc5",
+  "versionLabel": "v8.8.2",
+  "deployedAt": "2026-11-11T16:46:19.968Z",
+  "title": "Add roster notifications and backups",
   "notes": [
-    "General improvements and fixes."
+    "Rebuild Firebase Functions, notification controls, and scheduled roster backups."
   ],
   "features": [
-    "General improvements and maintenance."
+    "Rebuild Firebase Functions, notification controls, and scheduled roster backups."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "sizeBytes": 319220
+  "adminOnly": false,
+  "sizeBytes": 393870
 }
