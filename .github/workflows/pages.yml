@@ -26,7 +26,9 @@ jobs:
             const fs = require('fs');
             const commitMessage = context.payload.head_commit?.message || `Deployment ${context.sha.slice(0, 7)}`;
             const [titleLine, ...descriptionLines] = commitMessage.split(/\\n|\r?\n/);
-            const title = titleLine.trim() || 'Site update';
+            // Prefix the commit subject with [admin-only] to keep this release prompt admin-only.
+            const adminOnly = /^\s*\[admin-only\]/i.test(titleLine);
+            const title = titleLine.replace(/^\s*\[admin-only\]\s*/i, '').trim() || 'Site update';
             const details = descriptionLines
               .map(line => line.replace(/^\s*(?:[-*]|\d+\.)\s+/, '').trim())
               .filter(Boolean);
@@ -70,9 +72,10 @@ jobs:
               versionLabel,
               deployedAt,
               title,
-              notes: notes.length ? notes : ['General improvements and fixes.'],
-              features: features.length ? features : ['General improvements and maintenance.'],
+              notes: notes.length ? notes : [adminOnly ? title : 'General improvements and fixes.'],
+              features: features.length ? features : [adminOnly ? title : 'General improvements and maintenance.'],
               security,
+              adminOnly,
               sizeBytes: fs.statSync('index.html').size
             }, null, 2));
             const releaseDirectory = 'releases';

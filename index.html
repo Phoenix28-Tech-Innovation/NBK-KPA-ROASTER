@@ -759,11 +759,11 @@
         }
         .header-actions {
             display: flex;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
             align-items: center;
             gap: 0.55rem;
             width: 100%;
-            overflow-x: auto;
+            overflow: visible;
             padding: 0.55rem;
             border: 1px solid #e2e8f0;
             border-radius: 1rem;
@@ -772,11 +772,311 @@
             scrollbar-color: #cbd5e1 transparent;
             -webkit-overflow-scrolling: touch;
         }
+        .roster-workflow-status {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            border: 1px solid #dbeafe;
+            border-radius: 0.85rem;
+            background: linear-gradient(110deg, #eff6ff, #f8fafc);
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .roster-workflow-status strong {
+            padding: 0.3rem 0.7rem;
+            border: 1px solid #fed7aa;
+            border-radius: 9999px;
+            background: #fff7ed;
+            color: #9a3412;
+        }
+        .roster-workflow-tabs,
+        .roster-history-panel {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.25rem;
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 8px 24px rgba(15,23,42,0.04);
+        }
+        .roster-history-list {
+            display: grid;
+            gap: 0.55rem;
+            margin-top: 1rem;
+        }
+        .roster-history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.9rem;
+            background: #fff;
+            color: #1e293b;
+            text-align: left;
+            cursor: pointer;
+        }
+        .roster-history-item:hover,
+        .roster-history-item[aria-pressed="true"] {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+        .roster-history-preview {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+        .roster-history-preview [contenteditable],
+        .roster-history-preview .editable-cell,
+        .roster-history-preview .editable-name,
+        .roster-history-preview .date-editable { cursor: default !important; }
+        .roster-history-empty {
+            margin: 1rem 0 0;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        #rosterSettingsPane[hidden] {
+            display: none !important;
+        }
+        .system-settings-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+            align-items: start;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+        .system-settings-card {
+            min-width: 0;
+            padding: 1.15rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.2rem;
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 8px 24px rgba(15,23,42,0.045);
+        }
+        .system-settings-card h3 {
+            margin: 0;
+            color: #172554;
+            font-size: 0.98rem;
+            font-weight: 850;
+        }
+        .system-settings-card > p {
+            margin: 0.35rem 0 0;
+            color: #64748b;
+            font-size: 0.75rem;
+            line-height: 1.55;
+        }
+        .notifications-panel {
+            padding: 1rem;
+            border: 1px solid #dbeafe;
+            border-radius: 1rem;
+            background: #fff;
+            box-shadow: 0 12px 32px rgba(15,23,42,0.08);
+        }
+        .notifications-panel[hidden] { display: none !important; }
+        .notification-list {
+            display: grid;
+            gap: 0.55rem;
+            margin: 0.75rem 0 0;
+            padding: 0;
+            list-style: none;
+        }
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.8rem;
+            background: #f8fafc;
+        }
+        .notification-item[data-read="false"] {
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+        .notification-item p { margin: 0.2rem 0; color: #475569; font-size: 0.75rem; }
+        .notification-item time { color: #718198; font-size: 0.65rem; }
+        .notification-count {
+            min-width: 1.2rem;
+            margin-left: 0.35rem;
+            padding: 0.05rem 0.35rem;
+            border-radius: 9999px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.65rem;
+        }
+        .notification-event-settings {
+            display: grid;
+            gap: 0.55rem;
+        }
+        .notification-event-row {
+            display: grid;
+            grid-template-columns: minmax(9rem, 1fr) repeat(2, minmax(5rem, auto));
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.65rem;
+            border: 1px solid #e8eef6;
+            border-radius: 0.75rem;
+            background: #fff;
+            color: #334155;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .notification-event-row label { display: flex; align-items: center; gap: 0.35rem; font-weight: 600; }
+        .notification-event-row input { accent-color: #2563eb; }
+        @media (max-width: 520px) {
+            .notification-event-row { grid-template-columns: 1fr 1fr; }
+            .notification-event-row strong { grid-column: 1 / -1; }
+        }
+        .system-settings-form {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .system-settings-group {
+            display: grid;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            border: 1px solid #e8eef6;
+            border-radius: 0.95rem;
+            background: #f8fafc;
+        }
+        .system-settings-group h4 {
+            margin: 0;
+            color: #334155;
+            font-size: 0.73rem;
+            font-weight: 850;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .system-setting-toggle {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            color: #334155;
+            font-size: 0.76rem;
+            font-weight: 750;
+            line-height: 1.45;
+        }
+        .system-setting-toggle input {
+            width: 1rem;
+            height: 1rem;
+            flex: 0 0 auto;
+            margin-top: 0.1rem;
+            accent-color: #2563eb;
+        }
+        .system-setting-toggle small {
+            display: block;
+            margin-top: 0.12rem;
+            color: #718198;
+            font-size: 0.66rem;
+            font-weight: 500;
+        }
+        .system-settings-field {
+            display: grid;
+            gap: 0.35rem;
+            color: #475569;
+            font-size: 0.7rem;
+            font-weight: 750;
+        }
+        .system-settings-field textarea,
+        .system-settings-field select {
+            width: 100%;
+            min-height: 2.45rem;
+            padding: 0.6rem 0.7rem;
+            border: 1px solid #dbe3ee;
+            border-radius: 0.7rem;
+            background: #fff;
+            color: #1e293b;
+            font: inherit;
+        }
+        .system-settings-field textarea {
+            min-height: 5rem;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        .system-settings-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 1rem;
+        }
+        #systemSettingsSaveStatus {
+            flex: 1 1 12rem;
+            margin: 0;
+            color: #64748b;
+            font-size: 0.7rem;
+        }
+        #systemSettingsSaveStatus[data-kind="error"] { color: #b42332; }
+        #systemSettingsSaveStatus[data-kind="success"] { color: #087c5a; }
+        #systemAnnouncementBanner {
+            padding: 0.8rem 1rem;
+            border: 1px solid #bfdbfe;
+            border-radius: 1rem;
+            background: #eff6ff;
+            color: #1e40af;
+            font-size: 0.8rem;
+            line-height: 1.55;
+        }
+        #systemAnnouncementBanner[hidden],
+        #userRosterUnavailable[hidden] { display: none !important; }
+        #userRosterUnavailable {
+            margin: 1rem 0;
+            padding: 2rem 1.25rem;
+            border: 1px solid #dbeafe;
+            border-radius: 1.25rem;
+            background: linear-gradient(145deg, #fff, #f8fbff);
+            color: #475569;
+            text-align: center;
+        }
+        #userRosterUnavailable i {
+            display: block;
+            margin-bottom: 0.65rem;
+            color: #3478f6;
+            font-size: 1.5rem;
+        }
+        #userRosterUnavailable strong {
+            display: block;
+            color: #172554;
+            font-size: 1rem;
+        }
+        #userRosterUnavailable p {
+            margin: 0.4rem 0 0;
+            font-size: 0.78rem;
+        }
+        @media (max-width: 800px) {
+            .system-settings-layout { grid-template-columns: 1fr; }
+        }
+        #rosterDraftControls[hidden],
+        #rosterWorkflowStatus[hidden],
+        #rosterWorkflowTabs[hidden],
+        #rosterEditorPane[hidden],
+        #rosterHistoryPane[hidden],
+        #retryHistoryBtn[hidden] {
+            display: none !important;
+        }
+        #rosterDraftControls {
+            flex: 1 1 24rem;
+        }
+        #rosterApp > header > .header-actions > .toolbar-group:first-child {
+            flex: 0 0 auto;
+        }
+        #rosterApp > header > .header-actions > .toolbar-group:last-child {
+            flex: 1 1 30rem;
+        }
         .toolbar-group {
             display: inline-flex;
-            flex: 0 0 auto;
+            flex: 0 1 auto;
+            flex-wrap: wrap;
             align-items: center;
             gap: 0.35rem;
+            min-width: 0;
             padding: 0.3rem 0.4rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.85rem;
@@ -784,7 +1084,7 @@
             box-shadow: 0 1px 2px rgba(15,23,42,0.04);
         }
         .header-actions .btn-premium {
-            flex: 0 0 auto;
+            flex: 0 1 auto;
             min-height: 2.45rem;
             padding: 0.45rem 0.72rem;
             white-space: nowrap;
@@ -796,7 +1096,7 @@
             white-space: nowrap;
         }
         .header-actions::-webkit-scrollbar {
-            height: 6px;
+            display: none;
         }
         .header-actions::-webkit-scrollbar-thumb {
             border-radius: 9999px;
@@ -2419,7 +2719,7 @@
         #rosterApp > header h1 {
             flex-wrap: wrap;
         }
-        #rosterApp > section,
+        #rosterEditorPane > section,
         .table-card,
         .table-card > .overflow-x-auto {
             min-width: 0;
@@ -2539,12 +2839,12 @@
             .header-actions select.premium-select {
                 text-overflow: ellipsis;
             }
-            #rosterApp > section > div:first-child {
+            #rosterEditorPane > section > div:first-child {
                 align-items: flex-start;
                 gap: 0.65rem;
                 margin-bottom: 0.75rem;
             }
-            #rosterApp > section h2 {
+            #rosterEditorPane > section h2 {
                 gap: 0.45rem;
                 font-size: clamp(1.15rem, 4.8vw, 1.5rem);
                 line-height: 1.25;
@@ -3682,6 +3982,15 @@
 
 <div id="rosterApp" class="max-w-[1440px] mx-auto space-y-6" aria-hidden="true" hidden>
 
+    <div id="systemAnnouncementBanner" role="status" aria-live="polite" hidden></div>
+    <section id="userNotificationPanel" class="notifications-panel" aria-labelledby="notificationHeading" hidden>
+        <div class="flex items-center justify-between gap-3">
+            <h2 id="notificationHeading" class="text-base font-header font-extrabold text-slate-800">Notifications</h2>
+            <button type="button" class="btn-premium btn-premium-outline" id="closeNotificationsBtn">Close</button>
+        </div>
+        <p id="notificationListStatus" class="roster-history-empty" role="status">Loading notifications…</p>
+        <ul id="userNotificationList" class="notification-list" aria-live="polite"></ul>
+    </section>
     <div class="viewer-access-bar" aria-label="Signed-in roster viewer">
         <div class="viewer-access-identity">
             <span class="viewer-access-avatar"><i class="fa-regular fa-user" aria-hidden="true"></i></span>
@@ -3690,10 +3999,18 @@
                 <small>Read-only roster access</small>
             </span>
         </div>
+        <button id="viewerNotificationsBtn" type="button" class="btn-premium btn-premium-outline" aria-expanded="false" aria-controls="userNotificationPanel">
+            <i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications <span class="notification-count" hidden></span>
+        </button>
         <button id="viewerSignOutBtn" type="button" class="btn-premium btn-premium-outline">
             <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Sign out
         </button>
     </div>
+    <section id="userRosterUnavailable" aria-live="polite" hidden>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <strong id="userRosterUnavailableTitle">Roster temporarily unavailable</strong>
+        <p id="userRosterUnavailableMessage"></p>
+    </section>
 
     <!-- HEADER with undo/redo and row management -->
     <header class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 px-6 py-4 flex flex-col gap-3">
@@ -3708,7 +4025,7 @@
                 </h1>
                 <p class="text-[0.65rem] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-3">
                     <i class="fa-regular fa-pen-to-square text-blue-400"></i>
-                    click any cell to edit · press Save Now to save
+                    edit privately · preview · publish when ready
                     <i class="fa-regular fa-circle-check text-emerald-400"></i>
                 </p>
             </div>
@@ -3718,6 +4035,9 @@
             <button id="manageAccessBtn" type="button" class="btn-premium btn-premium-outline" title="Manage account access" hidden>
                 <i class="fa-solid fa-user-shield" aria-hidden="true"></i> Access
             </button>
+            <button id="adminNotificationsBtn" type="button" class="btn-premium btn-premium-outline" aria-expanded="false" aria-controls="userNotificationPanel">
+                <i class="fa-regular fa-bell" aria-hidden="true"></i> Notifications <span class="notification-count" hidden></span>
+            </button>
         </div>
 
         <div class="header-actions">
@@ -3725,13 +4045,10 @@
                 <button id="undoBtn" class="btn-premium btn-premium-outline" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i class="fa-solid fa-rotate-left"></i> Undo</button>
                 <button id="redoBtn" class="btn-premium btn-premium-outline" title="Redo (Ctrl+Y)" aria-label="Redo" disabled><i class="fa-solid fa-rotate-right"></i> Redo</button>
             </div>
-            <div class="toolbar-group" aria-label="Save and backup">
-                <button id="saveNowBtn" class="btn-premium" title="Save current roster to Firestore"><i class="fa-solid fa-floppy-disk"></i> Save Now</button>
-                <button id="exportBackupBtn" class="btn-premium btn-premium-outline" title="Save current roster to a JSON file"><i class="fa-solid fa-download"></i> Save File</button>
-                <button id="restoreLatestBtn" class="btn-premium btn-premium-outline" title="Load the roster currently saved in Firestore"><i class="fa-solid fa-clock-rotate-left"></i> Restore</button>
-                <button id="importBackupBtn" class="btn-premium btn-premium-outline" title="Load roster from a backup file"><i class="fa-solid fa-file-import"></i> Load File</button>
-                <button id="clearBackupBtn" class="btn-premium btn-premium-outline" title="Clear saved backups"><i class="fa-solid fa-trash-can"></i> Clear</button>
-                <input id="restoreBackupInput" type="file" accept=".json" hidden />
+            <div id="rosterDraftControls" class="toolbar-group" aria-label="Draft and publish controls" hidden>
+                <button id="saveDraftBtn" class="btn-premium" title="Save privately without changing the live roster"><i class="fa-solid fa-file-pen"></i> Save Draft</button>
+                <button id="previewDraftBtn" class="btn-premium btn-premium-outline" title="Preview this draft without publishing"><i class="fa-regular fa-eye"></i> Preview Draft</button>
+                <button id="publishRosterBtn" class="btn-premium" title="Publish this draft as the live roster"><i class="fa-solid fa-paper-plane"></i> Publish</button>
             </div>
 
             <!-- Add and remove rows -->
@@ -3750,8 +4067,26 @@
             </div>
 
         </div>
+        <div class="roster-workflow-status" id="rosterWorkflowStatus" hidden>
+            <strong id="rosterDraftState">Draft not saved</strong>
+            <span id="rosterLiveState">Edits are private until you publish.</span>
+        </div>
+        <nav class="roster-workflow-tabs" id="rosterWorkflowTabs" aria-label="Roster admin views" hidden>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" class="btn-premium" id="editorTabBtn" aria-pressed="true">
+                    <i class="fa-solid fa-pen-to-square"></i> Draft editor
+                </button>
+                <button type="button" class="btn-premium btn-premium-outline" id="historyTabBtn" aria-pressed="false">
+                    <i class="fa-solid fa-box-archive"></i> Published weeks
+                </button>
+                <button type="button" class="btn-premium btn-premium-outline" id="manageAccountsTabBtn" aria-pressed="false">
+                    <i class="fa-solid fa-user-shield" aria-hidden="true"></i> Account management
+                </button>
+            </div>
+        </nav>
     </header>
 
+    <div id="rosterEditorPane" class="space-y-6">
     <!-- ISLAND MOMBASA -->
     <section>
         <div class="flex items-center gap-4 mb-3">
@@ -4134,13 +4469,155 @@
         </div>
     </div>
 
-    <div class="text-center text-[0.65rem] text-gray-400 font-body border-t border-gray-200/60 pt-4 mt-2 flex justify-center gap-8 flex-wrap">
-        <span><i class="fa-regular fa-pen-to-square text-blue-400 mr-2"></i> Edit any cell — names, lanes, dates, Off, 6:30pm</span>
-        <span><i class="fa-regular fa-calendar text-green-500 mr-2"></i> Change Monday date → week auto‑updates</span>
-        <span><i class="fa-regular fa-bold text-blue-400 mr-2"></i> All content stays bold · 8K HD ready</span>
-        <span><i class="fa-regular fa-gem text-amber-400 mr-2"></i> Pro</span>
-    </div>
+<div class="text-center text-[0.65rem] text-gray-400 font-body border-t border-gray-200/60 pt-4 mt-2 flex justify-center gap-8 flex-wrap">
+    <span><i class="fa-regular fa-pen-to-square text-blue-400 mr-2"></i> Edit any cell — names, lanes, dates, Off, 6:30pm</span>
+    <span><i class="fa-regular fa-calendar text-green-500 mr-2"></i> Change Monday date → week auto‑updates</span>
+    <span><i class="fa-regular fa-bold text-blue-400 mr-2"></i> All content stays bold · 8K HD ready</span>
+    <span><i class="fa-regular fa-gem text-amber-400 mr-2"></i> Pro</span>
 </div>
+</div>
+
+<section id="rosterHistoryPane" class="roster-history-panel" aria-labelledby="rosterHistoryHeading" hidden>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <h2 id="rosterHistoryHeading" class="text-xl font-header font-extrabold text-gray-900">Published roster history</h2>
+            <p class="mt-1 text-sm text-slate-500">Only the roster administrator can view these archived weeks.</p>
+        </div>
+        <div class="flex flex-wrap items-end gap-3">
+            <label class="grid gap-1 text-xs font-bold text-slate-600">
+                From week
+                <input id="historyFromDate" type="date" class="premium-select" />
+            </label>
+            <label class="grid gap-1 text-xs font-bold text-slate-600">
+                Through week
+                <input id="historyThroughDate" type="date" class="premium-select" />
+            </label>
+            <button type="button" class="btn-premium" id="filterHistoryBtn"><i class="fa-solid fa-filter"></i> Filter</button>
+        </div>
+    </div>
+    <p id="historyStatus" class="roster-history-empty" role="status">Published weeks will load when this tab opens.</p>
+    <button id="retryHistoryBtn" type="button" class="btn-premium btn-premium-outline mt-3" hidden>
+        <i class="fa-solid fa-arrows-rotate"></i> Retry Firestore fetch
+    </button>
+    <div id="rosterHistoryList" class="roster-history-list"></div>
+    <div id="historyRosterPreview" class="roster-history-preview" aria-live="polite"></div>
+</section>
+
+<section id="rosterSettingsPane" class="roster-history-panel" aria-labelledby="systemSettingsHeading" hidden>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <span class="access-queue-eyebrow">ADMIN WORKSPACE</span>
+            <h2 id="systemSettingsHeading" class="mt-1 text-xl font-header font-extrabold text-gray-900">Account management</h2>
+            <p class="mt-1 text-sm text-slate-500">Review account requests and manage settings shared by the admin and user pages.</p>
+        </div>
+        <span class="access-queue-live"><span></span> LIVE SYSTEM SETTINGS</span>
+    </div>
+    <div class="system-settings-layout">
+        <section class="system-settings-card" aria-labelledby="accountRequestsHeading">
+            <div class="access-queue-heading">
+                <div>
+                    <h3 id="accountRequestsHeading">Account access</h3>
+                    <p>Approve verified users or revoke existing roster access.</p>
+                </div>
+                <button type="button" class="btn-premium btn-premium-outline" id="refreshAccountRequestsBtn" aria-label="Refresh account requests">
+                    <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="access-request-tabs" role="group" aria-label="Filter account requests">
+                <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="awaiting_verification">Unverified</button>
+                <button class="access-request-tab" type="button" aria-pressed="true" data-request-filter="pending">Pending</button>
+                <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="approved">Approved</button>
+                <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="rejected">Declined</button>
+                <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="all">All</button>
+            </div>
+            <p id="accountRequestsStatus" class="roster-history-empty" role="status" aria-live="polite">Loading requests…</p>
+            <ul class="access-request-list" id="accountAccessRequestList" aria-label="Account access requests"></ul>
+        </section>
+
+        <section class="system-settings-card" aria-labelledby="systemSettingsFormHeading">
+            <h3 id="systemSettingsFormHeading">System-wide settings</h3>
+            <p>Saved changes are shared with approved users in real time. Access approval and email verification remain required.</p>
+            <form id="systemSettingsForm" class="system-settings-form">
+                <div class="system-settings-group">
+                    <h4>Accounts</h4>
+                    <label class="system-setting-toggle">
+                        <input id="systemSignupEnabledInput" type="checkbox" />
+                        <span>Allow new account signups<small>Existing users can still sign in when signups are paused.</small></span>
+                    </label>
+                </div>
+                <div class="system-settings-group">
+                    <h4>Roster visibility</h4>
+                    <label class="system-setting-toggle">
+                        <input id="systemRosterVisibleInput" type="checkbox" />
+                        <span>Show published rosters to approved users</span>
+                    </label>
+                    <label class="system-setting-toggle">
+                        <input id="systemIslandVisibleInput" type="checkbox" />
+                        <span>Show Island Mombasa roster</span>
+                    </label>
+                    <label class="system-setting-toggle">
+                        <input id="systemMainlandVisibleInput" type="checkbox" />
+                        <span>Show Mainland Likoni roster</span>
+                    </label>
+                    <label class="system-settings-field" for="systemDateFormatInput">
+                        Date labels
+                        <select id="systemDateFormatInput">
+                            <option value="weekday">Weekday · 10-Aug (current)</option>
+                            <option value="dmy">DD/MM/YYYY</option>
+                            <option value="mdy">MM/DD/YYYY</option>
+                            <option value="iso">YYYY-MM-DD</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="system-settings-group">
+                    <h4>Notices</h4>
+                    <label class="system-settings-field" for="systemAnnouncementInput">
+                        User-facing announcement
+                        <textarea id="systemAnnouncementInput" maxlength="500" placeholder="Optional announcement shown on admin and user pages"></textarea>
+                    </label>
+                    <label class="system-setting-toggle">
+                        <input id="systemMaintenanceModeInput" type="checkbox" />
+                        <span>Enable user maintenance notice<small>Approved users cannot view rosters while this is enabled; admin access stays available.</small></span>
+                    </label>
+                    <label class="system-settings-field" for="systemMaintenanceMessageInput">
+                        Maintenance message
+                        <textarea id="systemMaintenanceMessageInput" maxlength="500" placeholder="The roster is temporarily unavailable. Please check back soon."></textarea>
+                    </label>
+                </div>
+                <div class="system-settings-actions">
+                    <p id="systemSettingsSaveStatus" role="status" aria-live="polite">Loading saved settings…</p>
+                    <button class="btn-premium" id="saveSystemSettingsBtn" type="submit" disabled>
+                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Save settings
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+    <section class="system-settings-card mt-4" aria-labelledby="notificationSettingsHeading">
+        <h3 id="notificationSettingsHeading">Notification delivery</h3>
+        <p>Choose in-app and email delivery for key account and roster events. Email delivery requires the Firebase Trigger Email extension.</p>
+        <form id="notificationSettingsForm" class="system-settings-form">
+            <div class="notification-event-settings">
+                <div class="notification-event-row"><strong>New access requests</strong><label><input type="checkbox" data-notification-event="newAccessRequest" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="newAccessRequest" data-notification-channel="email" /> Email</label></div>
+                <div class="notification-event-row"><strong>Access approved</strong><label><input type="checkbox" data-notification-event="accessApproved" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="accessApproved" data-notification-channel="email" /> Email</label></div>
+                <div class="notification-event-row"><strong>Access declined</strong><label><input type="checkbox" data-notification-event="accessDeclined" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="accessDeclined" data-notification-channel="email" /> Email</label></div>
+                <div class="notification-event-row"><strong>Access revoked</strong><label><input type="checkbox" data-notification-event="accessRevoked" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="accessRevoked" data-notification-channel="email" /> Email</label></div>
+                <div class="notification-event-row"><strong>Roster published</strong><label><input type="checkbox" data-notification-event="rosterPublished" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="rosterPublished" data-notification-channel="email" /> Email</label></div>
+                <div class="notification-event-row"><strong>Announcement</strong><label><input type="checkbox" data-notification-event="announcement" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="announcement" data-notification-channel="email" /> Email</label></div>
+            </div>
+            <label class="system-settings-field" for="notificationAdminEmailsInput">
+                Administrator email recipients
+                <textarea id="notificationAdminEmailsInput" maxlength="1000" placeholder="admin@example.com, backup@example.com"></textarea>
+            </label>
+            <div class="system-settings-actions">
+                <p id="notificationSettingsStatus" role="status" aria-live="polite">Loading notification settings…</p>
+                <button class="btn-premium" id="saveNotificationSettingsBtn" type="submit" disabled>
+                    <i class="fa-solid fa-bell" aria-hidden="true"></i> Save notification settings
+                </button>
+            </div>
+        </form>
+    </section>
+</section>
 
 <!-- Toast notification -->
 <div id="toast" class="toast-message"><i class="fa-regular fa-circle-check text-emerald-400"></i> <span id="toastMsg">Saved</span></div>
@@ -4229,6 +4706,7 @@
         let availableRelease = null;
         let pendingNotesRelease = null;
         let isVerifiedUser = false;
+        let isRosterAdmin = false;
         let currentUsername = 'there';
         let currentUserId = null;
         let dismissedVersion = null;
@@ -4319,6 +4797,7 @@
         }
 
         function showNotes(release) {
+            if (release.adminOnly && !isRosterAdmin) return;
             document.getElementById('releaseNotesTitle').textContent = 'What’s new';
             document.getElementById('releaseNotesHeading').textContent = release.title || 'The latest improvements are ready.';
             const features = Array.isArray(release.features) ? release.features : [];
@@ -4371,6 +4850,7 @@
                     (release.versionLabel === undefined || typeof release.versionLabel === 'string') &&
                     (release.deployedAt === undefined || typeof release.deployedAt === 'string') &&
                     (release.acceptedByUid === undefined || typeof release.acceptedByUid === 'string') &&
+                    (release.adminOnly === undefined || typeof release.adminOnly === 'boolean') &&
                     (!release.sizeBytes || (Number.isSafeInteger(release.sizeBytes) && release.sizeBytes > 0)) &&
                     (!release.features || (Array.isArray(release.features) &&
                         release.features.every(note => typeof note === 'string'))) &&
@@ -4387,6 +4867,11 @@
 
         async function finishPendingRelease() {
             if (!isVerifiedUser || !pendingNotesRelease) return;
+            if (pendingNotesRelease.adminOnly && !isRosterAdmin) {
+                sessionStorage.removeItem(pendingReleaseKey);
+                pendingNotesRelease = null;
+                return;
+            }
             const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
             if (pendingNotesRelease.version !== currentVersion) {
                 sessionStorage.removeItem(pendingReleaseKey);
@@ -4417,6 +4902,7 @@
         }
 
         function showUpdatePrompt(release) {
+            if (release.adminOnly && !isRosterAdmin) return;
             if (dismissedVersion === release.version ||
                 updateDialog.open) return;
             availableRelease = release;
@@ -4446,11 +4932,13 @@
                     (release.features && (!Array.isArray(release.features) ||
                         release.features.some(note => typeof note !== 'string'))) ||
                     (release.security && (!Array.isArray(release.security) ||
-                        release.security.some(note => typeof note !== 'string')))) {
+                        release.security.some(note => typeof note !== 'string'))) ||
+                    (release.adminOnly !== undefined && typeof release.adminOnly !== 'boolean')) {
                     throw new Error('The update manifest has an invalid format.');
                 }
                 const currentVersion = document.querySelector('meta[name="app-build-version"]').content;
                 if (release.version === currentVersion) return;
+                if (release.adminOnly && !isRosterAdmin) return;
                 if (!deviceInstallationId || !currentUserId) {
                     showUpdatePrompt(release);
                     return;
@@ -4481,7 +4969,8 @@
         }
 
         async function downloadRelease() {
-            if (!availableRelease || !isVerifiedUser) return;
+            if (!availableRelease || !isVerifiedUser ||
+                (availableRelease.adminOnly && !isRosterAdmin)) return;
             const release = availableRelease;
             updateDialog.close();
             document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest version…';
@@ -4502,7 +4991,7 @@
                 if (downloadedVersion !== release.version) {
                     throw new Error('The downloaded page does not match the advertised release version.');
                 }
-                if (!isVerifiedUser) return;
+                if (!isVerifiedUser || (release.adminOnly && !isRosterAdmin)) return;
                 document.getElementById('releaseProgressMessage').textContent = 'Download complete. Applying your update…';
                 document.getElementById('releaseDownloadPercent').textContent = 'Complete';
                 const downloadedBytes = new TextEncoder().encode(downloadedHtml).length;
@@ -4562,7 +5051,7 @@
             } catch (error) {
                 console.error('Could not download the app update:', error);
                 progressDialog.close();
-                if (!isVerifiedUser) return;
+                if (!isVerifiedUser || (release.adminOnly && !isRosterAdmin)) return;
                 document.getElementById('releaseUpdateError').textContent = 'The update could not be applied. Check your connection and try again.';
                 document.getElementById('releaseUpdateError').hidden = false;
                 updateDialog.showModal();
@@ -4583,6 +5072,7 @@
         progressDialog.addEventListener('cancel', event => event.preventDefault());
         window.addEventListener('roster-auth-status', event => {
             isVerifiedUser = event.detail && event.detail.emailVerified === true;
+            isRosterAdmin = isVerifiedUser && event.detail.isAdmin === true;
             const nextUserId = isVerifiedUser ? event.detail.uid : null;
             if (nextUserId !== currentUserId) {
                 acceptedVersionCache = null;
@@ -4590,11 +5080,20 @@
                 dismissedVersion = null;
             }
             currentUserId = nextUserId;
+            if (!isRosterAdmin) {
+                if (updateDialog.open && availableRelease && availableRelease.adminOnly) updateDialog.close();
+                if (progressDialog.open && availableRelease && availableRelease.adminOnly) progressDialog.close();
+                if (availableRelease && availableRelease.adminOnly) availableRelease = null;
+            }
             if (isVerifiedUser) {
                 currentUsername = event.detail.username || 'there';
                 finishPendingRelease();
                 checkForRelease();
                 return;
+            }
+            if (updateDialog.open && availableRelease && availableRelease.adminOnly) {
+                updateDialog.close();
+                availableRelease = null;
             }
             availableRelease = null;
             dismissedVersion = null;
@@ -4654,6 +5153,11 @@
         reference: firestore.collection('rosters').doc(table.documentId)
     }));
     const legacyRosterDocument = firestore.collection('rosters').doc('main');
+    const rosterDraftReference = firestore.collection('rosterDrafts').doc('current');
+    const rosterHistoryCollection = firestore.collection('rosterHistory');
+    const systemSettingsReference = firestore.collection('systemSettings').doc('current');
+    const rosterPublishesCollection = firestore.collection('rosterPublishes');
+    const adminNotificationSettingsReference = firestore.collection('notificationSettings').doc('admin');
 
     (function() {
         // ---- PREMIUM FEATURES: undo/redo, row management, manual save ----
@@ -4667,6 +5171,29 @@
         const orderedRowTemplates = new Map();
         let historyTimer = null;
         let pendingConfirmation = null;
+        let currentDraftExists = false;
+        let currentDraftSavedAt = null;
+        let draftHasUnsavedChanges = false;
+        let isPreviewMode = false;
+        let archivedRosters = [];
+        let historyDocumentCount = 0;
+        const defaultSystemSettings = {
+            announcement: '',
+            signupsEnabled: true,
+            publishedRosterVisible: true,
+            locations: { island: true, mainland: true },
+            dateFormat: 'weekday',
+            maintenanceMode: false,
+            maintenanceMessage: ''
+        };
+        let currentSystemSettings = { ...defaultSystemSettings, locations: { ...defaultSystemSettings.locations } };
+        let systemSettingsLoaded = false;
+        let systemSettingsError = null;
+        let systemSettingsFormDirty = false;
+        let resolveSystemSettingsReady;
+        const systemSettingsReady = new Promise(resolve => { resolveSystemSettingsReady = resolve; });
+        let notificationUnsubscribe = null;
+        let notificationSettingsLoading = false;
 
         const confirmationThemes = {
             danger: { color: '#dc2626', soft: '#fef2f2', border: '#fecaca', shadow: 'rgba(220,38,38,0.2)' },
@@ -4723,6 +5250,8 @@
                         event.preventDefault();
                         (document.activeElement === cancelButton ? confirmButton : cancelButton).focus();
                     }
+
+
                 };
 
                 pendingConfirmation = finish;
@@ -4732,6 +5261,361 @@
                 document.addEventListener('keydown', onKeydown);
                 cancelButton.focus();
             });
+        }
+
+        function normalizeSystemSettings(data = {}) {
+            const locations = data.locations && typeof data.locations === 'object' ? data.locations : {};
+            return {
+                announcement: typeof data.announcement === 'string' ? data.announcement.slice(0, 500) : '',
+                signupsEnabled: data.signupsEnabled !== false,
+                publishedRosterVisible: data.publishedRosterVisible !== false,
+                locations: {
+                    island: locations.island !== false,
+                    mainland: locations.mainland !== false
+                },
+                dateFormat: ['weekday', 'dmy', 'mdy', 'iso'].includes(data.dateFormat)
+                    ? data.dateFormat
+                    : 'weekday',
+                maintenanceMode: data.maintenanceMode === true,
+                maintenanceMessage: typeof data.maintenanceMessage === 'string'
+                    ? data.maintenanceMessage.slice(0, 500)
+                    : ''
+            };
+        }
+
+        function setSystemSettingsStatus(message, kind = '') {
+            const status = document.getElementById('systemSettingsSaveStatus');
+            if (!status) return;
+            status.textContent = message;
+            status.dataset.kind = kind;
+        }
+
+        function applySystemSettingsToForm() {
+            if (systemSettingsFormDirty) return;
+            document.getElementById('systemAnnouncementInput').value = currentSystemSettings.announcement;
+            document.getElementById('systemSignupEnabledInput').checked = currentSystemSettings.signupsEnabled;
+            document.getElementById('systemRosterVisibleInput').checked = currentSystemSettings.publishedRosterVisible;
+            document.getElementById('systemIslandVisibleInput').checked = currentSystemSettings.locations.island;
+            document.getElementById('systemMainlandVisibleInput').checked = currentSystemSettings.locations.mainland;
+            document.getElementById('systemDateFormatInput').value = currentSystemSettings.dateFormat;
+            document.getElementById('systemMaintenanceModeInput').checked = currentSystemSettings.maintenanceMode;
+            document.getElementById('systemMaintenanceMessageInput').value = currentSystemSettings.maintenanceMessage;
+        }
+
+        function isViewerRosterUnavailable() {
+            return currentRosterUserIsAdmin === false && (
+                systemSettingsError ||
+                currentSystemSettings.maintenanceMode ||
+                !currentSystemSettings.publishedRosterVisible ||
+                (!currentSystemSettings.locations.island && !currentSystemSettings.locations.mainland)
+            );
+        }
+
+        function applySystemSettings() {
+            const signupTab = document.getElementById('signUpTab');
+            signupTab.disabled = !systemSettingsLoaded || Boolean(systemSettingsError) || !currentSystemSettings.signupsEnabled;
+            signupTab.title = !systemSettingsLoaded
+                ? 'Checking signup availability…'
+                : systemSettingsError
+                    ? 'Signup availability could not be checked.'
+                    : currentSystemSettings.signupsEnabled
+                        ? ''
+                        : 'New account signups are paused.';
+            if (!currentSystemSettings.signupsEnabled &&
+                !document.getElementById('authGate').hidden &&
+                !document.getElementById('authForms').hidden) {
+                setAuthMessage('New account signups are paused by the administrator.');
+            }
+            if (!currentSystemSettings.signupsEnabled &&
+                !document.getElementById('signUpForm').hidden) {
+                showAuthForm('signIn');
+                setAuthMessage('New account signups are paused by the administrator.');
+            }
+
+            const announcement = document.getElementById('systemAnnouncementBanner');
+            announcement.textContent = currentSystemSettings.announcement;
+            announcement.hidden = !currentSystemSettings.announcement;
+
+            const app = document.getElementById('rosterApp');
+            const isViewer = app.classList.contains('is-approved-viewer');
+            const islandSection = document.getElementById('island-table').closest('section');
+            const mainlandSection = document.getElementById('mainland-table').closest('section');
+            if (islandSection) islandSection.hidden = isViewer && !currentSystemSettings.locations.island;
+            if (mainlandSection) mainlandSection.hidden = isViewer && !currentSystemSettings.locations.mainland;
+
+            const unavailable = document.getElementById('userRosterUnavailable');
+            const shouldBlockRoster = isViewer && isViewerRosterUnavailable();
+            unavailable.hidden = !shouldBlockRoster;
+            document.getElementById('rosterEditorPane').hidden = shouldBlockRoster ||
+                document.getElementById('rosterHistoryPane').hidden === false ||
+                document.getElementById('rosterSettingsPane').hidden === false;
+            if (shouldBlockRoster) {
+                const title = document.getElementById('userRosterUnavailableTitle');
+                const message = document.getElementById('userRosterUnavailableMessage');
+                if (systemSettingsError) {
+                    title.textContent = 'Settings unavailable';
+                    message.textContent = 'The roster cannot be shown until system settings can be checked. Refresh the page to try again.';
+                } else if (currentSystemSettings.maintenanceMode) {
+                    title.textContent = 'Maintenance in progress';
+                    message.textContent = currentSystemSettings.maintenanceMessage ||
+                        'The roster is temporarily unavailable. Please check back soon.';
+                } else if (!currentSystemSettings.publishedRosterVisible) {
+                    title.textContent = 'Roster temporarily unavailable';
+                    message.textContent = 'The administrator has temporarily hidden the published roster.';
+                } else {
+                    title.textContent = 'No rosters are available';
+                    message.textContent = 'The administrator has temporarily hidden all roster locations.';
+                }
+            }
+            applySystemSettingsToForm();
+            if (systemSettingsLoaded && isRosterAdmin(auth.currentUser)) {
+                document.getElementById('saveSystemSettingsBtn').disabled = false;
+            }
+            updateAllDates();
+        }
+
+        function startSystemSettingsListener() {
+            systemSettingsReference.onSnapshot(snapshot => {
+                const app = document.getElementById('rosterApp');
+                const previousSettings = currentSystemSettings;
+                const viewerWasBlocked = app.classList.contains('is-approved-viewer') &&
+                    isViewerRosterUnavailable();
+                currentSystemSettings = normalizeSystemSettings(snapshot.exists ? snapshot.data() : {});
+                systemSettingsLoaded = true;
+                systemSettingsError = null;
+                const isViewer = app.classList.contains('is-approved-viewer');
+                const viewerIsBlocked = isViewerRosterUnavailable();
+                if (isViewer && viewerIsBlocked) {
+                    clearDemoRosterData();
+                } else if (isViewer) {
+                    if (previousSettings.locations.island && !currentSystemSettings.locations.island) {
+                        clearRosterTableData('island-table');
+                    }
+                    if (previousSettings.locations.mainland && !currentSystemSettings.locations.mainland) {
+                        clearRosterTableData('mainland-table');
+                    }
+                }
+                applySystemSettings();
+                setSystemSettingsStatus(snapshot.exists ? 'Settings synced with the system.' : 'Default settings loaded. Save to publish them.', 'success');
+                resolveSystemSettingsReady();
+                const locationBecameVisible =
+                    (!previousSettings.locations.island && currentSystemSettings.locations.island) ||
+                    (!previousSettings.locations.mainland && currentSystemSettings.locations.mainland);
+                if (isViewer && (viewerWasBlocked || locationBecameVisible) &&
+                    !isViewerRosterUnavailable() && auth.currentUser) {
+                    showLoadingScreen('Loading your roster…');
+                    loadRostersFromFirestore(auth.currentUser.uid, true);
+                }
+            }, error => {
+                console.error('Could not load shared system settings:', error);
+                systemSettingsError = error;
+                systemSettingsLoaded = false;
+                applySystemSettings();
+                setSystemSettingsStatus('Could not load settings. Check the connection and Firestore permissions.', 'error');
+                resolveSystemSettingsReady();
+            });
+        }
+
+        async function saveSystemSettings(event) {
+            event.preventDefault();
+            if (!isRosterAdmin(auth.currentUser) || !systemSettingsLoaded || systemSettingsError) return;
+            const saveButton = document.getElementById('saveSystemSettingsBtn');
+            const nextSettings = normalizeSystemSettings({
+                announcement: document.getElementById('systemAnnouncementInput').value.trim(),
+                signupsEnabled: document.getElementById('systemSignupEnabledInput').checked,
+                publishedRosterVisible: document.getElementById('systemRosterVisibleInput').checked,
+                locations: {
+                    island: document.getElementById('systemIslandVisibleInput').checked,
+                    mainland: document.getElementById('systemMainlandVisibleInput').checked
+                },
+                dateFormat: document.getElementById('systemDateFormatInput').value,
+                maintenanceMode: document.getElementById('systemMaintenanceModeInput').checked,
+                maintenanceMessage: document.getElementById('systemMaintenanceMessageInput').value.trim()
+            });
+            saveButton.disabled = true;
+            saveButton.setAttribute('aria-busy', 'true');
+            setSystemSettingsStatus('Saving system settings…');
+            try {
+                await systemSettingsReference.set({
+                    ...nextSettings,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: auth.currentUser.uid
+                });
+                currentSystemSettings = nextSettings;
+                systemSettingsFormDirty = false;
+                applySystemSettings();
+                setSystemSettingsStatus('Settings saved and applied across the system.', 'success');
+                showToast('System settings saved');
+            } catch (error) {
+                console.error('Failed to save shared system settings:', error);
+                setSystemSettingsStatus('Could not save settings. Check your connection and Firestore permissions, then try again.', 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.removeAttribute('aria-busy');
+            }
+        }
+
+        function setNotificationsPanelOpen(open) {
+            const panel = document.getElementById('userNotificationPanel');
+            panel.hidden = !open;
+            ['viewerNotificationsBtn', 'adminNotificationsBtn'].forEach(id => {
+                const button = document.getElementById(id);
+                button.setAttribute('aria-expanded', String(open));
+            });
+        }
+
+        function updateNotificationCount(unreadCount) {
+            ['viewerNotificationsBtn', 'adminNotificationsBtn'].forEach(id => {
+                const button = document.getElementById(id);
+                const count = button.querySelector('.notification-count');
+                count.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+                count.hidden = unreadCount === 0;
+            });
+        }
+
+        function renderNotifications(snapshot) {
+            const list = document.getElementById('userNotificationList');
+            const status = document.getElementById('notificationListStatus');
+            list.replaceChildren();
+            const unreadCount = snapshot.docs.filter(document => document.data().read !== true).length;
+            updateNotificationCount(unreadCount);
+            if (snapshot.empty) {
+                status.textContent = 'You have no notifications.';
+                return;
+            }
+            status.textContent = unreadCount
+                ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}.`
+                : 'You are all caught up.';
+
+            snapshot.docs.forEach(record => {
+                const data = record.data();
+                const item = document.createElement('li');
+                item.className = 'notification-item';
+                item.dataset.read = String(data.read === true);
+                const content = document.createElement('div');
+                const title = document.createElement('strong');
+                title.textContent = typeof data.title === 'string' ? data.title : 'Notification';
+                const body = document.createElement('p');
+                body.textContent = typeof data.body === 'string' ? data.body : '';
+                content.append(title, body);
+                const createdAt = data.createdAt && typeof data.createdAt.toDate === 'function'
+                    ? data.createdAt.toDate()
+                    : null;
+                if (createdAt) {
+                    const time = document.createElement('time');
+                    time.dateTime = createdAt.toISOString();
+                    time.textContent = createdAt.toLocaleString();
+                    content.append(time);
+                }
+                item.append(content);
+                if (data.read !== true) {
+                    const markRead = document.createElement('button');
+                    markRead.type = 'button';
+                    markRead.className = 'btn-premium btn-premium-outline';
+                    markRead.textContent = 'Mark read';
+                    markRead.addEventListener('click', async () => {
+                        markRead.disabled = true;
+                        try {
+                            await record.ref.update({
+                                read: true
+                            });
+                        } catch (error) {
+                            console.error('Could not mark notification as read:', error);
+                            markRead.disabled = false;
+                            status.textContent = 'Could not update this notification. Please retry.';
+                        }
+                    });
+                    item.append(markRead);
+                }
+                list.append(item);
+            });
+        }
+
+        function startNotificationListener(user) {
+            if (notificationUnsubscribe) notificationUnsubscribe();
+            notificationUnsubscribe = null;
+            updateNotificationCount(0);
+            if (!user || !user.emailVerified) return;
+            notificationUnsubscribe = firestore.collection('userNotifications')
+                .doc(user.uid)
+                .collection('items')
+                .orderBy('createdAt', 'desc')
+                .limit(25)
+                .onSnapshot(renderNotifications, error => {
+                    console.error('Could not load user notifications:', error);
+                    document.getElementById('notificationListStatus').textContent =
+                        'Notifications could not be loaded. Check Firestore permissions and retry.';
+                });
+        }
+
+        async function loadNotificationSettings() {
+            if (!isRosterAdmin(auth.currentUser) || notificationSettingsLoading) return;
+            notificationSettingsLoading = true;
+            const status = document.getElementById('notificationSettingsStatus');
+            const saveButton = document.getElementById('saveNotificationSettingsBtn');
+            status.textContent = 'Loading notification settings…';
+            try {
+                const snapshot = await adminNotificationSettingsReference.get({ source: 'server' });
+                const settings = snapshot.exists ? snapshot.data() : {};
+                document.getElementById('notificationAdminEmailsInput').value =
+                    Array.isArray(settings.adminEmails) ? settings.adminEmails.join(', ') : '';
+                document.querySelectorAll('[data-notification-event]').forEach(input => {
+                    const channel = settings.events && settings.events[input.dataset.notificationEvent];
+                    input.checked = channel && typeof channel[input.dataset.notificationChannel] === 'boolean'
+                        ? channel[input.dataset.notificationChannel]
+                        : input.dataset.notificationChannel === 'inApp';
+                });
+                status.textContent = snapshot.exists
+                    ? 'Notification settings loaded.'
+                    : 'Default in-app notifications are enabled. Add admin email recipients if needed.';
+                saveButton.disabled = false;
+            } catch (error) {
+                console.error('Could not load private notification settings:', error);
+                status.textContent = 'Could not load notification settings. Check the current Firestore rules.';
+                saveButton.disabled = true;
+            } finally {
+                notificationSettingsLoading = false;
+            }
+        }
+
+        async function saveNotificationSettings(event) {
+            event.preventDefault();
+            if (!isRosterAdmin(auth.currentUser)) return;
+            const status = document.getElementById('notificationSettingsStatus');
+            const saveButton = document.getElementById('saveNotificationSettingsBtn');
+            const adminEmails = [...new Set(
+                document.getElementById('notificationAdminEmailsInput').value
+                    .split(/[,\s]+/)
+                    .map(value => value.trim().toLowerCase())
+                    .filter(Boolean)
+            )];
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (adminEmails.length > 10 || adminEmails.some(email => !emailPattern.test(email))) {
+                status.textContent = 'Enter up to 10 valid administrator email addresses.';
+                return;
+            }
+            const events = {};
+            document.querySelectorAll('[data-notification-event]').forEach(input => {
+                const eventName = input.dataset.notificationEvent;
+                events[eventName] = events[eventName] || { inApp: false, email: false };
+                events[eventName][input.dataset.notificationChannel] = input.checked;
+            });
+            saveButton.disabled = true;
+            status.textContent = 'Saving notification settings…';
+            try {
+                await adminNotificationSettingsReference.set({
+                    adminEmails,
+                    events,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: auth.currentUser.uid
+                });
+                status.textContent = 'Notification settings saved.';
+            } catch (error) {
+                console.error('Could not save private notification settings:', error);
+                status.textContent = 'Could not save notification settings. Check the current Firestore rules.';
+            } finally {
+                saveButton.disabled = false;
+            }
         }
 
         function updateHistoryButtons() {
@@ -4949,10 +5833,14 @@
                     if (!tbody) throw new Error(`Roster table has no body: ${id}`);
                     return {
                         tableId: id,
-                        dates: Array.from(table.querySelectorAll('.date-editable, .date-auto'), element => ({
-                            day: Number(element.closest('[data-day]')?.getAttribute('data-day')),
-                            value: element.textContent || ''
-                        })),
+                        dates: Array.from(table.querySelectorAll('.date-editable, .date-auto'), element => {
+                            const parsedDate = parseRosterDate(element.textContent || '');
+                            return {
+                                day: Number(element.closest('[data-day]')?.getAttribute('data-day')),
+                                value: element.textContent || '',
+                                isoDate: element.dataset.isoDate || (parsedDate ? dateISO(parsedDate) : '')
+                            };
+                        }),
                         rows: Array.from(tbody.rows, (row, position) => ({
                             id: row.dataset.rosterRowId || `fixed:${id}:${row.className}:${position}`,
                             className: row.className,
@@ -5030,6 +5918,7 @@
             if (historyIndex > 0) {
                 historyIndex--;
                 restoreState(history[historyIndex]);
+                markDraftDirty();
             } else {
                 showToast('Nothing to undo');
             }
@@ -5042,6 +5931,7 @@
             if (historyIndex < history.length - 1) {
                 historyIndex++;
                 restoreState(history[historyIndex]);
+                markDraftDirty();
             } else {
                 showToast('Nothing to redo');
             }
@@ -5149,6 +6039,372 @@
             }
         }
 
+        function setDraftStatus(label, detail) {
+            const state = document.getElementById('rosterDraftState');
+            const live = document.getElementById('rosterLiveState');
+            if (state) state.textContent = label;
+            if (live) live.textContent = detail;
+        }
+
+        function markDraftDirty() {
+            if (!canManageRoster() || isPreviewMode || document.getElementById('rosterEditorPane').hidden) return;
+            draftHasUnsavedChanges = true;
+            setDraftStatus('Draft changes not saved', 'Save Draft to keep these private edits. The live roster is unchanged.');
+            setFirestoreLoading(false, true);
+        }
+
+        function dateISO(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function getWeekRange(data) {
+            const mondayDateRecord = data && Array.isArray(data.tables) &&
+                data.tables[0] && Array.isArray(data.tables[0].dates) &&
+                data.tables[0].dates.find(date => date.day === 0);
+            let mondayLabel = mondayDateRecord && mondayDateRecord.value;
+            if (!mondayLabel && Array.isArray(data)) {
+                mondayLabel = data.find(item =>
+                    item && typeof item.selector === 'string' &&
+                    /\.date-editable\[data-date=/.test(item.selector)
+                )?.text;
+            }
+            const isoMatch = mondayDateRecord && typeof mondayDateRecord.isoDate === 'string' &&
+                mondayDateRecord.isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            let monday = null;
+            if (isoMatch) {
+                const candidate = new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+                if (candidate.getFullYear() === Number(isoMatch[1]) &&
+                    candidate.getMonth() === Number(isoMatch[2]) - 1 &&
+                    candidate.getDate() === Number(isoMatch[3])) monday = candidate;
+            }
+            if (!monday) {
+                const match = typeof mondayLabel === 'string' &&
+                    mondayLabel.match(/(\d{1,2})-([A-Za-z]{3})(?:-?(\d{4}))?/);
+                if (!match) throw new Error('The Monday date in this roster could not be read.');
+                const monthIndex = monthNames.findIndex(name => name.toLowerCase() === match[2].toLowerCase());
+                if (monthIndex < 0) throw new Error('The Monday date in this roster is invalid.');
+                const day = Number(match[1]);
+                const today = new Date();
+                const years = match[3]
+                    ? [Number(match[3])]
+                    : Array.from({ length: 9 }, (_, index) => today.getFullYear() + index - 4);
+                const candidates = years.map(year => new Date(year, monthIndex, day))
+                    .filter(candidate => candidate.getMonth() === monthIndex && candidate.getDate() === day);
+                if (!candidates.length) throw new Error('The Monday date in this roster is invalid.');
+                monday = candidates.reduce((closest, candidate) =>
+                    Math.abs(candidate.getTime() - today.getTime()) < Math.abs(closest.getTime() - today.getTime())
+                        ? candidate : closest);
+            }
+            const dayOffset = monday.getDay() === 0 ? -6 : 1 - monday.getDay();
+            monday.setDate(monday.getDate() + dayOffset);
+            monday.setHours(0, 0, 0, 0);
+            const sunday = new Date(monday);
+            sunday.setDate(sunday.getDate() + 6);
+            return {
+                weekStart: dateISO(monday),
+                weekEnd: dateISO(sunday),
+                weekLabel: `${new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' }).format(monday)} – ${new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' }).format(sunday)}`
+            };
+        }
+
+        async function saveRosterDraft() {
+            if (!canManageRoster() || isPreviewMode) return;
+            const data = captureState();
+            if (!isBackupData(data)) {
+                showToast('Draft failed validation');
+                return;
+            }
+            const savedAt = Date.now();
+            try {
+                await rosterDraftReference.set({
+                    schemaVersion: 2,
+                    savedAt,
+                    savedBy: auth.currentUser.uid,
+                    data
+                });
+                currentDraftExists = true;
+                currentDraftSavedAt = savedAt;
+                draftHasUnsavedChanges = false;
+                setDraftStatus('Draft saved', `Saved privately ${new Date(savedAt).toLocaleString()}. Live roster is unchanged.`);
+                showToast('Draft saved privately');
+                setFirestoreLoading(false, true);
+            } catch (error) {
+                console.error('Failed to save roster draft:', error);
+                showToast(error.code === 'permission-denied'
+                    ? 'Firestore denied draft saving. Deploy the current Firestore rules.'
+                    : `Draft save failed: ${error.message || 'check the connection'}`);
+            }
+        }
+
+        async function getCurrentLiveRoster() {
+            const snapshots = await Promise.all(rosterDocuments.map(table => table.reference.get({ source: 'server' })));
+            const existing = snapshots.filter(snapshot => snapshot.exists);
+            if (!existing.length) {
+                const legacySnapshot = await legacyRosterDocument.get({ source: 'server' });
+                if (!legacySnapshot.exists) return null;
+                const legacyData = legacySnapshot.data().data;
+                if (!isBackupData(legacyData)) throw new Error('The current live roster has invalid data and cannot be archived.');
+                return legacyData;
+            }
+            if (existing.length !== rosterDocuments.length) {
+                throw new Error('A location roster is missing from the live roster. Publishing was cancelled to prevent an incomplete archive.');
+            }
+            const tables = snapshots.map((snapshot, index) => {
+                const table = rosterDocuments[index];
+                const saved = snapshot.data();
+                if (!saved || !isBackupData(saved.data, table.tableId)) {
+                    throw new Error(`The current ${table.name} live roster is invalid and cannot be archived.`);
+                }
+                return saved.data.tables[0];
+            });
+            const data = { schemaVersion: 2, tables };
+            if (!isBackupData(data)) throw new Error('The complete live roster failed archive validation.');
+            return data;
+        }
+
+        async function publishRoster() {
+            if (!canManageRoster() || isPreviewMode) return;
+            if (!currentDraftExists || draftHasUnsavedChanges) {
+                showToast('Save the current draft before publishing');
+                return;
+            }
+            const data = captureState();
+            if (!isBackupData(data)) {
+                showToast('Roster failed validation; it was not published');
+                return;
+            }
+            let range;
+            try {
+                range = getWeekRange(data);
+            } catch (error) {
+                showToast(error.message || 'The roster week date is invalid');
+                return;
+            }
+            const confirmed = await confirmAction({
+                title: 'Publish this roster?',
+                message: `This makes the ${range.weekLabel} roster live. The roster it replaces will be saved in admin-only history first.`,
+                confirmLabel: 'Publish roster',
+                icon: 'fa-solid fa-paper-plane',
+                theme: 'info'
+            });
+            if (!confirmed || !canManageRoster()) return;
+
+            try {
+                const draftSnapshot = await rosterDraftReference.get({ source: 'server' });
+                if (!draftSnapshot.exists ||
+                    !Number.isFinite(currentDraftSavedAt) ||
+                    Number(draftSnapshot.data().savedAt) !== currentDraftSavedAt) {
+                    throw new Error('The saved draft changed after it was loaded. Reload or save the draft before publishing.');
+                }
+                const previousRoster = await getCurrentLiveRoster();
+                const batch = firestore.batch();
+                const publishedAt = Date.now();
+                if (previousRoster) {
+                    const previousRange = getWeekRange(previousRoster);
+                    batch.set(rosterHistoryCollection.doc(), {
+                        schemaVersion: 2,
+                        weekStart: previousRange.weekStart,
+                        weekEnd: previousRange.weekEnd,
+                        weekLabel: previousRange.weekLabel,
+                        archivedAt: publishedAt,
+                        data: previousRoster
+                    });
+                }
+                rosterDocuments.forEach(table => {
+                    const tableData = {
+                        schemaVersion: 2,
+                        tables: data.tables.filter(snapshot => snapshot.tableId === table.tableId)
+                    };
+                    if (!isBackupData(tableData, table.tableId)) {
+                        throw new Error(`The ${table.name} roster snapshot failed validation.`);
+                    }
+                    batch.set(table.reference, {
+                        location: table.name,
+                        tableId: table.tableId,
+                        schemaVersion: 2,
+                        savedAt: publishedAt,
+                        data: tableData
+                    });
+                });
+                batch.set(rosterPublishesCollection.doc(), {
+                    weekLabel: range.weekLabel,
+                    publishedAt,
+                    publishedBy: auth.currentUser.uid
+                });
+                batch.delete(rosterDraftReference);
+                await batch.commit();
+                currentDraftExists = false;
+                currentDraftSavedAt = null;
+                draftHasUnsavedChanges = false;
+                setDraftStatus('Live roster published', `${range.weekLabel} is now live. Further edits remain private until published.`);
+                showToast(previousRoster ? 'Roster published and previous week archived' : 'Roster published. History starts when this roster is replaced.');
+                await loadArchivedRosters();
+                setFirestoreLoading(false, true);
+            } catch (error) {
+                console.error('Failed to publish roster:', error);
+                showToast(error.code === 'permission-denied'
+                    ? 'Firestore denied publishing or archiving. Deploy the current Firestore rules.'
+                    : `Roster publish failed: ${error.message || 'check the connection'}`);
+            }
+        }
+
+        let historyLoadGeneration = 0;
+
+        function renderHistoryList() {
+            const list = document.getElementById('rosterHistoryList');
+            const status = document.getElementById('historyStatus');
+            if (!list || !status) return;
+            const from = document.getElementById('historyFromDate').value;
+            const through = document.getElementById('historyThroughDate').value;
+            const preview = document.getElementById('historyRosterPreview');
+            if (from && through && from > through) {
+                list.replaceChildren();
+                preview.replaceChildren();
+                status.textContent = 'The start date must be on or before the end date.';
+                status.hidden = false;
+                return;
+            }
+
+            const filtered = archivedRosters.filter(roster =>
+                (!from || roster.weekEnd >= from) && (!through || roster.weekStart <= through));
+            list.replaceChildren();
+            preview.replaceChildren();
+            if (!filtered.length) {
+                status.textContent = archivedRosters.length
+                    ? 'No archived rosters overlap the selected date range.'
+                    : (historyDocumentCount
+                        ? `Firestore returned ${historyDocumentCount} history document${historyDocumentCount === 1 ? '' : 's'}, but none use a supported archive format.`
+                        : 'No previous roster has been archived yet. A roster is added here when a later publish replaces it.');
+                status.hidden = false;
+                return;
+            }
+
+            status.textContent = `${filtered.length} archived roster${filtered.length === 1 ? '' : 's'} found. Select a week to view it.`;
+            status.hidden = false;
+            filtered.forEach(roster => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'roster-history-item';
+                button.dataset.historyId = roster.id;
+                button.setAttribute('aria-pressed', 'false');
+                const week = document.createElement('strong');
+                week.textContent = roster.weekLabel;
+                const archived = document.createElement('span');
+                archived.className = 'text-xs text-slate-500';
+                archived.textContent = `Archived ${new Date(roster.archivedAt).toLocaleString()}`;
+                button.append(week, archived);
+                button.addEventListener('click', () => showArchivedRoster(roster));
+                list.appendChild(button);
+            });
+        }
+
+        async function loadArchivedRosters() {
+            if (!canManageRoster()) return;
+            const status = document.getElementById('historyStatus');
+            if (!status) return;
+            const generation = ++historyLoadGeneration;
+            archivedRosters = [];
+            historyDocumentCount = 0;
+            document.getElementById('rosterHistoryList').replaceChildren();
+            document.getElementById('historyRosterPreview').replaceChildren();
+            status.textContent = 'Fetching published weeks from Firestore…';
+            status.hidden = false;
+            document.getElementById('retryHistoryBtn').hidden = true;
+            try {
+                const snapshot = await rosterHistoryCollection.get({ source: 'server' });
+                if (generation !== historyLoadGeneration || !canManageRoster()) return;
+                historyDocumentCount = snapshot.size;
+                archivedRosters = snapshot.docs.map(document => ({
+                    id: document.id,
+                    ...document.data()
+                })).filter(roster =>
+                    roster.schemaVersion === 2 &&
+                    typeof roster.weekStart === 'string' &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(roster.weekStart) &&
+                    typeof roster.weekEnd === 'string' &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(roster.weekEnd) &&
+                    typeof roster.weekLabel === 'string' &&
+                    Number.isFinite(roster.archivedAt) &&
+                    isBackupData(roster.data)
+                ).sort((left, right) =>
+                    right.weekStart.localeCompare(left.weekStart) || right.archivedAt - left.archivedAt);
+                renderHistoryList();
+            } catch (error) {
+                if (generation !== historyLoadGeneration) return;
+                console.error('Failed to fetch published roster history from Firestore:', error);
+                document.getElementById('rosterHistoryList').replaceChildren();
+                document.getElementById('historyRosterPreview').replaceChildren();
+                status.textContent = error.code === 'permission-denied'
+                    ? 'Firestore denied history access. Deploy firestore.rules with admin list access for rosterHistory, then retry.'
+                    : `Could not fetch published weeks from Firestore: ${error.message || 'check the connection and retry'}`;
+                status.hidden = false;
+                document.getElementById('retryHistoryBtn').hidden = false;
+            }
+        }
+
+        function showArchivedRoster(roster) {
+            if (!canManageRoster() || !isBackupData(roster.data)) return;
+            const editorData = captureState();
+            const preview = document.getElementById('historyRosterPreview');
+            const status = document.getElementById('historyStatus');
+            try {
+                if (!applySnapshotData(roster.data)) throw new Error('The selected archived roster could not be displayed.');
+                const locations = rosterTables.map(table => {
+                    const source = document.getElementById(table.tableId);
+                    const section = source.closest('section');
+                    if (!section) throw new Error(`The ${table.name} roster section could not be found.`);
+                    const copy = section.cloneNode(true);
+                    copy.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+                    copy.querySelectorAll('[contenteditable]').forEach(element => element.removeAttribute('contenteditable'));
+                    return copy;
+                });
+                preview.replaceChildren(...locations);
+                const heading = document.createElement('h3');
+                heading.className = 'text-lg font-header font-extrabold text-slate-800';
+                heading.textContent = `${roster.weekLabel} · archived roster`;
+                preview.prepend(heading);
+                document.querySelectorAll('.roster-history-item').forEach(button => {
+                    button.setAttribute('aria-pressed', String(button.dataset.historyId === roster.id));
+                });
+            } catch (error) {
+                console.error('Failed to render archived roster:', error);
+                status.textContent = `Could not display this archived roster: ${error.message}`;
+                status.hidden = false;
+            } finally {
+                if (!applySnapshotData(editorData)) {
+                    console.error('Failed to restore the current editor state after history preview.');
+                    showToast('Could not restore the current editor view');
+                }
+                setFirestoreLoading(false, true);
+            }
+        }
+
+        function showRosterPane(pane) {
+            const allowed = canManageRoster();
+            const activePane = allowed && ['history', 'access'].includes(pane) ? pane : 'editor';
+            const showingHistory = activePane === 'history';
+            const showingAccess = activePane === 'access';
+            document.getElementById('rosterHistoryPane').hidden = !showingHistory;
+            document.getElementById('rosterSettingsPane').hidden = !showingAccess;
+            document.getElementById('rosterEditorPane').hidden = showingHistory || showingAccess;
+            [
+                ['editorTabBtn', activePane === 'editor'],
+                ['historyTabBtn', showingHistory],
+                ['manageAccountsTabBtn', showingAccess]
+            ].forEach(([id, selected]) => {
+                const button = document.getElementById(id);
+                button.setAttribute('aria-pressed', String(selected));
+                button.classList.toggle('btn-premium-outline', !selected);
+            });
+            setFirestoreLoading(false, true);
+            if (showingHistory) loadArchivedRosters();
+            if (showingAccess) {
+                loadAccessRequests();
+                applySystemSettingsToForm();
+                loadNotificationSettings();
+            }
+        }
+
         function getSnapshots() {
             try {
                 const raw = localStorage.getItem(SNAPSHOT_KEY);
@@ -5219,7 +6475,9 @@
                 const days = new Set();
                 const validDates = snapshot.dates.every(date => {
                     if (!date || !Number.isInteger(date.day) || date.day < 0 || date.day > 6 ||
-                        days.has(date.day) || !isSafeText(date.value)) return false;
+                        days.has(date.day) || !isSafeText(date.value) ||
+                        (date.isoDate !== undefined && date.isoDate !== '' &&
+                            (typeof date.isoDate !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date.isoDate)))) return false;
                     days.add(date.day);
                     return true;
                 });
@@ -5334,8 +6592,16 @@
                     snapshot.dates.forEach(date => {
                         const element = Array.from(table.querySelectorAll('.date-editable, .date-auto'))
                             .find(candidate => Number(candidate.closest('[data-day]')?.getAttribute('data-day')) === date.day);
-                        if (element) element.textContent = date.value;
+                        if (element) {
+                            element.textContent = date.value;
+                            if (/^\d{4}-\d{2}-\d{2}$/.test(date.isoDate || '')) {
+                                element.dataset.isoDate = date.isoDate;
+                            } else {
+                                delete element.dataset.isoDate;
+                            }
+                        }
                     });
+                    updateAllDates(table.id);
                 });
                 updateRowOptions();
                 return true;
@@ -5375,16 +6641,19 @@
             return true;
         }
 
+        function clearRosterTableData(tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            table.querySelectorAll('.editable-name, .editable-cell, .date-editable, .date-auto')
+                .forEach(element => {
+                    element.textContent = '';
+                    delete element.dataset.isoDate;
+                });
+            table.querySelectorAll('tbody tr.day-row-hover').forEach(row => row.remove());
+        }
+
         function clearDemoRosterData() {
-            rosterTables.forEach(({ tableId }) => {
-                const table = document.getElementById(tableId);
-                if (!table) return;
-                table.querySelectorAll('.editable-name, .editable-cell, .date-editable, .date-auto')
-                    .forEach(element => {
-                        element.textContent = '';
-                    });
-                table.querySelectorAll('tbody tr.day-row-hover').forEach(row => row.remove());
-            });
+            rosterTables.forEach(({ tableId }) => clearRosterTableData(tableId));
         }
 
         function watchRosterAccess(user) {
@@ -5417,19 +6686,33 @@
         }
 
         function setFirestoreLoading(loading, allowSave = true) {
-            const canEditRoster = !loading && currentRosterUserIsAdmin && allowSave;
-            document.querySelectorAll('.editable-name, .editable-cell, .date-editable')
+            const editorPane = document.getElementById('rosterEditorPane');
+            const canEditRoster = !loading && currentRosterUserIsAdmin && allowSave &&
+                !isPreviewMode && editorPane && !editorPane.hidden;
+            if (editorPane) editorPane.querySelectorAll('.editable-name, .editable-cell, .date-editable')
                 .forEach(element => { element.contentEditable = String(canEditRoster); });
             [
-                'saveNowBtn', 'exportBackupBtn', 'restoreLatestBtn', 'importBackupBtn',
-                'clearBackupBtn', 'addRowBtn', 'tableSelect', 'rowSelect', 'removeRowBtn',
-                'undoBtn', 'redoBtn'
+                'saveDraftBtn', 'publishRosterBtn', 'addRowBtn', 'tableSelect',
+                'rowSelect', 'removeRowBtn', 'undoBtn', 'redoBtn'
             ].forEach(id => {
                 const control = document.getElementById(id);
-                if (control) control.disabled = loading || !currentRosterUserIsAdmin;
+                if (control) control.disabled = loading || !canEditRoster;
             });
-            const saveButton = document.getElementById('saveNowBtn');
-            if (saveButton) saveButton.disabled = !canEditRoster;
+            const previewButton = document.getElementById('previewDraftBtn');
+            if (previewButton) {
+                previewButton.disabled = loading || !currentRosterUserIsAdmin || !editorPane || editorPane.hidden;
+                previewButton.innerHTML = isPreviewMode
+                    ? '<i class="fa-solid fa-pen-to-square"></i> Back to Editing'
+                    : '<i class="fa-regular fa-eye"></i> Preview Draft';
+            }
+            const publishButton = document.getElementById('publishRosterBtn');
+            if (publishButton) {
+                publishButton.disabled = loading || !canEditRoster ||
+                    !currentDraftExists || draftHasUnsavedChanges;
+                publishButton.title = draftHasUnsavedChanges
+                    ? 'Save your latest changes as a draft before publishing'
+                    : (!currentDraftExists ? 'Save a draft before publishing' : 'Publish this saved draft as the live roster');
+            }
         }
 
         let authFlowGeneration = 0;
@@ -5465,6 +6748,9 @@
             ['authForms', 'verifyEmailPanel', 'accessDeniedPanel', 'pendingAccessPanel', 'adminApprovalPanel'].forEach(id => {
                 document.getElementById(id).hidden = id !== panelId;
             });
+            if (panelId === 'authForms' && systemSettingsLoaded && !currentSystemSettings.signupsEnabled) {
+                setAuthMessage('New account signups are paused by the administrator.');
+            }
         }
 
         function accountDisplayName(user) {
@@ -5477,6 +6763,9 @@
             currentRosterUserIsAdmin = Boolean(isAdmin);
             const app = document.getElementById('rosterApp');
             app.classList.toggle('is-approved-viewer', Boolean(user && !isAdmin));
+            document.getElementById('rosterDraftControls').hidden = !currentRosterUserIsAdmin;
+            document.getElementById('rosterWorkflowStatus').hidden = !currentRosterUserIsAdmin;
+            document.getElementById('rosterWorkflowTabs').hidden = !currentRosterUserIsAdmin;
             if (user && !isAdmin) {
                 document.getElementById('viewerUsername').textContent = displayName || accountDisplayName(user);
             }
@@ -5484,6 +6773,7 @@
                 document.getElementById('approvalAdminUsername').textContent = accountDisplayName(user);
                 document.getElementById('approvalAdminEmail').textContent = user.email || '';
             }
+            applySystemSettings();
         }
 
         function setAuthGateBusy(container, busy) {
@@ -5568,9 +6858,9 @@
             setFirestoreLoadStatus(message, 'loading');
         }
 
-        function publishReleaseAuthStatus(emailVerified, username = '', uid = null) {
+        function publishReleaseAuthStatus(emailVerified, username = '', uid = null, isAdmin = false) {
             window.dispatchEvent(new CustomEvent('roster-auth-status', {
-                detail: { emailVerified, username, uid }
+                detail: { emailVerified, username, uid, isAdmin }
             }));
         }
 
@@ -5579,12 +6869,29 @@
             if (!user) {
                 publishReleaseAuthStatus(false);
                 currentRosterUserIsAdmin = false;
+                currentDraftExists = false;
+                currentDraftSavedAt = null;
+                draftHasUnsavedChanges = false;
+                isPreviewMode = false;
+                archivedRosters = [];
+                historyDocumentCount = 0;
                 document.getElementById('rosterApp').classList.remove('is-approved-viewer');
+                document.getElementById('rosterDraftControls').hidden = true;
+                document.getElementById('rosterWorkflowStatus').hidden = true;
+                document.getElementById('rosterWorkflowTabs').hidden = true;
+                document.getElementById('rosterHistoryPane').hidden = true;
+                document.getElementById('rosterEditorPane').hidden = false;
                 setFirestoreLoading(true, false);
                 if (rosterAccessUnsubscribe) {
                     rosterAccessUnsubscribe();
                     rosterAccessUnsubscribe = null;
                 }
+                if (notificationUnsubscribe) {
+                    notificationUnsubscribe();
+                    notificationUnsubscribe = null;
+                }
+                updateNotificationCount(0);
+                setNotificationsPanelOpen(false);
                 setFirestoreLoading(true, false);
                 clearDemoRosterData();
                 document.getElementById('manageAccessBtn').hidden = true;
@@ -5609,10 +6916,13 @@
             }
             if (generation !== authFlowGeneration || !auth.currentUser) return;
             user = auth.currentUser;
+            await systemSettingsReady;
+            if (generation !== authFlowGeneration || !auth.currentUser) return;
             publishReleaseAuthStatus(
                 user.emailVerified,
                 user.emailVerified ? accountDisplayName(user) : '',
-                user.emailVerified ? user.uid : null
+                user.emailVerified ? user.uid : null,
+                isRosterAdmin(user)
             );
 
             if (!user.emailVerified) {
@@ -5630,6 +6940,7 @@
                 return;
             }
 
+            startNotificationListener(user);
             if (isRosterAdmin(user)) {
                 setRosterViewRole(user, true);
                 if (rosterAccessUnsubscribe) {
@@ -5651,6 +6962,13 @@
                 const access = accessSnapshot.exists ? accessSnapshot.data() : null;
                 if (access && access.uid === user.uid && access.approved === true) {
                     setRosterViewRole(user, false, access.displayName || '');
+                    if (isViewerRosterUnavailable()) {
+                        clearDemoRosterData();
+                        setFirestoreLoading(false, false);
+                        revealRosterApp();
+                        applySystemSettings();
+                        return;
+                    }
                     showLoadingScreen('Loading your roster…');
                     await loadRostersFromFirestore(user.uid, true);
                     return;
@@ -5696,7 +7014,6 @@
         }
 
         function showAccessActionError(action, error) {
-            const status = document.getElementById('approvalQueueStatus');
             let message = `Could not ${action}.`;
             if (error && error.code === 'permission-denied') {
                 message += ' Firestore denied the change. Publish the current firestore.rules and confirm you are signed in with the verified administrator account.';
@@ -5707,8 +7024,11 @@
             } else if (error && error.message) {
                 message += ` ${error.message}`;
             }
-            status.textContent = message;
-            status.dataset.kind = 'error';
+            ['approvalQueueStatus', 'accountRequestsStatus'].forEach(id => {
+                const status = document.getElementById(id);
+                status.textContent = message;
+                status.dataset.kind = 'error';
+            });
         }
 
         function accessRequestDisplayName(user) {
@@ -5834,21 +7154,27 @@
         async function loadAccessRequests(filter = accessRequestFilter) {
             const generation = ++accessRequestLoadGeneration;
             const requestingUid = auth.currentUser && auth.currentUser.uid;
-            const list = document.getElementById('accessRequestList');
-            const status = document.getElementById('approvalQueueStatus');
+            const lists = ['accessRequestList', 'accountAccessRequestList']
+                .map(id => document.getElementById(id))
+                .filter(Boolean);
+            const statuses = ['approvalQueueStatus', 'accountRequestsStatus']
+                .map(id => document.getElementById(id))
+                .filter(Boolean);
+            const setStatus = (message, kind = '') => statuses.forEach(status => {
+                status.textContent = message;
+                status.dataset.kind = kind;
+            });
             accessRequestFilter = ['awaiting_verification', 'pending', 'approved', 'rejected', 'all'].includes(filter)
                 ? filter
                 : 'pending';
             document.querySelectorAll('.access-request-tab').forEach(tab => {
                 tab.setAttribute('aria-pressed', String(tab.dataset.requestFilter === accessRequestFilter));
             });
-            list.replaceChildren();
-            status.dataset.kind = '';
-            status.textContent = 'Loading requests…';
+            lists.forEach(list => list.replaceChildren());
+            setStatus('Loading requests…');
             const user = auth.currentUser;
             if (!isRosterAdmin(user)) {
-                status.textContent = 'Sign in with the verified administrator account to view access requests.';
-                status.dataset.kind = 'error';
+                setStatus('Sign in with the verified administrator account to view access requests.', 'error');
                 return;
             }
             try {
@@ -5873,28 +7199,34 @@
                     typeof request.email === 'string' &&
                     ['awaiting_verification', 'pending', 'approved', 'rejected'].includes(request.status));
                 const invalidCount = requests.length - supportedRequests.length;
+                let emptyItem = null;
                 if (!supportedRequests.length) {
-                    const empty = document.createElement('li');
-                    empty.className = 'access-request-empty';
-                    empty.textContent = invalidCount
+                    emptyItem = document.createElement('li');
+                    emptyItem.className = 'access-request-empty';
+                    emptyItem.textContent = invalidCount
                         ? `${invalidCount} saved request record(s) could not be displayed. Check the browser console.`
                         : accessRequestFilter === 'all'
                             ? 'No access requests have been submitted yet.'
                             : accessRequestFilter === 'awaiting_verification'
                                 ? 'No unverified accounts are recorded yet. New sign-ups and existing users who sign in while unverified appear here.'
                                 : `No ${accessRequestFilter} requests.`;
-                    list.appendChild(empty);
-                } else {
-                    supportedRequests.forEach(request => list.appendChild(createAccessRequestItem(request)));
                 }
                 const filterLabel = accessRequestFilter === 'all'
                     ? 'total'
                     : accessRequestFilter === 'awaiting_verification'
                         ? 'unverified'
                         : accessRequestFilter;
-                status.textContent = `${supportedRequests.length} ${filterLabel} ${supportedRequests.length === 1 ? 'request' : 'requests'}`
+                const statusMessage = `${supportedRequests.length} ${filterLabel} ${supportedRequests.length === 1 ? 'request' : 'requests'}`
                     + (invalidCount ? ` · ${invalidCount} invalid record(s) hidden` : '')
                     + (snapshot.size === 200 ? ' · showing first 200' : '');
+                setStatus(statusMessage);
+                lists.forEach(list => {
+                    if (!supportedRequests.length) {
+                        list.appendChild(emptyItem.cloneNode(true));
+                    } else {
+                        supportedRequests.forEach(request => list.appendChild(createAccessRequestItem(request)));
+                    }
+                });
                 if (invalidCount) {
                     console.warn('Some access request records have an unsupported shape and were omitted:', requests.filter(request =>
                         typeof request.email !== 'string' ||
@@ -5904,13 +7236,12 @@
                 if (generation !== accessRequestLoadGeneration) return;
                 console.error('Failed to load roster access requests:', error);
                 if (error && error.code === 'permission-denied') {
-                    status.textContent = 'Firestore denied this request. Publish the current firestore.rules and confirm you signed in with the verified admin email phoenix28.tech@gmail.com.';
+                    setStatus('Firestore denied this request. Publish the current firestore.rules and confirm you signed in with the verified admin email phoenix28.tech@gmail.com.', 'error');
                 } else if (error && error.code === 'unauthenticated') {
-                    status.textContent = 'Your sign-in expired. Sign in again with the administrator account.';
+                    setStatus('Your sign-in expired. Sign in again with the administrator account.', 'error');
                 } else {
-                    status.textContent = 'Could not reach Firestore. Check your connection, then use Refresh to try again.';
+                    setStatus('Could not reach Firestore. Check your connection, then use Refresh to try again.', 'error');
                 }
-                status.dataset.kind = 'error';
             }
         }
 
@@ -6127,6 +7458,13 @@
         async function submitSignUp(event) {
             event.preventDefault();
             if (authBusy) return;
+            await systemSettingsReady;
+            if (systemSettingsError || !currentSystemSettings.signupsEnabled) {
+                setAuthMessage(systemSettingsError
+                    ? 'Signup availability could not be checked. Try again when the connection is restored.'
+                    : 'New account signups are paused by the administrator.');
+                return;
+            }
             const form = event.currentTarget;
             const usernameInput = document.getElementById('signUpUsername');
             const username = usernameInput.value.trim().toUpperCase();
@@ -6287,9 +7625,22 @@
             document.getElementById('resubmitAccessRequestBtn').addEventListener('click', submitOrRefreshAccessRequest);
             document.getElementById('checkAccessRequestBtn').addEventListener('click', refreshAccessStatus);
             document.getElementById('refreshAccessRequestsBtn').addEventListener('click', () => loadAccessRequests());
+            document.getElementById('refreshAccountRequestsBtn').addEventListener('click', () => loadAccessRequests());
             document.querySelectorAll('.access-request-tab').forEach(tab => {
                 tab.addEventListener('click', () => loadAccessRequests(tab.dataset.requestFilter));
             });
+            document.getElementById('systemSettingsForm').addEventListener('submit', saveSystemSettings);
+            document.getElementById('systemSettingsForm').addEventListener('input', () => {
+                systemSettingsFormDirty = true;
+                setSystemSettingsStatus('Unsaved changes.', 'error');
+            });
+            document.getElementById('notificationSettingsForm').addEventListener('submit', saveNotificationSettings);
+            ['viewerNotificationsBtn', 'adminNotificationsBtn'].forEach(id => {
+                document.getElementById(id).addEventListener('click', () => {
+                    setNotificationsPanelOpen(document.getElementById('userNotificationPanel').hidden);
+                });
+            });
+            document.getElementById('closeNotificationsBtn').addEventListener('click', () => setNotificationsPanelOpen(false));
             document.getElementById('openRosterFromAdminBtn').addEventListener('click', async () => {
                 const user = auth.currentUser;
                 if (!isRosterAdmin(user)) return;
@@ -6298,8 +7649,7 @@
             });
             document.getElementById('manageAccessBtn').addEventListener('click', async () => {
                 if (!isRosterAdmin(auth.currentUser)) return;
-                showAuthPanel('adminApprovalPanel');
-                await loadAccessRequests();
+                showRosterPane('access');
             });
             document.getElementById('authNoticeCloseBtn').addEventListener('click', () => {
                 document.getElementById('authNoticeDialog').close();
@@ -6350,21 +7700,33 @@
             let loadedSuccessfully = false;
             setFirestoreLoadStatus('Connecting securely…', 'loading');
             try {
-                const savedRosters = await Promise.all(rosterDocuments.map(async table => ({
+                const availableTables = currentRosterUserIsAdmin
+                    ? rosterDocuments
+                    : rosterDocuments.filter(table => currentSystemSettings.locations[
+                        table.tableId === 'island-table' ? 'island' : 'mainland'
+                    ]);
+                const savedRosters = await Promise.all(availableTables.map(async table => ({
                     ...table,
                     snapshot: await table.reference.get({ source: 'server' })
                 })));
                 const foundRosters = savedRosters.filter(table => table.snapshot.exists);
 
                 if (foundRosters.length === 0) {
-                    const legacySnapshot = await legacyRosterDocument.get({ source: 'server' });
-                    if (legacySnapshot.exists) {
-                        const legacyData = legacySnapshot.data().data;
-                        if (!isBackupData(legacyData) || !applySnapshotData(legacyData)) {
-                            throw new Error('The saved legacy Firestore roster has an invalid or unsupported data format.');
+                    const canReadLegacy = currentRosterUserIsAdmin ||
+                        (currentSystemSettings.locations.island && currentSystemSettings.locations.mainland);
+                    if (canReadLegacy) {
+                        const legacySnapshot = await legacyRosterDocument.get({ source: 'server' });
+                        if (legacySnapshot.exists) {
+                            const legacyData = legacySnapshot.data().data;
+                            if (!isBackupData(legacyData) || !applySnapshotData(legacyData)) {
+                                throw new Error('The saved legacy Firestore roster has an invalid or unsupported data format.');
+                            }
+                            pushHistory();
+                            loadedSuccessfully = true;
+                        } else {
+                            pushHistory();
+                            loadedSuccessfully = true;
                         }
-                        pushHistory();
-                        loadedSuccessfully = true;
                     } else {
                         pushHistory();
                         loadedSuccessfully = true;
@@ -6381,10 +7743,35 @@
                     pushHistory();
                     loadedSuccessfully = true;
                 }
+                if (currentRosterUserIsAdmin) {
+                    const draftSnapshot = await rosterDraftReference.get({ source: 'server' });
+                    if (draftSnapshot.exists) {
+                        const draft = draftSnapshot.data();
+                        if (!draft || !isBackupData(draft.data) || !applySnapshotData(draft.data)) {
+                            throw new Error('The saved private draft has invalid or unsupported roster data.');
+                        }
+                        currentDraftExists = true;
+                        draftHasUnsavedChanges = false;
+                        const savedAt = Number(draft.savedAt);
+                        currentDraftSavedAt = Number.isFinite(savedAt) ? savedAt : null;
+                        setDraftStatus('Draft saved', Number.isFinite(savedAt)
+                            ? `Loaded private draft saved ${new Date(savedAt).toLocaleString()}. Live roster is unchanged.`
+                            : 'Loaded private draft. Live roster is unchanged.');
+                        pushHistory();
+                    } else {
+                        currentDraftExists = false;
+                        currentDraftSavedAt = null;
+                        draftHasUnsavedChanges = false;
+                        setDraftStatus('Draft not saved', 'You are viewing the live roster. Edits stay private until you save or publish.');
+                    }
+                }
             } catch (error) {
                 console.error('Failed to load rosters from Firestore:', error);
-                setFirestoreLoadStatus('Could not load rosters from Firestore. Check the connection and permissions, then use Restore to retry.', 'error');
-                showToast('Firestore load failed');
+                const message = error.code === 'permission-denied'
+                    ? 'Firestore denied roster access. Deploy the current firestore.rules and confirm you are signed in with the verified administrator account.'
+                    : `Could not load rosters from Firestore: ${error.message || 'check the connection and retry'}`;
+                setFirestoreLoadStatus(message, 'error');
+                showToast(message);
             } finally {
                 const currentUser = auth.currentUser;
                 const canReveal = loadedSuccessfully && accessChecked && currentUser &&
@@ -6462,6 +7849,7 @@
                 nameCell.appendChild(span);
             }
             pushHistory();
+            markDraftDirty();
             updateRowOptions();
             showToast(`Row added to ${tableId}`);
         }
@@ -6507,6 +7895,7 @@
             if (!confirmed) return;
             row.remove();
             pushHistory();
+            markDraftDirty();
             updateRowOptions();
             showToast(`Removed ${rowName}`);
         }
@@ -6526,7 +7915,45 @@
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
         function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            if (currentSystemSettings.dateFormat === 'dmy') return `${day}/${month}/${year}`;
+            if (currentSystemSettings.dateFormat === 'mdy') return `${month}/${day}/${year}`;
+            if (currentSystemSettings.dateFormat === 'iso') return `${year}-${month}-${day}`;
             return `${dayNames[date.getDay()]} ${date.getDate()}-${monthNames[date.getMonth()]}`;
+        }
+
+        function parseRosterDate(text) {
+            const normalized = text.trim();
+            const numericDate = normalized.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (numericDate) {
+                const first = Number(numericDate[1]);
+                const second = Number(numericDate[2]);
+                const month = currentSystemSettings.dateFormat === 'mdy' ? first : second;
+                const day = currentSystemSettings.dateFormat === 'mdy' ? second : first;
+                const date = new Date(Number(numericDate[3]), month - 1, day);
+                return date.getFullYear() === Number(numericDate[3]) &&
+                    date.getMonth() === month - 1 &&
+                    date.getDate() === day
+                    ? date
+                    : null;
+            }
+            const isoDate = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (isoDate) {
+                const date = new Date(Number(isoDate[1]), Number(isoDate[2]) - 1, Number(isoDate[3]));
+                return date.getFullYear() === Number(isoDate[1]) &&
+                    date.getMonth() === Number(isoDate[2]) - 1 &&
+                    date.getDate() === Number(isoDate[3])
+                    ? date
+                    : null;
+            }
+            const abbreviatedDate = normalized.match(/(\d{1,2})-([a-zA-Z]{3})/);
+            if (abbreviatedDate) {
+                const monthIndex = monthNames.findIndex(name => name.toLowerCase() === abbreviatedDate[2].toLowerCase());
+                if (monthIndex >= 0) return new Date(2026, monthIndex, Number(abbreviatedDate[1]));
+            }
+            return null;
         }
 
         function updateWeekDates(mondayDate) {
@@ -6543,6 +7970,7 @@
                 const d = new Date(mon);
                 d.setDate(d.getDate() + dayOffset);
                 el.textContent = formatDate(d);
+                el.dataset.isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
             });
 
             document.querySelectorAll('.date-editable').forEach(el => {
@@ -6550,6 +7978,7 @@
                 if (parent && parent.getAttribute('data-day') === '0') {
                     const d = new Date(mon);
                     el.textContent = formatDate(d);
+                    el.dataset.isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
                 }
             });
         }
@@ -6560,36 +7989,15 @@
             const parent = el.closest('[data-day]');
             if (!parent || parent.getAttribute('data-day') !== '0') return;
 
-            const text = el.textContent.trim();
-            const parts = text.split(/\s+/);
-            let dayStr = '', monthStr = '', year = 2026;
-            const monthMap = { 'jan':0, 'feb':1, 'mar':2, 'apr':3, 'may':4, 'jun':5,
-                'jul':6, 'aug':7, 'sep':8, 'oct':9, 'nov':10, 'dec':11 };
-            for (let p of parts) {
-                const low = p.toLowerCase();
-                if (low in monthMap) monthStr = low;
-                else if (/^\d+$/.test(p)) dayStr = p;
-                else if (/^\d{4}$/.test(p)) year = parseInt(p);
-            }
-            const dashMatch = text.match(/(\d+)-([a-zA-Z]{3})/);
-            if (dashMatch) { dayStr = dashMatch[1]; monthStr = dashMatch[2].toLowerCase(); }
-
-            if (dayStr && monthStr && monthStr in monthMap) {
-                const month = monthMap[monthStr];
-                const day = parseInt(dayStr);
-                if (!isNaN(day) && day >= 1 && day <= 31) {
-                    const date = new Date(year, month, day);
-                    if (!isNaN(date.getTime())) {
-                        const monDate = new Date(date);
-                        const dow = monDate.getDay();
-                        const diff = (dow === 0) ? -6 : (1 - dow);
-                        monDate.setDate(monDate.getDate() + diff);
-                        updateWeekDates(monDate);
-                        el.textContent = formatDate(monDate);
-                        pushHistory();
-                    }
-                }
-            }
+            const date = parseRosterDate(el.textContent);
+            if (!date) return;
+            const monDate = new Date(date);
+            const dow = monDate.getDay();
+            const diff = (dow === 0) ? -6 : (1 - dow);
+            monDate.setDate(monDate.getDate() + diff);
+            updateWeekDates(monDate);
+            el.textContent = formatDate(monDate);
+            pushHistory();
         }
 
         function updateAllDates(tableId = null) {
@@ -6597,44 +8005,28 @@
             if (!dateRoot) return;
             const firstMonday = dateRoot.querySelector('.date-editable[data-day="0"]');
             if (firstMonday) {
-                const text = firstMonday.textContent.trim();
-                const parts = text.split(/\s+/);
-                let dayStr = '', monthStr = '', year = 2026;
-                const monthMap = { 'jan':0, 'feb':1, 'mar':2, 'apr':3, 'may':4, 'jun':5,
-                    'jul':6, 'aug':7, 'sep':8, 'oct':9, 'nov':10, 'dec':11 };
-                for (let p of parts) {
-                    const low = p.toLowerCase();
-                    if (low in monthMap) monthStr = low;
-                    else if (/^\d+$/.test(p)) dayStr = p;
-                    else if (/^\d{4}$/.test(p)) year = parseInt(p);
-                }
-                const dashMatch = text.match(/(\d+)-([a-zA-Z]{3})/);
-                if (dashMatch) { dayStr = dashMatch[1]; monthStr = dashMatch[2].toLowerCase(); }
-                if (dayStr && monthStr && monthStr in monthMap) {
-                    const month = monthMap[monthStr];
-                    const day = parseInt(dayStr);
-                    if (!isNaN(day) && day >= 1 && day <= 31) {
-                        const date = new Date(year, month, day);
-                        if (!isNaN(date.getTime())) {
-                            const monDate = new Date(date);
-                            const dow = monDate.getDay();
-                            const diff = (dow === 0) ? -6 : (1 - dow);
-                            monDate.setDate(monDate.getDate() + diff);
-                            const dayOffset = (element, selector) => {
-                                const parent = element.closest(selector);
-                                return parent ? parseInt(parent.getAttribute('data-day') || '0', 10) : 0;
-                            };
-                            dateRoot.querySelectorAll('.date-auto').forEach(el => {
-                                const d = new Date(monDate);
-                                d.setDate(d.getDate() + dayOffset(el, '[data-day]'));
-                                el.textContent = formatDate(d);
-                            });
-                            dateRoot.querySelectorAll('.date-editable').forEach(el => {
-                                if (dayOffset(el, '[data-day]') === 0) el.textContent = formatDate(monDate);
-                            });
-                        }
+                const date = parseRosterDate(firstMonday.dataset.isoDate || firstMonday.textContent);
+                if (!date) return;
+                const monDate = new Date(date);
+                const dow = monDate.getDay();
+                const diff = (dow === 0) ? -6 : (1 - dow);
+                monDate.setDate(monDate.getDate() + diff);
+                const dayOffset = (element, selector) => {
+                    const parent = element.closest(selector);
+                    return parent ? parseInt(parent.getAttribute('data-day') || '0', 10) : 0;
+                };
+                dateRoot.querySelectorAll('.date-auto').forEach(el => {
+                    const d = new Date(monDate);
+                    d.setDate(d.getDate() + dayOffset(el, '[data-day]'));
+                    el.textContent = formatDate(d);
+                    el.dataset.isoDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                });
+                dateRoot.querySelectorAll('.date-editable').forEach(el => {
+                    if (dayOffset(el, '[data-day]') === 0) {
+                        el.textContent = formatDate(monDate);
+                        el.dataset.isoDate = `${monDate.getFullYear()}-${String(monDate.getMonth() + 1).padStart(2, '0')}-${String(monDate.getDate()).padStart(2, '0')}`;
                     }
-                }
+                });
             }
         }
 
@@ -6720,7 +8112,7 @@
             if (legacyData) {
                 if (applySnapshotData(legacyData)) {
                     pushHistory();
-                    document.getElementById('saveNowBtn').disabled = false;
+                    setFirestoreLoading(false, true);
                     showToast('Previous Firestore roster restored');
                 } else {
                     showToast('Saved Firestore roster is invalid');
@@ -6735,7 +8127,7 @@
                     }
                 });
                 pushHistory();
-                document.getElementById('saveNowBtn').disabled = false;
+                setFirestoreLoading(false, true);
                 showToast('Both Firestore rosters restored');
             } catch (error) {
                 console.error('Failed to apply saved Firestore rosters:', error);
@@ -6784,7 +8176,7 @@
                     if (!confirmed) return;
                     if (applySnapshotData(data)) {
                         pushHistory();
-                        document.getElementById('saveNowBtn').disabled = false;
+                        setFirestoreLoading(false, true);
                         showToast('Backup imported');
                     }
                 } catch (error) {
@@ -6811,6 +8203,7 @@
         function init() {
             if (initialized) return;
             initialized = true;
+            startSystemSettingsListener();
 
             // set up editable cells
             document.querySelectorAll('.editable-cell').forEach(cell => {
@@ -6826,6 +8219,7 @@
                 }
                 if (el.classList.contains('editable-cell')) applyCellStyle(el);
                 scheduleHistory();
+                markDraftDirty();
                 if (el.classList.contains('editable-name')) updateRowOptions();
             });
             document.addEventListener('focusout', event => {
@@ -6844,7 +8238,9 @@
                         el.contentEditable = 'false';
                         return;
                     }
+                    delete el.dataset.isoDate;
                     scheduleHistory();
+                    markDraftDirty();
                 });
                 el.addEventListener('blur', (e) => { 
                     if (!canManageRoster()) return;
@@ -6856,28 +8252,28 @@
             // Buttons
             document.getElementById('undoBtn').addEventListener('click', undo);
             document.getElementById('redoBtn').addEventListener('click', redo);
-            document.getElementById('saveNowBtn').addEventListener('click', forceSaveNow);
-            document.getElementById('exportBackupBtn').addEventListener('click', downloadBackup);
-            document.getElementById('restoreLatestBtn').addEventListener('click', restoreLatestBackup);
+            document.getElementById('saveDraftBtn').addEventListener('click', saveRosterDraft);
+            document.getElementById('publishRosterBtn').addEventListener('click', publishRoster);
+            document.getElementById('previewDraftBtn').addEventListener('click', () => {
+                if (!canManageRoster()) return;
+                isPreviewMode = !isPreviewMode;
+                setFirestoreLoading(false, true);
+                setDraftStatus(
+                    isPreviewMode ? 'Draft preview' : (draftHasUnsavedChanges ? 'Draft changes not saved' : (currentDraftExists ? 'Draft saved' : 'Draft not saved')),
+                    isPreviewMode
+                        ? 'Preview only. The live roster is unchanged.'
+                        : (draftHasUnsavedChanges
+                            ? 'Save Draft to keep these private edits. The live roster is unchanged.'
+                            : (currentDraftExists ? 'Your edits remain private until published.' : 'You are viewing live data; save a draft to keep private changes.'))
+                );
+            });
+            document.getElementById('editorTabBtn').addEventListener('click', () => showRosterPane('editor'));
+            document.getElementById('historyTabBtn').addEventListener('click', () => showRosterPane('history'));
+            document.getElementById('manageAccountsTabBtn').addEventListener('click', () => showRosterPane('access'));
+            document.getElementById('filterHistoryBtn').addEventListener('click', renderHistoryList);
+            document.getElementById('retryHistoryBtn').addEventListener('click', loadArchivedRosters);
             document.getElementById('retryFirestoreLoadBtn').addEventListener('click', () => handleAuthStateChange(auth.currentUser));
             initializeAuthUI();
-
-            if ('showSaveFilePicker' in window) {
-                const storedFileName = localStorage.getItem('rosterFileHandleName');
-                if (storedFileName) {
-                    const fileName = storedFileName || DEFAULT_ROSTER_FILE_NAME;
-                    document.title = `${fileName} · Roster Admin`;
-                }
-            }
-            document.getElementById('importBackupBtn').addEventListener('click', () => {
-                document.getElementById('restoreBackupInput').click();
-            });
-            document.getElementById('clearBackupBtn').addEventListener('click', clearBackups);
-            document.getElementById('restoreBackupInput').addEventListener('change', (event) => {
-                const file = event.target.files && event.target.files[0];
-                importBackupFile(file);
-                event.target.value = '';
-            });
 
             document.getElementById('addRowBtn').addEventListener('click', () => {
                 const select = document.getElementById('tableSelect');

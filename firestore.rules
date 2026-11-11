@@ -19,8 +19,27 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/rosterAccess/$(request.auth.uid)).data.approved == true;
     }
 
-    function canUseRoster() {
-      return isRosterAdmin() || hasRosterAccess();
+    function settingsAllowLocationRead(location) {
+      let settingsPath = /databases/$(database)/documents/systemSettings/current;
+      return !exists(settingsPath)
+        || (get(settingsPath).data.maintenanceMode != true
+          && get(settingsPath).data.publishedRosterVisible == true
+          && get(settingsPath).data.locations.get(location, false) == true);
+    }
+
+    function settingsAllowLegacyRosterRead() {
+      let settingsPath = /databases/$(database)/documents/systemSettings/current;
+      return !exists(settingsPath)
+        || (get(settingsPath).data.maintenanceMode != true
+          && get(settingsPath).data.publishedRosterVisible == true
+          && get(settingsPath).data.locations.island == true
+          && get(settingsPath).data.locations.mainland == true);
+    }
+
+    function settingsAllowSignups() {
+      let settingsPath = /databases/$(database)/documents/systemSettings/current;
+      return !exists(settingsPath)
+        || get(settingsPath).data.signupsEnabled == true;
     }
 
     function isOwnAccessRequest(uid) {
@@ -50,10 +69,94 @@ service cloud.firestore {
     }
 
     match /rosters/{rosterId} {
-      allow get: if canUseRoster()
-        && rosterId in ['island-mombasa', 'mainland-likoni', 'main'];
+      allow get: if (isRosterAdmin()
+          && rosterId in ['island-mombasa', 'mainland-likoni', 'main'])
+        || (hasRosterAccess()
+          && ((rosterId == 'island-mombasa' && settingsAllowLocationRead('island'))
+            || (rosterId == 'mainland-likoni' && settingsAllowLocationRead('mainland'))
+            || (rosterId == 'main' && settingsAllowLegacyRosterRead())));
       allow create, update: if isRosterAdmin()
         && rosterId in ['island-mombasa', 'mainland-likoni'];
+    }
+
+    match /rosterDrafts/{draftId} {
+      allow get: if isRosterAdmin() && draftId == 'current';
+      allow create, update, delete: if isRosterAdmin() && draftId == 'current';
+    }
+
+    match /rosterHistory/{historyId} {
+      allow get, list: if isRosterAdmin();
+      allow create: if isRosterAdmin();
+      allow update, delete: if false;
+    }
+
+    match /rosterPublishes/{publishId} {
+      allow get, list: if isRosterAdmin();
+      allow create: if isRosterAdmin()
+        && request.resource.data.keys().hasOnly([
+          'weekLabel', 'publishedAt', 'publishedBy'
+        ])
+        && request.resource.data.keys().hasAll([
+          'weekLabel', 'publishedAt', 'publishedBy'
+        ])
+        && request.resource.data.weekLabel is string
+        && request.resource.data.weekLabel.size() <= 100
+        && request.resource.data.publishedAt is int
+        && request.resource.data.publishedBy == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /scheduledRosterBackups/{backupId} {
+      allow get, list: if isRosterAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /notificationSettings/{settingsId} {
+      allow get: if isRosterAdmin() && settingsId == 'admin';
+      allow list: if false;
+      allow create, update: if isRosterAdmin()
+        && settingsId == 'admin'
+        && request.resource.data.keys().hasOnly([
+          'adminEmails', 'events', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.keys().hasAll([
+          'adminEmails', 'events', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.adminEmails is list
+        && request.resource.data.adminEmails.size() <= 10
+        && request.resource.data.events is map
+        && request.resource.data.events.keys().hasOnly([
+          'newAccessRequest', 'accessApproved', 'accessDeclined',
+          'accessRevoked', 'rosterPublished', 'announcement'
+        ])
+        && request.resource.data.events.keys().hasAll([
+          'newAccessRequest', 'accessApproved', 'accessDeclined',
+          'accessRevoked', 'rosterPublished', 'announcement'
+        ])
+        && request.resource.data.events.newAccessRequest.inApp is bool
+        && request.resource.data.events.newAccessRequest.email is bool
+        && request.resource.data.events.accessApproved.inApp is bool
+        && request.resource.data.events.accessApproved.email is bool
+        && request.resource.data.events.accessDeclined.inApp is bool
+        && request.resource.data.events.accessDeclined.email is bool
+        && request.resource.data.events.accessRevoked.inApp is bool
+        && request.resource.data.events.accessRevoked.email is bool
+        && request.resource.data.events.rosterPublished.inApp is bool
+        && request.resource.data.events.rosterPublished.email is bool
+        && request.resource.data.events.announcement.inApp is bool
+        && request.resource.data.events.announcement.email is bool
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if false;
+    }
+
+    match /userNotifications/{uid}/items/{notificationId} {
+      allow get, list: if isVerified() && request.auth.uid == uid;
+      allow create, delete: if false;
+      allow update: if isVerified()
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+        && request.resource.data.read is bool;
     }
 
     match /rosterAccess/{uid} {
@@ -68,7 +171,7 @@ service cloud.firestore {
         || (request.auth != null && request.auth.uid == uid);
       allow list: if isRosterAdmin();
 
-      allow create: if isOwnSignupRequest(uid)
+      allow create: if (isOwnSignupRequest(uid) && settingsAllowSignups())
         || (isOwnAccessRequest(uid)
           && request.resource.data.keys().hasOnly([
             'uid', 'email', 'displayName', 'status', 'requestedAt'
@@ -89,6 +192,39 @@ service cloud.firestore {
             .hasOnly(['status', 'requestedAt'])
           && request.resource.data.status == 'pending'
           && request.resource.data.requestedAt == request.time);
+    }
+
+    match /systemSettings/{settingsId} {
+      allow get: if settingsId == 'current';
+      allow list: if false;
+      allow create, update: if isRosterAdmin()
+        && settingsId == 'current'
+        && request.resource.data.keys().hasOnly([
+          'announcement', 'signupsEnabled', 'publishedRosterVisible',
+          'locations', 'dateFormat', 'maintenanceMode', 'maintenanceMessage',
+          'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.keys().hasAll([
+          'announcement', 'signupsEnabled', 'publishedRosterVisible',
+          'locations', 'dateFormat', 'maintenanceMode', 'maintenanceMessage',
+          'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.announcement is string
+        && request.resource.data.announcement.size() <= 500
+        && request.resource.data.signupsEnabled is bool
+        && request.resource.data.publishedRosterVisible is bool
+        && request.resource.data.locations is map
+        && request.resource.data.locations.keys().hasOnly(['island', 'mainland'])
+        && request.resource.data.locations.keys().hasAll(['island', 'mainland'])
+        && request.resource.data.locations.island is bool
+        && request.resource.data.locations.mainland is bool
+        && request.resource.data.dateFormat in ['weekday', 'dmy', 'mdy', 'iso']
+        && request.resource.data.maintenanceMode is bool
+        && request.resource.data.maintenanceMessage is string
+        && request.resource.data.maintenanceMessage.size() <= 500
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if false;
     }
 
     match /userReleaseState/{uid}/devices/{deviceId} {
