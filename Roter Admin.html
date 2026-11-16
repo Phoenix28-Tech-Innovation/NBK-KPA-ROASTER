@@ -300,45 +300,192 @@
 
         .release-dialog {
             width: min(28rem, calc(100% - 2rem));
-            padding: 2rem;
-            border: 0;
-            border-radius: 1.5rem;
+            max-height: min(90vh, 48rem);
+            max-height: min(90dvh, 48rem);
+            overflow-y: auto;
+            padding: 1.75rem;
+            border: 1px solid rgba(255,255,255,0.82);
+            border-radius: 1.4rem;
+            background: linear-gradient(155deg, #fff 0%, #f8fbff 100%);
             color: #0f172a;
-            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.3);
+            box-shadow: 0 28px 90px rgba(15, 23, 42, 0.28), 0 4px 14px rgba(15,23,42,0.08);
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+        .release-dialog[open] {
+            animation: modal-enter 220ms cubic-bezier(0.2,0.75,0.25,1) both;
         }
         .release-dialog::backdrop {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.52);
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
         }
         .release-dialog h2 {
-            margin: 0 0 0.75rem;
-            font-size: 1.35rem;
+            margin: 0;
+            color: #10233f;
+            font-size: 1.28rem;
             font-weight: 800;
+            letter-spacing: -0.035em;
         }
         .release-dialog p,
         .release-dialog li {
-            color: #475569;
+            color: #607087;
             line-height: 1.6;
+        }
+        .release-dialog > p {
+            margin: 0.45rem 0 0;
+            font-size: 0.88rem;
         }
         .release-dialog ul {
             margin: 1rem 0 1.5rem;
             padding-left: 1.25rem;
         }
         .release-dialog button {
-            border: 0;
-            border-radius: 0.75rem;
-            padding: 0.7rem 1rem;
+            min-height: 2.7rem;
+            border: 1px solid transparent;
+            border-radius: 0.78rem;
+            padding: 0.65rem 1rem;
             font: inherit;
             font-weight: 700;
             cursor: pointer;
+            transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+        }
+        .release-dialog button:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+        .release-dialog button:focus-visible,
+        .confirm-actions button:focus-visible,
+        .auth-modal-close:focus-visible {
+            outline: 3px solid rgba(59,130,246,0.45);
+            outline-offset: 3px;
+        }
+        .release-dialog button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+            transform: none;
+        }
+        .modal-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.55rem;
+        }
+        .modal-heading-copy {
+            display: grid;
+            gap: 0.25rem;
+            min-width: 0;
+            padding-top: 0.08rem;
+        }
+        .modal-eyebrow {
+            color: #64748b;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.13em;
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
+        .modal-icon {
+            display: grid;
+            flex: 0 0 auto;
+            width: 3.15rem;
+            height: 3.15rem;
+            place-items: center;
+            border: 1px solid #dbeafe;
+            border-radius: 1rem;
+            background: linear-gradient(145deg, #eff6ff, #fff);
+            color: #2563eb;
+            font-size: 1.15rem;
+            box-shadow: 0 7px 18px rgba(37,99,235,0.1), inset 0 1px 0 #fff;
+        }
+        .modal-icon[data-kind="success"] {
+            border-color: #bbf7d0;
+            background: linear-gradient(145deg, #ecfdf5, #fff);
+            color: #059669;
+            box-shadow: 0 7px 18px rgba(5,150,105,0.1), inset 0 1px 0 #fff;
+        }
+        .modal-icon[data-kind="error"] {
+            border-color: #fecaca;
+            background: linear-gradient(145deg, #fef2f2, #fff);
+            color: #dc2626;
+            box-shadow: 0 7px 18px rgba(220,38,38,0.1), inset 0 1px 0 #fff;
+        }
+        .modal-icon[data-kind="warning"] {
+            border-color: #fde68a;
+            background: linear-gradient(145deg, #fffbeb, #fff);
+            color: #d97706;
+            box-shadow: 0 7px 18px rgba(217,119,6,0.1), inset 0 1px 0 #fff;
         }
         .release-primary {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: #fff;
+            box-shadow: 0 6px 14px rgba(37,99,235,0.18);
+        }
+        .release-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            box-shadow: 0 8px 18px rgba(37,99,235,0.24);
         }
         .release-secondary {
-            background: #e2e8f0;
+            border-color: #e2e8f0 !important;
+            background: #fff;
             color: #334155;
+        }
+        .release-secondary:hover:not(:disabled) {
+            border-color: #cbd5e1 !important;
+            background: #f8fafc;
+        }
+        @keyframes modal-enter {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .history-pin-field {
+            display: grid;
+            gap: 0.4rem;
+            margin-top: 1rem;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .history-pin-field input {
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.65rem;
+            font: inherit;
+            transition: border-color 150ms ease, box-shadow 150ms ease;
+        }
+        .history-pin-field input:focus {
+            border-color: #60a5fa;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+        }
+        .history-pin-field small {
+            color: #718198;
+            font-size: 0.72rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .history-pin-feedback[data-kind="error"] {
+            color: #b91c1c;
+        }
+        .roster-history-entry {
+            display: flex;
+            align-items: stretch;
+            gap: 0.5rem;
+        }
+        .roster-history-entry .roster-history-item {
+            flex: 1;
+            min-width: 0;
+        }
+        .roster-history-delete {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid #fecaca;
+            border-radius: 0.9rem;
+            background: #fff;
+            color: #b91c1c;
+            cursor: pointer;
+        }
+        .roster-history-delete:hover {
+            background: #fef2f2;
         }
         .release-progress-track {
             height: 0.45rem;
@@ -354,12 +501,41 @@
             background: #2563eb;
             animation: release-download 1.2s ease-in-out infinite;
         }
+        @media (max-width: 520px) {
+            .release-dialog {
+                width: min(calc(100% - 1.25rem), 28rem);
+                max-height: calc(100dvh - 1.25rem);
+                padding: 1.25rem;
+                border-radius: 1.15rem;
+            }
+            .modal-heading {
+                gap: 0.75rem;
+            }
+            .modal-icon {
+                width: 2.75rem;
+                height: 2.75rem;
+                border-radius: 0.85rem;
+            }
+            .release-dialog h2 {
+                font-size: 1.12rem;
+            }
+            .release-dialog form > .flex,
+            .release-dialog > .flex {
+                flex-direction: column-reverse;
+            }
+            .release-dialog form > .flex button,
+            .release-dialog > .flex button {
+                width: 100%;
+            }
+        }
         @keyframes release-download {
             from { transform: translateX(-110%); }
             to { transform: translateX(260%); }
         }
         @media (prefers-reduced-motion: reduce) {
-            .release-progress-bar { animation-duration: 3s; }
+            .release-dialog[open],
+            .release-dialog button,
+            .release-progress-bar { animation: none; transition: none; }
         }
 
         .location-badge {
@@ -927,6 +1103,13 @@
             font-size: 1.35rem;
             box-shadow: 0 8px 20px var(--confirm-shadow);
         }
+        .confirm-icon[data-kind="danger"] {
+            animation: confirm-icon-pop 240ms ease-out both;
+        }
+        @keyframes confirm-icon-pop {
+            from { transform: scale(0.82); }
+            to { transform: scale(1); }
+        }
         .confirm-title {
             margin: 0;
             color: #0f172a;
@@ -947,6 +1130,10 @@
             gap: 0.65rem;
         }
         .confirm-actions button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             min-height: 2.65rem;
             padding: 0.65rem 1rem;
             border-radius: 0.85rem;
@@ -974,11 +1161,18 @@
             transform: translateY(-1px);
             box-shadow: 0 9px 22px var(--confirm-shadow);
         }
+        .confirm-accept:focus-visible,
+        .confirm-cancel:focus-visible {
+            outline: 3px solid rgba(59,130,246,0.4);
+            outline-offset: 3px;
+        }
         @media (prefers-reduced-motion: reduce) {
             .confirm-overlay,
             .confirm-card,
+            .confirm-icon,
             .confirm-actions button {
                 transition: none;
+                animation: none;
             }
         }
         .toast-message {
@@ -1989,7 +2183,18 @@
             padding: 1.6rem;
         }
         .auth-notice-content .auth-state-icon {
-            margin-left: 0;
+            flex: 0 0 auto;
+            margin: 0;
+        }
+        .auth-notice-content .auth-state-icon[data-kind="success"] {
+            border-color: #bbf7d0;
+            background: linear-gradient(145deg, #ecfdf5, #fff);
+            color: #059669;
+        }
+        .auth-notice-content .auth-state-icon[data-kind="error"] {
+            border-color: #fecaca;
+            background: linear-gradient(145deg, #fef2f2, #fff);
+            color: #dc2626;
         }
         .auth-notice-content h2 {
             margin: 0;
@@ -2002,6 +2207,10 @@
             line-height: 1.6;
         }
         .auth-modal-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             width: 100%;
             min-height: 2.7rem;
             border: 0;
@@ -2011,6 +2220,13 @@
             font: inherit;
             font-weight: 750;
             cursor: pointer;
+            box-shadow: 0 7px 16px rgba(37,99,235,0.2);
+            transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+        }
+        .auth-modal-close:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 9px 20px rgba(37,99,235,0.25);
         }
         @keyframes auth-dialog-enter {
             from { opacity: 0; transform: translateY(10px) scale(0.97); }
@@ -4234,6 +4450,7 @@
                 <p class="mt-1 text-sm text-slate-500">Only the roster administrator can view these archived weeks.</p>
             </div>
             <div class="flex flex-wrap items-end gap-3">
+                <button type="button" class="btn-premium btn-premium-outline" id="setHistoryPinBtn"><i class="fa-solid fa-key"></i> Set deletion PIN</button>
                 <label class="grid gap-1 text-xs font-bold text-slate-600">
                     From week
                     <input id="historyFromDate" type="date" class="premium-select" />
@@ -4373,45 +4590,99 @@
 <!-- Action-aware confirmation modal -->
 <div id="confirmModal" class="confirm-overlay" hidden>
     <section class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
-        <div class="confirm-icon" id="confirmIcon"><i class="fa-solid fa-circle-question"></i></div>
+        <div class="confirm-icon" id="confirmIcon" data-kind="warning"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></div>
+        <span class="modal-eyebrow">Please confirm</span>
         <h2 class="confirm-title" id="confirmTitle">Are you sure?</h2>
         <p class="confirm-message" id="confirmMessage"></p>
         <div class="confirm-actions">
-            <button type="button" class="confirm-cancel" id="confirmCancelBtn">Cancel</button>
-            <button type="button" class="confirm-accept" id="confirmAcceptBtn">Confirm</button>
+            <button type="button" class="confirm-cancel" id="confirmCancelBtn"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Cancel</button>
+            <button type="button" class="confirm-accept" id="confirmAcceptBtn">Confirm <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
         </div>
     </section>
 </div>
 
+<dialog id="historyPinDialog" class="release-dialog" aria-labelledby="historyPinTitle" aria-describedby="historyPinDescription">
+    <div class="modal-heading">
+        <span class="modal-icon" id="historyPinModalIcon" data-kind="warning" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+        <div class="modal-heading-copy">
+            <span class="modal-eyebrow">Published roster history</span>
+            <h2 id="historyPinTitle">History security</h2>
+        </div>
+    </div>
+    <p id="historyPinDescription"></p>
+    <form id="historyPinForm">
+        <label class="history-pin-field" id="historyCurrentPinField">
+            <span><i class="fa-solid fa-key text-slate-400" aria-hidden="true"></i> <span id="historyCurrentPinLabel">Deletion PIN</span></span>
+            <input id="historyCurrentPinInput" type="password" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" autocomplete="off" />
+            <small id="historyCurrentPinHelp">Required to authorize this action.</small>
+        </label>
+        <label class="history-pin-field" id="historyNewPinField" hidden>
+            <span><i class="fa-solid fa-key text-slate-400" aria-hidden="true"></i> New deletion PIN</span>
+            <input id="historyNewPinInput" type="password" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" autocomplete="new-password" />
+            <small>Use 6 to 12 digits. A salted hash is stored in Firestore.</small>
+        </label>
+        <div class="mt-6 flex justify-end gap-3" id="historyPinFormActions">
+            <button type="button" class="release-secondary" id="historyPinCancelBtn"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Cancel</button>
+            <button type="submit" class="release-primary" id="historyPinSubmitBtn"><i class="fa-solid fa-lock" aria-hidden="true"></i> Continue</button>
+        </div>
+    </form>
+    <div class="mt-6 flex justify-end" id="historyPinResultActions" hidden>
+        <button type="button" class="release-primary" id="historyPinDoneBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Close</button>
+    </div>
+</dialog>
+
 <dialog id="authNoticeDialog" class="auth-notice-dialog" aria-labelledby="authNoticeTitle" aria-describedby="authNoticeMessage">
     <div class="auth-notice-content">
-        <div class="auth-state-icon" id="authNoticeIcon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
-        <h2 id="authNoticeTitle">Check your inbox</h2>
+        <div class="modal-heading">
+            <div class="auth-state-icon" id="authNoticeIcon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+            <div class="modal-heading-copy">
+                <span class="modal-eyebrow">Account notification</span>
+                <h2 id="authNoticeTitle">Check your inbox</h2>
+            </div>
+        </div>
         <p id="authNoticeMessage"></p>
-        <button type="button" class="auth-modal-close" id="authNoticeCloseBtn">Continue</button>
+        <button type="button" class="auth-modal-close" id="authNoticeCloseBtn"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Continue</button>
     </div>
 </dialog>
 
 <dialog id="releaseUpdateDialog" class="release-dialog" aria-labelledby="releaseUpdateTitle">
-    <h2 id="releaseUpdateTitle">A new update is available</h2>
+    <div class="modal-heading">
+        <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-down"></i></span>
+        <div class="modal-heading-copy">
+            <span class="modal-eyebrow">Roster Admin</span>
+            <h2 id="releaseUpdateTitle">A new update is available</h2>
+        </div>
+    </div>
     <p id="releaseUpdateMessage">A new version of the roster app is ready.</p>
     <p id="releaseUpdateError" role="alert" hidden></p>
     <div class="mt-6 flex justify-end gap-3">
         <button type="button" class="release-secondary" id="releaseLaterButton">Later</button>
-        <button type="button" class="release-primary" id="releaseNowButton">Update now</button>
+        <button type="button" class="release-primary" id="releaseNowButton"><i class="fa-solid fa-rotate" aria-hidden="true"></i> Update now</button>
     </div>
 </dialog>
 <dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
-    <h2 id="releaseProgressTitle">Downloading update</h2>
+    <div class="modal-heading">
+        <span class="modal-icon" aria-hidden="true"><i class="fa-solid fa-arrows-rotate"></i></span>
+        <div class="modal-heading-copy">
+            <span class="modal-eyebrow">Please wait</span>
+            <h2 id="releaseProgressTitle">Downloading update</h2>
+        </div>
+    </div>
     <p id="releaseProgressMessage">Checking the latest version…</p>
     <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
-    <h2 id="releaseNotesTitle">What’s new</h2>
+    <div class="modal-heading">
+        <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+        <div class="modal-heading-copy">
+            <span class="modal-eyebrow">Release notes</span>
+            <h2 id="releaseNotesTitle">What’s new</h2>
+        </div>
+    </div>
     <p id="releaseNotesHeading"></p>
     <ul id="releaseNotesList"></ul>
     <div class="flex justify-end">
-        <button type="button" class="release-primary" id="releaseNotesDoneButton">Got it</button>
+        <button type="button" class="release-primary" id="releaseNotesDoneButton"><i class="fa-solid fa-check" aria-hidden="true"></i> Got it</button>
     </div>
 </dialog>
 
@@ -4603,6 +4874,7 @@
     const legacyRosterDocument = firestore.collection('rosters').doc('main');
     const rosterDraftReference = firestore.collection('rosterDrafts').doc('current');
     const rosterHistoryCollection = firestore.collection('rosterHistory');
+    const historyDeletionPinReference = firestore.collection('systemSecrets').doc('rosterHistoryDeletion');
     const systemSettingsReference = firestore.collection('systemSettings').doc('current');
     const rosterPublishesCollection = firestore.collection('rosterPublishes');
     const adminNotificationSettingsReference = firestore.collection('notificationSettings').doc('admin');
@@ -4624,6 +4896,7 @@
         let draftHasUnsavedChanges = false;
         let isPreviewMode = false;
         let archivedRosters = [];
+        let historyPinAction = null;
         const defaultSystemSettings = {
             announcement: '',
             signupsEnabled: true,
@@ -4659,8 +4932,12 @@
             if (pendingConfirmation) pendingConfirmation(false);
             document.getElementById('confirmTitle').textContent = title;
             document.getElementById('confirmMessage').textContent = message;
-            confirmButton.textContent = confirmLabel;
+            const confirmIcon = document.createElement('i');
+            confirmIcon.className = `fa-solid ${theme === 'danger' ? 'fa-trash-can' : 'fa-arrow-right'}`;
+            confirmIcon.setAttribute('aria-hidden', 'true');
+            confirmButton.replaceChildren(document.createTextNode(`${confirmLabel} `), confirmIcon);
             iconContainer.innerHTML = `<i class="${icon}" aria-hidden="true"></i>`;
+            iconContainer.dataset.kind = theme;
             card.style.setProperty('--confirm-color', colors.color);
             card.style.setProperty('--confirm-soft', colors.soft);
             card.style.setProperty('--confirm-border', colors.border);
@@ -5583,32 +5860,6 @@
             }
         }
 
-        async function getCurrentLiveRoster() {
-            const snapshots = await Promise.all(rosterDocuments.map(table => table.reference.get({ source: 'server' })));
-            const existing = snapshots.filter(snapshot => snapshot.exists);
-            if (existing.length === 0) {
-                const legacySnapshot = await legacyRosterDocument.get({ source: 'server' });
-                if (!legacySnapshot.exists) return null;
-                const legacyData = legacySnapshot.data().data;
-                if (!isBackupData(legacyData)) throw new Error('The current live roster has invalid data and cannot be archived.');
-                return legacyData;
-            }
-            if (existing.length !== rosterDocuments.length) {
-                throw new Error('A location roster is missing from the live roster. Publishing was cancelled to prevent an incomplete archive.');
-            }
-            const tables = snapshots.map((snapshot, index) => {
-                const table = rosterDocuments[index];
-                const saved = snapshot.data();
-                if (!saved || !isBackupData(saved.data, table.tableId)) {
-                    throw new Error(`The current ${table.name} live roster is invalid and cannot be archived.`);
-                }
-                return saved.data.tables[0];
-            });
-            const data = { schemaVersion: 2, tables };
-            if (!isBackupData(data)) throw new Error('The complete live roster failed archive validation.');
-            return data;
-        }
-
         async function publishRoster() {
             if (!canManageRoster() || isPreviewMode) return;
             if (!currentDraftExists || draftHasUnsavedChanges) {
@@ -5623,7 +5874,7 @@
             const range = getWeekRange(data);
             const confirmed = await confirmAction({
                 title: 'Publish this roster?',
-                message: `This makes the ${range.weekLabel} roster live for roster viewers. The current live roster will be saved in admin-only history first.`,
+                message: `This makes the ${range.weekLabel} roster live for roster viewers and saves this published roster in admin-only history with its week dates.`,
                 confirmLabel: 'Publish roster',
                 icon: 'fa-solid fa-paper-plane',
                 theme: 'info'
@@ -5637,21 +5888,18 @@
                     Number(draftSnapshot.data().savedAt) !== currentDraftSavedAt) {
                     throw new Error('The saved draft changed after it was loaded. Reload or save the draft before publishing.');
                 }
-                const previousRoster = await getCurrentLiveRoster();
                 const batch = firestore.batch();
                 const publishedAt = Date.now();
-                if (previousRoster) {
-                    const previousRange = getWeekRange(previousRoster);
-                    const archiveReference = rosterHistoryCollection.doc();
-                    batch.set(archiveReference, {
-                        schemaVersion: 2,
-                        weekStart: previousRange.weekStart,
-                        weekEnd: previousRange.weekEnd,
-                        weekLabel: previousRange.weekLabel,
-                        archivedAt: publishedAt,
-                        data: previousRoster
-                    });
-                }
+                batch.set(rosterHistoryCollection.doc(), {
+                    schemaVersion: 2,
+                    weekStart: range.weekStart,
+                    weekEnd: range.weekEnd,
+                    weekLabel: range.weekLabel,
+                    archivedAt: publishedAt,
+                    publishedAt,
+                    publishedBy: auth.currentUser.uid,
+                    data
+                });
                 rosterDocuments.forEach(table => {
                     const tableData = {
                         schemaVersion: data.schemaVersion,
@@ -5687,6 +5935,182 @@
             }
         }
 
+        function showHistoryPinResult(title, message, kind = 'success') {
+            const description = document.getElementById('historyPinDescription');
+            const icon = document.getElementById('historyPinModalIcon');
+            document.getElementById('historyPinTitle').textContent = title;
+            description.textContent = message;
+            description.classList.toggle('history-pin-feedback', kind === 'error');
+            description.dataset.kind = kind;
+            icon.dataset.kind = kind;
+            icon.innerHTML = kind === 'error'
+                ? '<i class="fa-solid fa-circle-exclamation"></i>'
+                : `<i class="fa-solid ${title.includes('PIN saved') ? 'fa-shield-halved' : 'fa-circle-check'}"></i>`;
+            document.getElementById('historyPinForm').hidden = true;
+            document.getElementById('historyPinResultActions').hidden = false;
+            document.getElementById('historyPinDoneBtn').focus();
+        }
+
+        const HISTORY_PIN_ITERATIONS = 210000;
+
+        async function deriveHistoryPinHash(pin, saltHex) {
+            if (!window.crypto || !window.crypto.subtle) {
+                throw new Error('Secure PIN hashing is unavailable in this browser.');
+            }
+            const salt = new Uint8Array(saltHex.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+            const key = await window.crypto.subtle.importKey(
+                'raw',
+                new TextEncoder().encode(pin),
+                'PBKDF2',
+                false,
+                ['deriveBits']
+            );
+            const bits = await window.crypto.subtle.deriveBits({
+                name: 'PBKDF2',
+                salt,
+                iterations: HISTORY_PIN_ITERATIONS,
+                hash: 'SHA-256'
+            }, key, 256);
+            return Array.from(new Uint8Array(bits), byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function isValidSavedHistoryPin(saved) {
+            return saved &&
+                saved.iterations === HISTORY_PIN_ITERATIONS &&
+                typeof saved.salt === 'string' &&
+                /^[a-f0-9]{32}$/.test(saved.salt) &&
+                typeof saved.hash === 'string' &&
+                /^[a-f0-9]{64}$/.test(saved.hash);
+        }
+
+        function hasLegacyPlaintextHistoryPin(saved) {
+            return Boolean(saved &&
+                typeof saved.pin === 'string' &&
+                /^\d{1,12}$/.test(saved.pin));
+        }
+
+        async function historyPinMatches(pin, saved) {
+            if (isValidSavedHistoryPin(saved)) {
+                return await deriveHistoryPinHash(pin, saved.salt) === saved.hash;
+            }
+            return hasLegacyPlaintextHistoryPin(saved) && saved.pin === pin;
+        }
+
+        function createHistoryPinSalt() {
+            const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+            return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function saveHistoryPinHash(pin) {
+            const salt = createHistoryPinSalt();
+            const hash = await deriveHistoryPinHash(pin, salt);
+            await historyDeletionPinReference.set({
+                schemaVersion: 1,
+                salt,
+                hash,
+                iterations: HISTORY_PIN_ITERATIONS,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedBy: auth.currentUser.uid
+            });
+        }
+
+        function openHistoryPinDialog(action, roster = null) {
+            if (!canManageRoster()) return;
+            historyPinAction = action === 'setPin'
+                ? { type: 'setPin' }
+                : { type: 'deleteHistory', historyId: roster.id };
+            const dialog = document.getElementById('historyPinDialog');
+            const form = document.getElementById('historyPinForm');
+            const currentField = document.getElementById('historyCurrentPinField');
+            const currentInput = document.getElementById('historyCurrentPinInput');
+            const newField = document.getElementById('historyNewPinField');
+            const newInput = document.getElementById('historyNewPinInput');
+            const modalIcon = document.getElementById('historyPinModalIcon');
+            form.reset();
+            form.hidden = false;
+            document.getElementById('historyPinResultActions').hidden = true;
+            const description = document.getElementById('historyPinDescription');
+            description.classList.remove('history-pin-feedback');
+            description.removeAttribute('data-kind');
+            currentInput.required = action !== 'setPin';
+            currentField.hidden = false;
+            newField.hidden = action !== 'setPin';
+            newInput.required = action === 'setPin';
+            document.getElementById('historyCurrentPinLabel').textContent =
+                action === 'setPin' ? 'Current deletion PIN' : 'Deletion PIN';
+            document.getElementById('historyCurrentPinHelp').textContent =
+                action === 'setPin' ? 'Leave blank only when setting the PIN for the first time.' : 'Enter the PIN to authorize deleting this roster.';
+            document.getElementById('historyPinTitle').textContent =
+                action === 'setPin' ? 'Set or change deletion PIN' : 'Delete published roster history?';
+            modalIcon.dataset.kind = action === 'setPin' ? 'warning' : 'error';
+            modalIcon.innerHTML = `<i class="fa-solid ${action === 'setPin' ? 'fa-shield-halved' : 'fa-trash-can'}"></i>`;
+            document.getElementById('historyPinDescription').textContent =
+                action === 'setPin'
+                    ? 'This page checks the PIN before deleting history. Firestore access still depends on the signed-in roster administrator; the PIN itself is a browser-side check, not a security boundary.'
+                    : `Enter the deletion PIN to permanently delete the ${roster.weekLabel} roster from history.`;
+            const submitButton = document.getElementById('historyPinSubmitBtn');
+            const submitIcon = document.createElement('i');
+            submitIcon.className = `fa-solid ${action === 'setPin' ? 'fa-key' : 'fa-trash-can'}`;
+            submitIcon.setAttribute('aria-hidden', 'true');
+            submitButton.replaceChildren(
+                submitIcon,
+                document.createTextNode(action === 'setPin' ? ' Save PIN' : ' Delete history')
+            );
+            if (!dialog.open) dialog.showModal();
+            (action === 'setPin' ? newInput : currentInput).focus();
+        }
+
+        async function submitHistoryPinAction(event) {
+            event.preventDefault();
+            if (!canManageRoster() || !historyPinAction) return;
+            const action = historyPinAction;
+            const submitButton = document.getElementById('historyPinSubmitBtn');
+            const cancelButton = document.getElementById('historyPinCancelBtn');
+            const currentPin = document.getElementById('historyCurrentPinInput').value;
+            const newPin = document.getElementById('historyNewPinInput').value;
+            submitButton.disabled = true;
+            cancelButton.disabled = true;
+            try {
+                if (action.type === 'setPin') {
+                    const savedPin = await historyDeletionPinReference.get({ source: 'server' });
+                    if (savedPin.exists && !(await historyPinMatches(currentPin, savedPin.data()))) {
+                        showHistoryPinResult('PIN update denied', 'The current deletion PIN was incorrect.', 'error');
+                        return;
+                    }
+                    await saveHistoryPinHash(newPin);
+                    showHistoryPinResult('Deletion PIN saved', 'The salted PIN hash is saved in Firestore. This page will prompt for the PIN before a history deletion.');
+                } else {
+                    const historyId = action.historyId;
+                    const savedPin = await historyDeletionPinReference.get({ source: 'server' });
+                    if (!savedPin.exists) {
+                        showHistoryPinResult('Deletion denied', 'Set a deletion PIN before deleting roster history.', 'error');
+                        return;
+                    }
+                    if (!(await historyPinMatches(currentPin, savedPin.data()))) {
+                        showHistoryPinResult('Deletion denied', 'The deletion PIN was incorrect.', 'error');
+                        return;
+                    }
+                    if (hasLegacyPlaintextHistoryPin(savedPin.data())) {
+                        await saveHistoryPinHash(currentPin);
+                    }
+                    await rosterHistoryCollection.doc(historyId).delete();
+                    archivedRosters = archivedRosters.filter(roster => roster.id !== historyId);
+                    renderHistoryList();
+                    showHistoryPinResult('History deleted successfully', 'The published roster was permanently removed from history.');
+                }
+            } catch (error) {
+                console.error('Failed to manage published roster history:', error);
+                showHistoryPinResult(
+                    'History action failed',
+                    (error && error.message) || 'The history action could not be completed. Check the connection and try again.',
+                    'error'
+                );
+            } finally {
+                submitButton.disabled = false;
+                cancelButton.disabled = false;
+            }
+        }
+
         function renderHistoryList() {
             const list = document.getElementById('rosterHistoryList');
             const status = document.getElementById('historyStatus');
@@ -5715,6 +6139,8 @@
             status.textContent = `${filtered.length} archived roster${filtered.length === 1 ? '' : 's'} found. Select a week to view it.`;
             status.hidden = false;
             filtered.forEach(roster => {
+                const entry = document.createElement('div');
+                entry.className = 'roster-history-entry';
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'roster-history-item';
@@ -5727,7 +6153,14 @@
                 archived.textContent = `Archived ${new Date(roster.archivedAt).toLocaleString()}`;
                 button.append(week, archived);
                 button.addEventListener('click', () => showArchivedRoster(roster));
-                list.appendChild(button);
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'roster-history-delete';
+                deleteButton.setAttribute('aria-label', `Delete ${roster.weekLabel} from history`);
+                deleteButton.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
+                deleteButton.addEventListener('click', () => openHistoryPinDialog('deleteHistory', roster));
+                entry.append(button, deleteButton);
+                list.appendChild(entry);
             });
         }
 
@@ -6263,7 +6696,11 @@
             const dialog = document.getElementById('authNoticeDialog');
             document.getElementById('authNoticeTitle').textContent = title;
             document.getElementById('authNoticeMessage').textContent = message;
-            document.getElementById('authNoticeIcon').innerHTML = `<i class="${icon}" aria-hidden="true"></i>`;
+            const iconContainer = document.getElementById('authNoticeIcon');
+            iconContainer.innerHTML = `<i class="${icon}" aria-hidden="true"></i>`;
+            iconContainer.dataset.kind = /user-xmark|user-slash|circle-xmark|triangle-exclamation/.test(icon)
+                ? 'error'
+                : 'success';
             if (!dialog.open) dialog.showModal();
             document.getElementById('authNoticeCloseBtn').focus();
         }
@@ -7658,7 +8095,21 @@
             document.getElementById('editorTabBtn').addEventListener('click', () => showRosterPane('editor'));
             document.getElementById('historyTabBtn').addEventListener('click', () => showRosterPane('history'));
             document.getElementById('manageAccountsTabBtn').addEventListener('click', () => showRosterPane('access'));
+            document.getElementById('setHistoryPinBtn').addEventListener('click', () => openHistoryPinDialog('setPin'));
             document.getElementById('filterHistoryBtn').addEventListener('click', renderHistoryList);
+            document.getElementById('historyPinForm').addEventListener('submit', submitHistoryPinAction);
+            document.getElementById('historyPinCancelBtn').addEventListener('click', () => {
+                document.getElementById('historyPinDialog').close();
+            });
+            document.getElementById('historyPinDoneBtn').addEventListener('click', () => {
+                document.getElementById('historyPinDialog').close();
+            });
+            document.getElementById('historyPinDialog').addEventListener('close', () => {
+                historyPinAction = null;
+            });
+            document.getElementById('historyPinDialog').addEventListener('cancel', event => {
+                if (document.getElementById('historyPinSubmitBtn').disabled) event.preventDefault();
+            });
             document.getElementById('retryFirestoreLoadBtn').addEventListener('click', () => handleAuthStateChange(auth.currentUser));
             initializeAuthUI();
 
