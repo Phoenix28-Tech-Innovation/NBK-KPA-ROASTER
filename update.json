@@ -1,17 +1,17 @@
 {
-  "version": "241cf344d7f51f011c5b4fd42f5ed4f0ad4e9dc5",
-  "versionLabel": "v8.8.2",
-  "deployedAt": "2026-11-11T16:46:19.968Z",
-  "title": "Add roster notifications and backups",
+  "version": "688f73d53d76dd1323c0ac7d3b1d86a14bce1ba8",
+  "versionLabel": "v8.8.3",
+  "deployedAt": "2026-11-16T21:27:13.693Z",
+  "title": "Add PIN-protected roster history deletion",
   "notes": [
-    "Rebuild Firebase Functions, notification controls, and scheduled roster backups."
+    "Add PIN-protected roster history deletion"
   ],
   "features": [
-    "Rebuild Firebase Functions, notification controls, and scheduled roster backups."
+    "Add PIN-protected roster history deletion"
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": false,
+  "adminOnly": true,
   "sizeBytes": 393870
 }
