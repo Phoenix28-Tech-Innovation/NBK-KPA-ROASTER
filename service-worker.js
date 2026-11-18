@@ -1,4 +1,4 @@
-const RELEASE_VERSION = 'fac3aecb2d927cfc71e7b51e23b11fa5e0d57dd3';
+const RELEASE_VERSION = '6db37fb9206d019bb7d6a25a8d658e569a1f1580';
 const RELEASE_CACHE_PREFIX = 'nbk-kpa-release-';
 const RELEASE_STATE_CACHE = 'nbk-kpa-release-state';
 const SCOPE_URL = self.registration.scope;

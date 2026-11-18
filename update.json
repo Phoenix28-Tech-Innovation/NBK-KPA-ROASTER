@@ -1,17 +1,17 @@
 {
-  "version": "fac3aecb2d927cfc71e7b51e23b11fa5e0d57dd3",
-  "versionLabel": "v8.8.11",
-  "deployedAt": "2026-11-18T13:14:16.973Z",
-  "title": "Center modals across screen sizes",
+  "version": "6db37fb9206d019bb7d6a25a8d658e569a1f1580",
+  "versionLabel": "v8.8.12",
+  "deployedAt": "2026-11-18T14:00:45.446Z",
+  "title": "Improve release notes modal and actions",
   "notes": [
-    "Improve modal positioning, icon visibility, and responsive actions across desktop and mobile layouts."
+    "General improvements and fixes."
   ],
   "features": [
-    "Improve modal positioning, icon visibility, and responsive actions across desktop and mobile layouts."
+    "General improvements and maintenance."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 411831
+  "sizeBytes": 415639
 }
