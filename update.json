@@ -1,8 +1,8 @@
 {
-  "version": "6db37fb9206d019bb7d6a25a8d658e569a1f1580",
-  "versionLabel": "v8.8.12",
-  "deployedAt": "2026-11-18T14:00:45.446Z",
-  "title": "Improve release notes modal and actions",
+  "version": "dfaecc03fc115e177ebd38967547157335d2e0ed",
+  "versionLabel": "v8.8.13",
+  "deployedAt": "2026-11-18T14:23:12.758Z",
+  "title": "Remove stale history PIN releases",
   "notes": [
     "General improvements and fixes."
   ],
