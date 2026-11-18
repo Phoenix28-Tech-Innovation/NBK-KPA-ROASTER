@@ -1,17 +1,17 @@
 {
-  "version": "d60585cf2a8d3468628dfafcf214aed57cfb213b",
-  "versionLabel": "v8.8.7",
-  "deployedAt": "2026-11-18T11:15:33.420Z",
-  "title": "Deployment d60585c",
+  "version": "68c11a7759c64a45a681ce343469f8a9c9960418",
+  "versionLabel": "v8.8.8",
+  "deployedAt": "2026-11-18T11:57:32.742Z",
+  "title": "Align history PIN modal with update prompt",
   "notes": [
-    "General improvements and fixes."
+    "Match the history PIN dialog width to the centered update-available dialog."
   ],
   "features": [
-    "General improvements and maintenance."
+    "Match the history PIN dialog width to the centered update-available dialog."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 422327
+  "sizeBytes": 422395
 }
