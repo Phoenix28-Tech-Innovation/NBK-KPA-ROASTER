@@ -1,17 +1,17 @@
 {
-  "version": "68c11a7759c64a45a681ce343469f8a9c9960418",
-  "versionLabel": "v8.8.8",
-  "deployedAt": "2026-11-18T11:57:32.742Z",
-  "title": "Align history PIN modal with update prompt",
+  "version": "a38a9d75fcc2e81b2453437a94bf72d36812bf8b",
+  "versionLabel": "v8.8.9",
+  "deployedAt": "2026-11-18T12:34:18.099Z",
+  "title": "Secure roster history PIN operations",
   "notes": [
-    "Match the history PIN dialog width to the centered update-available dialog."
+    "Verify PIN changes and deletions through authenticated Firebase callables."
   ],
   "features": [
-    "Match the history PIN dialog width to the centered update-available dialog."
+    "Verify PIN changes and deletions through authenticated Firebase callables."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 422395
+  "sizeBytes": 418958
 }
