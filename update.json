@@ -1,17 +1,17 @@
 {
-  "version": "41704728b865d2952361ae92b7ea1c2ef7b6401b",
-  "versionLabel": "v8.8.5",
-  "deployedAt": "2026-11-18T09:28:34.629Z",
-  "title": "Improve PWA assets and roster status",
+  "version": "17cabc2b5e8ef18c06477d3a4e2acbae7986c949",
+  "versionLabel": "v8.8.6",
+  "deployedAt": "2026-11-18T10:24:10.327Z",
+  "title": "Publish history PIN controls",
   "notes": [
-    "Add browser-compatible favicon variants, PWA metadata, offline static asset caching, and operational connectivity and session indicators."
+    "Expose PIN setup and confirmation dialogs in the GitHub Pages source. Add PIN-gated deletion controls for archived roster history."
   ],
   "features": [
-    "Add browser-compatible favicon variants, PWA metadata, offline static asset caching, and operational connectivity and session indicators."
+    "Expose PIN setup and confirmation dialogs in the GitHub Pages source. Add PIN-gated deletion controls for archived roster history."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": false,
-  "sizeBytes": 407445
+  "adminOnly": true,
+  "sizeBytes": 422327
 }
