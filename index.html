@@ -308,6 +308,21 @@
             background-color: #f0fdf4 !important;
         }
 
+        dialog[open] {
+            position: fixed;
+            inset: 0;
+            box-sizing: border-box;
+            max-width: calc(100vw - 1rem);
+            max-height: calc(100vh - 1rem);
+            max-height: calc(100dvh - 1rem);
+            margin: auto;
+            overscroll-behavior: contain;
+        }
+        dialog::backdrop {
+            background: rgba(9,20,39,0.58);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
         .release-dialog {
             width: min(42rem, calc(100% - 2rem));
             max-height: min(88vh, 52rem);
@@ -350,6 +365,22 @@
             box-shadow: 0 10px 24px rgba(49,105,187,0.16), inset 0 1px 0 #fff;
             color: #3478e5;
             font-size: 1.2rem;
+        }
+        .release-progress-mark {
+            display: grid;
+            width: 3.5rem;
+            height: 3.5rem;
+            margin: 0 auto 1rem;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 1.2rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(214,232,255,0.76));
+            box-shadow: 0 10px 24px rgba(49,105,187,0.16), inset 0 1px 0 #fff;
+            color: #3478e5;
+            font-size: 1.2rem;
+        }
+        #releaseProgressDialog {
+            text-align: center;
         }
         #releaseUpdateTitle {
             margin: 0;
@@ -406,17 +437,20 @@
         .release-notes-shell {
             position: relative;
             padding: clamp(1.25rem, 5vw, 2.4rem);
+            text-align: center;
         }
         .release-notes-topline {
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
             gap: 1rem;
         }
         .release-notes-brand {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 0.85rem;
+            text-align: center;
         }
         .release-notes-mark {
             display: grid;
@@ -477,6 +511,7 @@
             border-radius: 1.1rem;
             background: rgba(255,255,255,0.5);
             box-shadow: 0 8px 24px rgba(36,61,97,0.06), inset 0 1px 0 rgba(255,255,255,0.88);
+            text-align: left;
         }
         .release-notes-section[data-kind="features"] {
             border-color: rgba(96,165,250,0.3);
@@ -531,12 +566,13 @@
         }
         .release-notes-footer {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
             gap: 1rem;
             margin-top: 1.25rem;
             padding-top: 1rem;
             border-top: 1px solid rgba(111,137,171,0.16);
+            text-align: center;
         }
         .release-notes-deployed {
             color: #8292a7;
@@ -584,15 +620,19 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         @media (max-width: 520px) {
-            .release-dialog { width: calc(100% - 1rem); border-radius: 1.25rem; }
+            dialog[open] {
+                max-width: calc(100vw - 1rem);
+                max-height: calc(100vh - 1rem);
+                max-height: calc(100dvh - 1rem);
+            }
+            .release-dialog { width: calc(100vw - 1rem); border-radius: 1.25rem; }
             .release-dialog:not(#releaseNotesDialog) { padding: 1.35rem; }
             #releaseUpdateDialog { padding: 1.5rem 1.15rem; }
-            .release-update-actions { flex-direction: column-reverse; }
+            .release-update-actions { flex-direction: column; }
             .release-update-actions button { width: 100%; }
-            .release-notes-topline { flex-direction: column; }
-            .release-version-pill { margin-left: 4.05rem; }
+            .release-version-pill { margin-left: 0; }
             .release-notes-section { padding: 0.85rem; }
-            .release-notes-footer { align-items: flex-end; }
+            .release-notes-footer button { width: 100%; }
         }
         @media (prefers-reduced-motion: reduce) {
             .release-download-track[data-indeterminate="true"] .release-download-fill {
@@ -1206,11 +1246,15 @@
             z-index: 3100;
             display: grid;
             place-items: center;
-            padding: 1rem;
+            padding: max(1rem, env(safe-area-inset-top))
+                max(1rem, env(safe-area-inset-right))
+                max(1rem, env(safe-area-inset-bottom))
+                max(1rem, env(safe-area-inset-left));
             background: rgba(15, 23, 42, 0.58);
             backdrop-filter: blur(7px);
             opacity: 0;
             transition: opacity 0.18s ease;
+            overflow-y: auto;
         }
         .confirm-overlay[hidden] {
             display: none;
@@ -1220,6 +1264,10 @@
         }
         .confirm-card {
             width: min(100%, 27rem);
+            max-height: calc(100vh - 2rem);
+            max-height: calc(100dvh - 2rem);
+            box-sizing: border-box;
+            overflow-y: auto;
             padding: 1.65rem;
             border: 1px solid rgba(255,255,255,0.8);
             border-radius: 1.5rem;
@@ -1227,6 +1275,7 @@
             box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
             transform: translateY(12px) scale(0.98);
             transition: transform 0.2s ease;
+            text-align: center;
         }
         .confirm-overlay.is-open .confirm-card {
             transform: translateY(0) scale(1);
@@ -1236,7 +1285,7 @@
             width: 3.5rem;
             height: 3.5rem;
             place-items: center;
-            margin-bottom: 1rem;
+            margin: 0 auto 1rem;
             border: 1px solid var(--confirm-border);
             border-radius: 1.15rem;
             background: var(--confirm-soft);
@@ -1260,7 +1309,7 @@
         }
         .confirm-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
             gap: 0.65rem;
         }
         .confirm-actions button {
@@ -2291,6 +2340,9 @@
         }
         .auth-notice-dialog {
             width: min(calc(100% - 2rem), 25rem);
+            max-height: min(88vh, 40rem);
+            max-height: min(88dvh, 40rem);
+            overflow-y: auto;
             padding: 0;
             border: 1px solid rgba(255,255,255,0.86);
             border-radius: 1.5rem;
@@ -2308,10 +2360,13 @@
             animation: auth-backdrop-enter 180ms ease-out both;
         }
         .auth-notice-content {
+            display: grid;
+            justify-items: center;
             padding: 1.6rem;
+            text-align: center;
         }
         .auth-notice-content .auth-state-icon {
-            margin-left: 0;
+            margin: 0 auto 1rem;
         }
         .auth-notice-content h2 {
             margin: 0;
@@ -2322,6 +2377,7 @@
             color: #718198;
             font-size: 0.84rem;
             line-height: 1.6;
+            overflow-wrap: anywhere;
         }
         .auth-modal-close {
             width: 100%;
@@ -2983,14 +3039,15 @@
                 text-align: center;
             }
             .confirm-card {
-                max-height: calc(100vh - 2rem);
-                max-height: calc(100dvh - 2rem);
-                overflow-y: auto;
                 padding: 1.25rem;
                 border-radius: 1.25rem;
             }
+            .confirm-actions {
+                flex-direction: column;
+            }
             .confirm-actions button {
                 min-height: 2.8rem;
+                width: 100%;
             }
         }
         @media (max-width: 420px) {
@@ -4733,7 +4790,7 @@
 <!-- Action-aware confirmation modal -->
 <div id="confirmModal" class="confirm-overlay" hidden>
     <section class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
-        <div class="confirm-icon" id="confirmIcon"><i class="fa-solid fa-circle-question"></i></div>
+        <div class="confirm-icon" id="confirmIcon" aria-hidden="true"><i class="fa-solid fa-circle-question"></i></div>
         <h2 class="confirm-title" id="confirmTitle">Are you sure?</h2>
         <p class="confirm-message" id="confirmMessage"></p>
         <div class="confirm-actions">
@@ -4763,6 +4820,7 @@
     </div>
 </dialog>
 <dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
+    <span class="release-progress-mark" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-down"></i></span>
     <h2 id="releaseProgressTitle">Downloading update</h2>
     <p id="releaseProgressMessage">Preparing your update…</p>
     <div class="release-download-track" id="releaseDownloadTrack" role="progressbar" aria-label="Update download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-indeterminate="true">
