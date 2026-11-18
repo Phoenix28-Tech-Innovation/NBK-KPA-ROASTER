@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate published history PIN controls
+        run: |
+          node -e "const fs = require('fs'); const html = fs.readFileSync('index.html', 'utf8'); const required = ['setHistoryPinBtn', 'historyPinDialog', 'historyPinForm', 'function openHistoryPinDialog', 'function submitHistoryPinAction', 'roster-history-delete']; const missing = required.filter(value => !html.includes(value)); if (missing.length) { console.error('Published index.html is missing history PIN controls:', missing.join(', ')); process.exit(1); }"
       - name: Create update manifest
         uses: actions/github-script@v7
         with:
