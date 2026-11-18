@@ -333,11 +333,8 @@
         .release-dialog:not(#releaseNotesDialog) {
             padding: 2rem;
         }
-        #historyPinDialog,
         #releaseUpdateDialog {
             width: min(34rem, calc(100% - 2rem));
-        }
-        #releaseUpdateDialog {
             overflow: hidden;
             text-align: center;
         }
@@ -4792,7 +4789,7 @@
         <label class="history-pin-field" id="historyNewPinField" hidden>
             <span><i class="fa-solid fa-key text-slate-400" aria-hidden="true"></i> New deletion PIN</span>
             <input id="historyNewPinInput" type="password" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" autocomplete="new-password" />
-            <small>Use 6 to 12 digits. A salted hash is stored in Firestore.</small>
+            <small>Use 6 to 12 digits. The server stores only a salted verifier.</small>
         </label>
         <div class="mt-6 flex justify-end gap-3" id="historyPinFormActions">
             <button type="button" class="release-secondary" id="historyPinCancelBtn"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Cancel</button>
@@ -5298,6 +5295,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
     const firebaseConfig = {
         apiKey: 'AIzaSyDB6JHK3d2v1xO4_InvHZDqbE-m7-43kuY',
@@ -5310,6 +5308,7 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const firestore = firebase.firestore();
+    const historyPinFunctions = firebase.app().functions('europe-west1');
     const rosterAdminEmail = 'phoenix28.tech@gmail.com';
     const rosterAccessCollection = firestore.collection('rosterAccess');
     const rosterAccessRequestsCollection = firestore.collection('rosterAccessRequests');
@@ -5324,7 +5323,6 @@
     const legacyRosterDocument = firestore.collection('rosters').doc('main');
     const rosterDraftReference = firestore.collection('rosterDrafts').doc('current');
     const rosterHistoryCollection = firestore.collection('rosterHistory');
-    const historyDeletionPinReference = firestore.collection('systemSecrets').doc('rosterHistoryDeletion');
     const systemSettingsReference = firestore.collection('systemSettings').doc('current');
     const rosterPublishesCollection = firestore.collection('rosterPublishes');
     const adminNotificationSettingsReference = firestore.collection('notificationSettings').doc('admin');
@@ -6515,69 +6513,6 @@
             document.getElementById('historyPinDoneBtn').focus();
         }
 
-        const HISTORY_PIN_ITERATIONS = 210000;
-
-        async function deriveHistoryPinHash(pin, saltHex) {
-            if (!window.crypto || !window.crypto.subtle) {
-                throw new Error('Secure PIN hashing is unavailable in this browser.');
-            }
-            const salt = new Uint8Array(saltHex.match(/.{2}/g).map(byte => parseInt(byte, 16)));
-            const key = await window.crypto.subtle.importKey(
-                'raw',
-                new TextEncoder().encode(pin),
-                'PBKDF2',
-                false,
-                ['deriveBits']
-            );
-            const bits = await window.crypto.subtle.deriveBits({
-                name: 'PBKDF2',
-                salt,
-                iterations: HISTORY_PIN_ITERATIONS,
-                hash: 'SHA-256'
-            }, key, 256);
-            return Array.from(new Uint8Array(bits), byte => byte.toString(16).padStart(2, '0')).join('');
-        }
-
-        function isValidSavedHistoryPin(saved) {
-            return saved &&
-                saved.iterations === HISTORY_PIN_ITERATIONS &&
-                typeof saved.salt === 'string' &&
-                /^[a-f0-9]{32}$/.test(saved.salt) &&
-                typeof saved.hash === 'string' &&
-                /^[a-f0-9]{64}$/.test(saved.hash);
-        }
-
-        function hasLegacyPlaintextHistoryPin(saved) {
-            return Boolean(saved &&
-                typeof saved.pin === 'string' &&
-                /^\d{1,12}$/.test(saved.pin));
-        }
-
-        async function historyPinMatches(pin, saved) {
-            if (isValidSavedHistoryPin(saved)) {
-                return await deriveHistoryPinHash(pin, saved.salt) === saved.hash;
-            }
-            return hasLegacyPlaintextHistoryPin(saved) && saved.pin === pin;
-        }
-
-        function createHistoryPinSalt() {
-            const bytes = window.crypto.getRandomValues(new Uint8Array(16));
-            return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
-        }
-
-        async function saveHistoryPinHash(pin) {
-            const salt = createHistoryPinSalt();
-            const hash = await deriveHistoryPinHash(pin, salt);
-            await historyDeletionPinReference.set({
-                schemaVersion: 1,
-                salt,
-                hash,
-                iterations: HISTORY_PIN_ITERATIONS,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedBy: auth.currentUser.uid
-            });
-        }
-
         function openHistoryPinDialog(action, roster = null) {
             if (!canManageRoster()) return;
             historyPinAction = action === 'setPin'
@@ -6611,7 +6546,7 @@
             modalIcon.dataset.kind = action === 'setPin' ? 'warning' : 'error';
             modalIcon.innerHTML = `<i class="fa-solid ${action === 'setPin' ? 'fa-shield-halved' : 'fa-trash-can'}"></i>`;
             description.textContent = action === 'setPin'
-                ? 'This page checks the PIN before deleting history. Firestore access still depends on the signed-in roster administrator; the PIN itself is a browser-side check, not a security boundary.'
+                ? 'The server verifies this PIN before changing it. Only a salted verifier is stored; the browser cannot read it or bypass verification.'
                 : `Enter the deletion PIN to permanently delete the ${roster.weekLabel} roster from history.`;
             const submitButton = document.getElementById('historyPinSubmitBtn');
             const submitIcon = document.createElement('i');
@@ -6637,27 +6572,16 @@
             cancelButton.disabled = true;
             try {
                 if (action.type === 'setPin') {
-                    const savedPin = await historyDeletionPinReference.get({ source: 'server' });
-                    if (savedPin.exists && !(await historyPinMatches(currentPin, savedPin.data()))) {
-                        showHistoryPinResult('PIN update denied', 'The current deletion PIN was incorrect.', 'error');
-                        return;
-                    }
-                    await saveHistoryPinHash(newPin);
-                    showHistoryPinResult('Deletion PIN saved', 'The salted PIN hash is saved in Firestore. This page will prompt for the PIN before a history deletion.');
+                    await historyPinFunctions.httpsCallable('setRosterHistoryPin')({
+                        currentPin,
+                        newPin
+                    });
+                    showHistoryPinResult('Deletion PIN saved', 'The server has saved a salted PIN verifier. The PIN itself is not stored.');
                 } else {
-                    const savedPin = await historyDeletionPinReference.get({ source: 'server' });
-                    if (!savedPin.exists) {
-                        showHistoryPinResult('Deletion denied', 'Set a deletion PIN before deleting roster history.', 'error');
-                        return;
-                    }
-                    if (!(await historyPinMatches(currentPin, savedPin.data()))) {
-                        showHistoryPinResult('Deletion denied', 'The deletion PIN was incorrect.', 'error');
-                        return;
-                    }
-                    if (hasLegacyPlaintextHistoryPin(savedPin.data())) {
-                        await saveHistoryPinHash(currentPin);
-                    }
-                    await rosterHistoryCollection.doc(action.historyId).delete();
+                    await historyPinFunctions.httpsCallable('deleteRosterHistory')({
+                        historyId: action.historyId,
+                        pin: currentPin
+                    });
                     archivedRosters = archivedRosters.filter(roster => roster.id !== action.historyId);
                     renderHistoryList();
                     showHistoryPinResult('History deleted successfully', 'The published roster was permanently removed from history.');

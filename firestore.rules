@@ -88,31 +88,15 @@ service cloud.firestore {
       allow get, list: if isRosterAdmin();
       allow create: if isRosterAdmin();
       allow update: if false;
-      allow delete: if isRosterAdmin();
+      allow delete: if false;
     }
 
     match /systemSecrets/{secretId} {
-      allow get: if isRosterAdmin() && secretId == 'rosterHistoryDeletion';
-      allow list: if false;
-      allow create, update: if isRosterAdmin()
-        && secretId == 'rosterHistoryDeletion'
-        && request.resource.data.keys().hasOnly([
-          'schemaVersion', 'salt', 'hash', 'iterations', 'updatedAt', 'updatedBy'
-        ])
-        && request.resource.data.keys().hasAll([
-          'schemaVersion', 'salt', 'hash', 'iterations', 'updatedAt', 'updatedBy'
-        ])
-        && request.resource.data.schemaVersion is int
-        && request.resource.data.schemaVersion == 1
-        && request.resource.data.salt is string
-        && request.resource.data.salt.matches('^[a-f0-9]{32}$')
-        && request.resource.data.hash is string
-        && request.resource.data.hash.matches('^[a-f0-9]{64}$')
-        && request.resource.data.iterations is int
-        && request.resource.data.iterations == 210000
-        && request.resource.data.updatedAt == request.time
-        && request.resource.data.updatedBy == request.auth.uid;
-      allow delete: if false;
+      allow read, write: if false;
+    }
+
+    match /historyPinAttempts/{uid} {
+      allow read, write: if false;
     }
 
     match /rosterPublishes/{publishId} {

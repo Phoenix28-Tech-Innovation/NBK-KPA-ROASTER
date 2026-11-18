@@ -1,5 +1,7 @@
 'use strict';
 
+const { pbkdf2, randomBytes, timingSafeEqual } = require('node:crypto');
+const { promisify } = require('node:util');
 const { initializeApp } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
 const { FieldValue, Timestamp, getFirestore } = require('firebase-admin/firestore');
@@ -10,6 +12,7 @@ const {
 } = require('firebase-functions/v2/firestore');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { setGlobalOptions } = require('firebase-functions/v2');
+const { HttpsError, onCall } = require('firebase-functions/v2/https');
 
 initializeApp();
 setGlobalOptions({ region: 'europe-west1', maxInstances: 10 });
@@ -18,6 +21,13 @@ const db = getFirestore();
 const DEFAULT_ADMIN_EMAIL = 'phoenix28.tech@gmail.com';
 const ROSTER_IDS = ['island-mombasa', 'mainland-likoni'];
 const RETAINED_BACKUPS = 12;
+const HISTORY_PIN_ITERATIONS = 210000;
+const HISTORY_PIN_MAX_ATTEMPTS = 5;
+const HISTORY_PIN_LOCKOUT_MS = 15 * 60 * 1000;
+const HISTORY_PIN_WINDOW_MS = 15 * 60 * 1000;
+const HISTORY_PIN_PATTERN = /^\d{6,12}$/;
+const historyPinPbkdf2 = promisify(pbkdf2);
+const historyPinReference = db.doc('systemSecrets/rosterHistoryDeletion');
 
 const DEFAULT_EVENTS = Object.freeze({
   newAccessRequest: { inApp: true, email: false },
@@ -31,6 +41,200 @@ const DEFAULT_EVENTS = Object.freeze({
 function normalizedEmail(value) {
   return typeof value === 'string' ? value.trim().toLowerCase() : '';
 }
+
+function requireRosterAdmin(request) {
+  const token = request.auth && request.auth.token;
+  if (!token || token.email_verified !== true ||
+      normalizedEmail(token.email) !== DEFAULT_ADMIN_EMAIL) {
+    throw new HttpsError('permission-denied', 'Only the verified roster administrator can manage history.');
+  }
+  return request.auth.uid;
+}
+
+function validateHistoryPin(pin, fieldName) {
+  if (typeof pin !== 'string' || !HISTORY_PIN_PATTERN.test(pin)) {
+    throw new HttpsError('invalid-argument', `${fieldName} must contain 6 to 12 digits.`);
+  }
+}
+
+async function deriveHistoryPinHash(pin, salt) {
+  return historyPinPbkdf2(pin, salt, HISTORY_PIN_ITERATIONS, 32, 'sha256');
+}
+
+async function createHistoryPinRecord(pin, uid) {
+  const salt = randomBytes(16);
+  const hash = await deriveHistoryPinHash(pin, salt);
+  return {
+    schemaVersion: 1,
+    salt: salt.toString('hex'),
+    hash: hash.toString('hex'),
+    iterations: HISTORY_PIN_ITERATIONS,
+    updatedAt: FieldValue.serverTimestamp(),
+    updatedBy: uid
+  };
+}
+
+async function historyPinMatches(pin, saved) {
+  if (saved && typeof saved.pin === 'string' && /^\d{6,12}$/.test(saved.pin)) {
+    const candidate = Buffer.from(pin);
+    const expected = Buffer.from(saved.pin);
+    return candidate.length === expected.length && timingSafeEqual(candidate, expected);
+  }
+  if (!saved || saved.schemaVersion !== 1 ||
+      saved.iterations !== HISTORY_PIN_ITERATIONS ||
+      typeof saved.salt !== 'string' || !/^[a-f0-9]{32}$/.test(saved.salt) ||
+      typeof saved.hash !== 'string' || !/^[a-f0-9]{64}$/.test(saved.hash)) {
+    return false;
+  }
+  const candidate = await deriveHistoryPinHash(pin, Buffer.from(saved.salt, 'hex'));
+  const expected = Buffer.from(saved.hash, 'hex');
+  return candidate.length === expected.length && timingSafeEqual(candidate, expected);
+}
+
+function getHistoryPinAttemptState(snapshot, now) {
+  const data = snapshot.exists ? snapshot.data() : {};
+  const savedWindowStart = Number.isSafeInteger(data.windowStartedAtMs)
+    ? data.windowStartedAtMs
+    : now;
+  if (now - savedWindowStart >= HISTORY_PIN_WINDOW_MS) {
+    return { failedAttempts: 0, windowStartedAtMs: now, lockedUntilMs: 0 };
+  }
+  const lockedUntilMs = Number.isSafeInteger(data.lockedUntilMs) ? data.lockedUntilMs : 0;
+  return {
+    failedAttempts: Number.isSafeInteger(data.failedAttempts) ? data.failedAttempts : 0,
+    windowStartedAtMs: savedWindowStart,
+    lockedUntilMs
+  };
+}
+
+function recordHistoryPinFailure(transaction, reference, state, now) {
+  const failedAttempts = state.failedAttempts + 1;
+  const lockedUntilMs = failedAttempts >= HISTORY_PIN_MAX_ATTEMPTS
+    ? now + HISTORY_PIN_LOCKOUT_MS
+    : 0;
+  transaction.set(reference, {
+    failedAttempts,
+    windowStartedAtMs: state.windowStartedAtMs,
+    lockedUntilMs,
+    updatedAtMs: now
+  });
+  return lockedUntilMs;
+}
+
+function throwHistoryPinOutcome(outcome) {
+  if (outcome === 'locked') {
+    throw new HttpsError('resource-exhausted', 'Too many incorrect PIN attempts. Try again in 15 minutes.');
+  }
+  if (outcome === 'invalid-pin') {
+    throw new HttpsError('permission-denied', 'The deletion PIN is incorrect.');
+  }
+  if (outcome === 'pin-not-set') {
+    throw new HttpsError('failed-precondition', 'Set a deletion PIN before deleting roster history.');
+  }
+  if (outcome === 'invalid-verifier') {
+    throw new HttpsError('failed-precondition', 'The saved PIN verifier is invalid. Set a new PIN.');
+  }
+  if (outcome === 'no-current-pin') {
+    throw new HttpsError('failed-precondition', 'No PIN exists yet; leave the current PIN blank to set the first one.');
+  }
+  if (outcome === 'history-not-found') {
+    throw new HttpsError('not-found', 'The selected archived roster no longer exists.');
+  }
+  throw new HttpsError('internal', 'The history PIN operation could not be completed.');
+}
+
+exports.setRosterHistoryPin = onCall(async request => {
+  const uid = requireRosterAdmin(request);
+  const data = request.data && typeof request.data === 'object' ? request.data : {};
+  const currentPin = data.currentPin === undefined ? '' : data.currentPin;
+  validateHistoryPin(data.newPin, 'New PIN');
+  if (currentPin !== '' && (typeof currentPin !== 'string' || !HISTORY_PIN_PATTERN.test(currentPin))) {
+    throw new HttpsError('invalid-argument', 'Current PIN must contain 6 to 12 digits.');
+  }
+
+  const newRecord = await createHistoryPinRecord(data.newPin, uid);
+  const attemptsReference = db.doc(`historyPinAttempts/${uid}`);
+  let outcome = 'success';
+  await db.runTransaction(async transaction => {
+    outcome = 'success';
+    const [savedPin, attempts] = await Promise.all([
+      transaction.get(historyPinReference),
+      transaction.get(attemptsReference)
+    ]);
+    const now = Date.now();
+    const state = getHistoryPinAttemptState(attempts, now);
+    if (state.lockedUntilMs > now) {
+      outcome = 'locked';
+      return;
+    }
+
+    if (savedPin.exists) {
+      if (!await historyPinMatches(currentPin, savedPin.data())) {
+        outcome = 'invalid-pin';
+        const lockedUntilMs = recordHistoryPinFailure(transaction, attemptsReference, state, now);
+        if (lockedUntilMs > now) outcome = 'locked';
+        return;
+      }
+    } else if (currentPin !== '') {
+      outcome = 'no-current-pin';
+      return;
+    }
+
+    transaction.set(historyPinReference, newRecord);
+    if (attempts.exists) transaction.delete(attemptsReference);
+  });
+  if (outcome !== 'success') throwHistoryPinOutcome(outcome);
+  return { ok: true };
+});
+
+exports.deleteRosterHistory = onCall(async request => {
+  const uid = requireRosterAdmin(request);
+  const data = request.data && typeof request.data === 'object' ? request.data : {};
+  validateHistoryPin(data.pin, 'PIN');
+  if (typeof data.historyId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(data.historyId)) {
+    throw new HttpsError('invalid-argument', 'The selected history record is invalid.');
+  }
+
+  const attemptsReference = db.doc(`historyPinAttempts/${uid}`);
+  const historyReference = db.collection('rosterHistory').doc(data.historyId);
+  let outcome = 'success';
+  await db.runTransaction(async transaction => {
+    outcome = 'success';
+    const [savedPin, attempts, historyRecord] = await Promise.all([
+      transaction.get(historyPinReference),
+      transaction.get(attemptsReference),
+      transaction.get(historyReference)
+    ]);
+    const now = Date.now();
+    const state = getHistoryPinAttemptState(attempts, now);
+    if (state.lockedUntilMs > now) {
+      outcome = 'locked';
+      return;
+    }
+    if (!savedPin.exists) {
+      outcome = 'pin-not-set';
+      return;
+    }
+    if (!await historyPinMatches(data.pin, savedPin.data())) {
+      outcome = 'invalid-pin';
+      const lockedUntilMs = recordHistoryPinFailure(transaction, attemptsReference, state, now);
+      if (lockedUntilMs > now) outcome = 'locked';
+      return;
+    }
+    if (!historyRecord.exists) {
+      outcome = 'history-not-found';
+      return;
+    }
+
+    transaction.delete(historyReference);
+    if (typeof savedPin.data().pin === 'string') {
+      transaction.set(historyPinReference, await createHistoryPinRecord(data.pin, uid));
+    }
+    if (attempts.exists) transaction.delete(attemptsReference);
+  });
+  if (outcome !== 'success') throwHistoryPinOutcome(outcome);
+  return { ok: true };
+});
 
 function safeId(value) {
   return String(value).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 120);
