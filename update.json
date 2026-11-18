@@ -1,17 +1,17 @@
 {
-  "version": "17cabc2b5e8ef18c06477d3a4e2acbae7986c949",
-  "versionLabel": "v8.8.6",
-  "deployedAt": "2026-11-18T10:24:10.327Z",
-  "title": "Publish history PIN controls",
+  "version": "d60585cf2a8d3468628dfafcf214aed57cfb213b",
+  "versionLabel": "v8.8.7",
+  "deployedAt": "2026-11-18T11:15:33.420Z",
+  "title": "Deployment d60585c",
   "notes": [
-    "Expose PIN setup and confirmation dialogs in the GitHub Pages source. Add PIN-gated deletion controls for archived roster history."
+    "General improvements and fixes."
   ],
   "features": [
-    "Expose PIN setup and confirmation dialogs in the GitHub Pages source. Add PIN-gated deletion controls for archived roster history."
+    "General improvements and maintenance."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": true,
+  "adminOnly": false,
   "sizeBytes": 422327
 }
