@@ -3801,6 +3801,85 @@
                 animation: none;
             }
         }
+        #releaseNotesDialog {
+            width: min(42rem, calc(100vw - 2rem));
+            border: 1px solid rgba(190,211,242,0.72);
+            border-radius: 1.8rem;
+            background: linear-gradient(180deg, #f8fbff, #edf5ff);
+            box-shadow: 0 42px 120px rgba(5,18,43,0.5), inset 0 1px 0 #fff;
+        }
+        #releaseNotesDialog::backdrop {
+            background: rgba(8,18,38,0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        #releaseNotesDialog > .modal-heading {
+            width: 100%;
+            padding: clamp(1.25rem, 4vw, 2rem);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 1.45rem;
+            background: linear-gradient(135deg, #122344, #294c89 58%, #0f766e);
+            box-shadow: 0 18px 38px rgba(16,35,68,0.2), inset 0 1px 0 rgba(255,255,255,0.22);
+        }
+        #releaseNotesDialog .modal-icon {
+            width: 4.25rem;
+            height: 4.25rem;
+            border: 1px solid rgba(255,255,255,0.58);
+            border-radius: 1.3rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.28), rgba(255,255,255,0.1));
+            box-shadow: 0 10px 28px rgba(4,14,32,0.25), inset 0 1px 0 rgba(255,255,255,0.3);
+            color: #fff;
+            font-size: 1.65rem;
+        }
+        #releaseNotesDialog .modal-icon i {
+            display: block;
+            line-height: 1;
+            opacity: 1;
+            visibility: visible;
+        }
+        #releaseNotesDialog .modal-eyebrow {
+            color: #c4d9ff;
+        }
+        #releaseNotesDialog h2 {
+            color: #fff;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
+        }
+        #releaseNotesDialog > p {
+            text-align: center;
+        }
+        .release-dialog button,
+        .confirm-actions button,
+        .auth-modal-close {
+            min-height: 3rem;
+            gap: 0.55rem;
+            padding: 0.78rem 1.15rem;
+            border-radius: 0.95rem;
+            font-size: 0.84rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+        }
+        .release-dialog button i,
+        .confirm-actions button i,
+        .auth-modal-close i {
+            flex: 0 0 auto;
+            font-size: 0.95em;
+            line-height: 1;
+        }
+        @media (max-width: 520px) {
+            #releaseNotesDialog {
+                width: calc(100vw - 1rem);
+                border-radius: 1.3rem;
+            }
+            #releaseNotesDialog > .modal-heading {
+                padding: 1.15rem;
+                border-radius: 1.1rem;
+            }
+            .release-dialog button,
+            .confirm-actions button,
+            .auth-modal-close {
+                min-height: 3.1rem;
+            }
+        }
         @media print {
             @page { margin: 10mm; size: landscape; }
             body { padding: 0; background: #fff; }
@@ -4765,7 +4844,7 @@
     <p id="releaseUpdateMessage">A new version of the roster app is ready.</p>
     <p id="releaseUpdateError" role="alert" hidden></p>
     <div class="mt-6 flex justify-end gap-3">
-        <button type="button" class="release-secondary" id="releaseLaterButton">Later</button>
+        <button type="button" class="release-secondary" id="releaseLaterButton"><i class="fa-regular fa-clock" aria-hidden="true"></i> Later</button>
         <button type="button" class="release-primary" id="releaseNowButton"><i class="fa-solid fa-rotate" aria-hidden="true"></i> Update now</button>
     </div>
 </dialog>
@@ -4782,7 +4861,7 @@
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
     <div class="modal-heading">
-        <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+        <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
         <div class="modal-heading-copy">
             <span class="modal-eyebrow">Release notes</span>
             <h2 id="releaseNotesTitle">What’s new</h2>
