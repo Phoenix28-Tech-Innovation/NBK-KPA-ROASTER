@@ -1,17 +1,17 @@
 {
-  "version": "a38a9d75fcc2e81b2453437a94bf72d36812bf8b",
-  "versionLabel": "v8.8.9",
-  "deployedAt": "2026-11-18T12:34:18.099Z",
-  "title": "Secure roster history PIN operations",
+  "version": "0ad57a6aede105a07df3aa0c49818dbc51c23b38",
+  "versionLabel": "v8.8.10",
+  "deployedAt": "2026-11-18T12:50:10.631Z",
+  "title": "Remove history deletion PIN",
   "notes": [
-    "Verify PIN changes and deletions through authenticated Firebase callables."
+    "Use the existing confirmation modal before deleting archived rosters. Keep deletion restricted to the verified roster administrator."
   ],
   "features": [
-    "Verify PIN changes and deletions through authenticated Firebase callables."
+    "Use the existing confirmation modal before deleting archived rosters. Keep deletion restricted to the verified roster administrator."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": false,
-  "sizeBytes": 418958
+  "adminOnly": true,
+  "sizeBytes": 409731
 }
