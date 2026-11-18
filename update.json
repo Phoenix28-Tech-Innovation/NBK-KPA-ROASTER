@@ -1,15 +1,13 @@
 {
-  "version": "c54a543abe7f217e39e97cb5928d74239cf8c827",
-  "versionLabel": "v8.8.15",
-  "deployedAt": "2026-11-18T18:33:14.589Z",
-  "title": "Enhance published roster history actions",
+  "version": "3aa1ec7295120bbc591d3f8fe3fbde058c7a95c0",
+  "versionLabel": "v8.8.16",
+  "deployedAt": "2026-11-18T21:35:58.708Z",
+  "title": "Update roster announcement and history UI",
   "notes": [
-    "[feature] Improve mobile archive list and roster preview layouts.",
-    "[feature] Restore archived weeks to the draft editor, export CSV and PNG, and bulk-delete selected archives."
+    "General improvements and fixes."
   ],
   "features": [
-    "Improve mobile archive list and roster preview layouts.",
-    "Restore archived weeks to the draft editor, export CSV and PNG, and bulk-delete selected archives."
+    "General improvements and maintenance."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
