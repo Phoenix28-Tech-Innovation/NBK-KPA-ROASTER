@@ -88,14 +88,10 @@ service cloud.firestore {
       allow get, list: if isRosterAdmin();
       allow create: if isRosterAdmin();
       allow update: if false;
-      allow delete: if false;
+      allow delete: if isRosterAdmin();
     }
 
     match /systemSecrets/{secretId} {
-      allow read, write: if false;
-    }
-
-    match /historyPinAttempts/{uid} {
       allow read, write: if false;
     }
 

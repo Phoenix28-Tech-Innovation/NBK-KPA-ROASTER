@@ -19,9 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate published history PIN controls
+      - name: Validate published history deletion flow
         run: |
-          node -e "const fs = require('fs'); const html = fs.readFileSync('index.html', 'utf8'); const required = ['setHistoryPinBtn', 'historyPinDialog', 'historyPinForm', 'function openHistoryPinDialog', 'function submitHistoryPinAction', 'roster-history-delete', 'firebase-functions-compat.js', 'httpsCallable', 'setRosterHistoryPin', 'deleteRosterHistory']; const missing = required.filter(value => !html.includes(value)); const forbidden = ['systemSecrets', 'rosterHistoryCollection.doc(action.historyId).delete()'].filter(value => html.includes(value)); if (missing.length || forbidden.length) { if (missing.length) console.error('Published index.html is missing secure history PIN controls:', missing.join(', ')); if (forbidden.length) console.error('Published index.html contains unsafe client-side PIN operations:', forbidden.join(', ')); process.exit(1); }"
+          node -e "const fs = require('fs'); const html = fs.readFileSync('index.html', 'utf8'); const rules = fs.readFileSync('firestore.rules', 'utf8'); const required = ['id=\"confirmModal\"', 'function confirmAction(', 'async function deleteArchivedRoster(', 'rosterHistoryCollection.doc(roster.id).delete()', 'roster-history-delete']; const missing = required.filter(value => !html.includes(value)); const forbidden = ['setHistoryPinBtn', 'historyPinDialog', 'firebase-functions-compat.js', 'httpsCallable', 'setRosterHistoryPin', 'deleteRosterHistory'].filter(value => html.includes(value)); if (!rules.includes('allow delete: if isRosterAdmin();')) missing.push('admin-only rosterHistory delete rule'); if (missing.length || forbidden.length) { if (missing.length) console.error('Published index.html or firestore.rules is missing the confirmation-only history deletion flow:', missing.join(', ')); if (forbidden.length) console.error('Published index.html still contains PIN-based deletion:', forbidden.join(', ')); process.exit(1); }"
       - name: Create update manifest
         uses: actions/github-script@v7
         with:

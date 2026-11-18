@@ -447,36 +447,6 @@
             from { opacity: 0; transform: translateY(10px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .history-pin-field {
-            display: grid;
-            gap: 0.4rem;
-            margin-top: 1rem;
-            color: #334155;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-        .history-pin-field input {
-            width: 100%;
-            padding: 0.7rem 0.8rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.65rem;
-            font: inherit;
-            transition: border-color 150ms ease, box-shadow 150ms ease;
-        }
-        .history-pin-field input:focus {
-            border-color: #60a5fa;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
-        }
-        .history-pin-field small {
-            color: #718198;
-            font-size: 0.72rem;
-            font-weight: 500;
-            line-height: 1.5;
-        }
-        .history-pin-feedback[data-kind="error"] {
-            color: #b91c1c;
-        }
         .roster-history-entry {
             display: flex;
             align-items: stretch;
@@ -4571,7 +4541,6 @@
                 <p class="mt-1 text-sm text-slate-500">Only the roster administrator can view these archived weeks.</p>
             </div>
             <div class="flex flex-wrap items-end gap-3">
-                <button type="button" class="btn-premium btn-premium-outline" id="setHistoryPinBtn"><i class="fa-solid fa-key"></i> Set deletion PIN</button>
                 <label class="grid gap-1 text-xs font-bold text-slate-600">
                     From week
                     <input id="historyFromDate" type="date" class="premium-select" />
@@ -4721,36 +4690,6 @@
         </div>
     </section>
 </div>
-
-<dialog id="historyPinDialog" class="release-dialog" aria-labelledby="historyPinTitle" aria-describedby="historyPinDescription">
-    <div class="modal-heading">
-        <span class="modal-icon" id="historyPinModalIcon" data-kind="warning" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
-        <div class="modal-heading-copy">
-            <span class="modal-eyebrow">Published roster history</span>
-            <h2 id="historyPinTitle">History security</h2>
-        </div>
-    </div>
-    <p id="historyPinDescription"></p>
-    <form id="historyPinForm">
-        <label class="history-pin-field" id="historyCurrentPinField">
-            <span><i class="fa-solid fa-key text-slate-400" aria-hidden="true"></i> <span id="historyCurrentPinLabel">Deletion PIN</span></span>
-            <input id="historyCurrentPinInput" type="password" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" autocomplete="off" />
-            <small id="historyCurrentPinHelp">Required to authorize this action.</small>
-        </label>
-        <label class="history-pin-field" id="historyNewPinField" hidden>
-            <span><i class="fa-solid fa-key text-slate-400" aria-hidden="true"></i> New deletion PIN</span>
-            <input id="historyNewPinInput" type="password" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" autocomplete="new-password" />
-            <small>Use 6 to 12 digits. The server stores only a salted verifier.</small>
-        </label>
-        <div class="mt-6 flex justify-end gap-3" id="historyPinFormActions">
-            <button type="button" class="release-secondary" id="historyPinCancelBtn"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Cancel</button>
-            <button type="submit" class="release-primary" id="historyPinSubmitBtn"><i class="fa-solid fa-lock" aria-hidden="true"></i> Continue</button>
-        </div>
-    </form>
-    <div class="mt-6 flex justify-end" id="historyPinResultActions" hidden>
-        <button type="button" class="release-primary" id="historyPinDoneBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> Close</button>
-    </div>
-</dialog>
 
 <dialog id="authNoticeDialog" class="auth-notice-dialog" aria-labelledby="authNoticeTitle" aria-describedby="authNoticeMessage">
     <div class="auth-notice-content">
@@ -4969,7 +4908,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script>
     const firebaseConfig = {
         apiKey: 'AIzaSyDB6JHK3d2v1xO4_InvHZDqbE-m7-43kuY',
@@ -4982,7 +4920,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const firestore = firebase.firestore();
-    const historyPinFunctions = firebase.app().functions('europe-west1');
     const rosterAdminEmail = 'phoenix28.tech@gmail.com';
     const rosterAccessCollection = firestore.collection('rosterAccess');
     const rosterAccessRequestsCollection = firestore.collection('rosterAccessRequests');
@@ -5019,7 +4956,6 @@
         let isPreviewMode = false;
         let retrySaveAction = null;
         let archivedRosters = [];
-        let historyPinAction = null;
         const defaultSystemSettings = {
             announcement: '',
             signupsEnabled: true,
@@ -6145,104 +6081,27 @@
             }
         }
 
-        function showHistoryPinResult(title, message, kind = 'success') {
-            const description = document.getElementById('historyPinDescription');
-            const icon = document.getElementById('historyPinModalIcon');
-            document.getElementById('historyPinTitle').textContent = title;
-            description.textContent = message;
-            description.classList.toggle('history-pin-feedback', kind === 'error');
-            description.dataset.kind = kind;
-            icon.dataset.kind = kind;
-            icon.innerHTML = kind === 'error'
-                ? '<i class="fa-solid fa-circle-exclamation"></i>'
-                : `<i class="fa-solid ${title.includes('PIN saved') ? 'fa-shield-halved' : 'fa-circle-check'}"></i>`;
-            document.getElementById('historyPinForm').hidden = true;
-            document.getElementById('historyPinResultActions').hidden = false;
-            document.getElementById('historyPinDoneBtn').focus();
-        }
-
-        function openHistoryPinDialog(action, roster = null) {
+        async function deleteArchivedRoster(roster) {
             if (!canManageRoster()) return;
-            historyPinAction = action === 'setPin'
-                ? { type: 'setPin' }
-                : { type: 'deleteHistory', historyId: roster.id };
-            const dialog = document.getElementById('historyPinDialog');
-            const form = document.getElementById('historyPinForm');
-            const currentField = document.getElementById('historyCurrentPinField');
-            const currentInput = document.getElementById('historyCurrentPinInput');
-            const newField = document.getElementById('historyNewPinField');
-            const newInput = document.getElementById('historyNewPinInput');
-            const modalIcon = document.getElementById('historyPinModalIcon');
-            form.reset();
-            form.hidden = false;
-            document.getElementById('historyPinResultActions').hidden = true;
-            const description = document.getElementById('historyPinDescription');
-            description.classList.remove('history-pin-feedback');
-            description.removeAttribute('data-kind');
-            currentInput.required = action !== 'setPin';
-            currentField.hidden = false;
-            newField.hidden = action !== 'setPin';
-            newInput.required = action === 'setPin';
-            document.getElementById('historyCurrentPinLabel').textContent =
-                action === 'setPin' ? 'Current deletion PIN' : 'Deletion PIN';
-            document.getElementById('historyCurrentPinHelp').textContent =
-                action === 'setPin' ? 'Leave blank only when setting the PIN for the first time.' : 'Enter the PIN to authorize deleting this roster.';
-            document.getElementById('historyPinTitle').textContent =
-                action === 'setPin' ? 'Set or change deletion PIN' : 'Delete published roster history?';
-            modalIcon.dataset.kind = action === 'setPin' ? 'warning' : 'error';
-            modalIcon.innerHTML = `<i class="fa-solid ${action === 'setPin' ? 'fa-shield-halved' : 'fa-trash-can'}"></i>`;
-            document.getElementById('historyPinDescription').textContent =
-                action === 'setPin'
-                    ? 'The server verifies this PIN before changing it. Only a salted verifier is stored; the browser cannot read it or bypass verification.'
-                    : `Enter the deletion PIN to permanently delete the ${roster.weekLabel} roster from history.`;
-            const submitButton = document.getElementById('historyPinSubmitBtn');
-            const submitIcon = document.createElement('i');
-            submitIcon.className = `fa-solid ${action === 'setPin' ? 'fa-key' : 'fa-trash-can'}`;
-            submitIcon.setAttribute('aria-hidden', 'true');
-            submitButton.replaceChildren(
-                submitIcon,
-                document.createTextNode(action === 'setPin' ? ' Save PIN' : ' Delete history')
-            );
-            if (!dialog.open) dialog.showModal();
-            (action === 'setPin' ? newInput : currentInput).focus();
-        }
+            const confirmed = await confirmAction({
+                title: 'Delete published roster?',
+                message: `Permanently delete the ${roster.weekLabel} roster from history?`,
+                confirmLabel: 'Delete roster',
+                icon: 'fa-solid fa-trash-can',
+                theme: 'danger'
+            });
+            if (!confirmed || !canManageRoster()) return;
 
-        async function submitHistoryPinAction(event) {
-            event.preventDefault();
-            if (!canManageRoster() || !historyPinAction) return;
-            const action = historyPinAction;
-            const submitButton = document.getElementById('historyPinSubmitBtn');
-            const cancelButton = document.getElementById('historyPinCancelBtn');
-            const currentPin = document.getElementById('historyCurrentPinInput').value;
-            const newPin = document.getElementById('historyNewPinInput').value;
-            submitButton.disabled = true;
-            cancelButton.disabled = true;
             try {
-                if (action.type === 'setPin') {
-                    await historyPinFunctions.httpsCallable('setRosterHistoryPin')({
-                        currentPin,
-                        newPin
-                    });
-                    showHistoryPinResult('Deletion PIN saved', 'The server has saved a salted PIN verifier. The PIN itself is not stored.');
-                } else {
-                    await historyPinFunctions.httpsCallable('deleteRosterHistory')({
-                        historyId: action.historyId,
-                        pin: currentPin
-                    });
-                    archivedRosters = archivedRosters.filter(roster => roster.id !== action.historyId);
-                    renderHistoryList();
-                    showHistoryPinResult('History deleted successfully', 'The published roster was permanently removed from history.');
-                }
+                await rosterHistoryCollection.doc(roster.id).delete();
+                archivedRosters = archivedRosters.filter(item => item.id !== roster.id);
+                renderHistoryList();
+                showToast('Published roster deleted from history.');
             } catch (error) {
-                console.error('Failed to manage published roster history:', error);
-                showHistoryPinResult(
-                    'History action failed',
-                    (error && error.message) || 'The history action could not be completed. Check the connection and try again.',
-                    'error'
-                );
-            } finally {
-                submitButton.disabled = false;
-                cancelButton.disabled = false;
+                console.error('Failed to delete published roster history:', error);
+                showToast(error.code === 'permission-denied'
+                    ? 'Firestore denied deleting roster history. Deploy the current Firestore rules.'
+                    : `History deletion failed: ${error.message || 'check the connection'}`);
             }
         }
 
@@ -6293,7 +6152,7 @@
                 deleteButton.className = 'roster-history-delete';
                 deleteButton.setAttribute('aria-label', `Delete ${roster.weekLabel} from history`);
                 deleteButton.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
-                deleteButton.addEventListener('click', () => openHistoryPinDialog('deleteHistory', roster));
+                deleteButton.addEventListener('click', () => deleteArchivedRoster(roster));
                 entry.append(button, deleteButton);
                 list.appendChild(entry);
             });
@@ -8316,21 +8175,7 @@
             document.getElementById('editorTabBtn').addEventListener('click', () => showRosterPane('editor'));
             document.getElementById('historyTabBtn').addEventListener('click', () => showRosterPane('history'));
             document.getElementById('manageAccountsTabBtn').addEventListener('click', () => showRosterPane('access'));
-            document.getElementById('setHistoryPinBtn').addEventListener('click', () => openHistoryPinDialog('setPin'));
             document.getElementById('filterHistoryBtn').addEventListener('click', renderHistoryList);
-            document.getElementById('historyPinForm').addEventListener('submit', submitHistoryPinAction);
-            document.getElementById('historyPinCancelBtn').addEventListener('click', () => {
-                document.getElementById('historyPinDialog').close();
-            });
-            document.getElementById('historyPinDoneBtn').addEventListener('click', () => {
-                document.getElementById('historyPinDialog').close();
-            });
-            document.getElementById('historyPinDialog').addEventListener('close', () => {
-                historyPinAction = null;
-            });
-            document.getElementById('historyPinDialog').addEventListener('cancel', event => {
-                if (document.getElementById('historyPinSubmitBtn').disabled) event.preventDefault();
-            });
             document.getElementById('retryFirestoreLoadBtn').addEventListener('click', () => handleAuthStateChange(auth.currentUser));
             initializeAuthUI();
 
