@@ -3880,6 +3880,349 @@
                 min-height: 3.1rem;
             }
         }
+        dialog[open] {
+            position: fixed;
+            inset: env(safe-area-inset-top) env(safe-area-inset-right)
+                env(safe-area-inset-bottom) env(safe-area-inset-left);
+            margin: auto;
+            max-width: calc(100vw - 2rem);
+            max-height: calc(100vh - 2rem);
+            max-height: calc(100dvh - 2rem);
+            overscroll-behavior: contain;
+        }
+        .release-dialog,
+        .auth-notice-dialog,
+        #releaseNotesDialog,
+        .confirm-card {
+            border: 1px solid rgba(255,255,255,0.72);
+            background: linear-gradient(145deg, rgba(255,255,255,0.84), rgba(235,243,255,0.76));
+            -webkit-backdrop-filter: blur(28px) saturate(1.45);
+            backdrop-filter: blur(28px) saturate(1.45);
+            box-shadow: 0 30px 90px rgba(17,35,67,0.28), inset 0 1px 0 rgba(255,255,255,0.84);
+        }
+        .release-dialog[open],
+        .auth-notice-dialog[open] {
+            animation-duration: 260ms;
+        }
+        dialog::backdrop {
+            background: rgba(15,23,42,0.56);
+            -webkit-backdrop-filter: blur(10px) saturate(1.15);
+            backdrop-filter: blur(10px) saturate(1.15);
+        }
+        .confirm-overlay {
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-backdrop-filter: blur(12px) saturate(1.15);
+            backdrop-filter: blur(12px) saturate(1.15);
+        }
+        .confirm-card {
+            max-height: calc(100vh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            max-height: calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            border-radius: 1.65rem;
+            transition: transform 240ms cubic-bezier(0.2,0.75,0.25,1), box-shadow 180ms ease;
+        }
+        .release-dialog button,
+        .confirm-actions button,
+        .auth-modal-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            transition: transform 180ms cubic-bezier(0.2,0.75,0.25,1), box-shadow 180ms ease,
+                background-color 180ms ease, border-color 180ms ease;
+        }
+        .release-dialog button:active:not(:disabled),
+        .confirm-actions button:active,
+        .auth-modal-close:active {
+            transform: scale(0.98);
+        }
+        .release-dialog button i,
+        .confirm-actions button i,
+        .auth-modal-close i,
+        .modal-icon > i,
+        .auth-state-icon > i,
+        .confirm-icon > i {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .modal-icon,
+        .auth-state-icon,
+        .confirm-icon {
+            flex-shrink: 0;
+            isolation: isolate;
+        }
+        .confirm-icon {
+            animation: modal-icon-arrive 380ms 60ms cubic-bezier(0.2,0.75,0.25,1) both;
+        }
+        @keyframes modal-icon-arrive {
+            from { opacity: 0; transform: translateY(5px) scale(0.88); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (max-width: 520px) {
+            .confirm-card {
+                width: min(100%, 27rem);
+                padding: 1.35rem;
+                border-radius: 1.4rem;
+            }
+            .confirm-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.6rem;
+            }
+            .confirm-actions button {
+                width: 100%;
+                min-height: 3rem;
+                padding-inline: 0.7rem;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .release-dialog[open],
+            .auth-notice-dialog[open],
+            .confirm-icon,
+            .release-dialog button,
+            .confirm-actions button,
+            .auth-modal-close {
+                animation: none;
+                transition: none;
+            }
+        }
+        #releaseNotesDialog {
+            padding: 1.15rem;
+            border-radius: 1.65rem;
+            background: linear-gradient(145deg, rgba(250,252,255,0.94), rgba(232,241,253,0.88));
+            scrollbar-color: #9fb5d2 transparent;
+        }
+        #releaseNotesDialog > .modal-heading {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1.1rem;
+            overflow: hidden;
+            padding: clamp(1.2rem, 4vw, 1.8rem);
+            border-color: rgba(255,255,255,0.24);
+            border-radius: 1.35rem;
+            background: linear-gradient(125deg, #10203f 0%, #23467e 58%, #08766f 100%);
+            text-align: left;
+        }
+        #releaseNotesDialog > .modal-heading .modal-heading-copy {
+            justify-items: start;
+            gap: 0.38rem;
+        }
+        #releaseNotesDialog .modal-icon {
+            width: 3.7rem;
+            height: 3.7rem;
+            margin: 0;
+            border-color: rgba(255,255,255,0.5);
+            border-radius: 1.15rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            box-shadow: 0 10px 24px rgba(4,14,32,0.28), inset 0 1px 0 rgba(255,255,255,0.34);
+            color: #fff;
+            font-size: 1.45rem;
+        }
+        #releaseNotesDialog .modal-icon > i {
+            color: #fff;
+            opacity: 1;
+            visibility: visible;
+        }
+        #releaseNotesDialog .modal-eyebrow {
+            color: #c9dcff;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+        }
+        #releaseNotesDialog h2 {
+            color: #fff;
+            font-size: clamp(1.65rem, 5vw, 2.2rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.1;
+        }
+        #releaseNotesDialog .release-notes-summary {
+            padding: 1.35rem 0.45rem 1rem;
+            text-align: left;
+        }
+        #releaseNotesDialog .release-notes-version {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            max-width: 100%;
+            padding: 0.4rem 0.72rem;
+            border: 1px solid rgba(37,99,235,0.14);
+            border-radius: 999px;
+            background: rgba(219,234,254,0.68);
+            color: #24559b;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.055em;
+            overflow-wrap: anywhere;
+        }
+        #releaseNotesDialog .release-notes-version i {
+            flex: 0 0 auto;
+            color: #2563eb;
+            opacity: 1;
+            visibility: visible;
+        }
+        #releaseNotesDialog #releaseNotesHeading {
+            margin: 0.75rem 0 0;
+            color: #17243b;
+            font-size: clamp(1.12rem, 3.5vw, 1.48rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+        #releaseNotesDialog .release-notes-details {
+            padding: 0 0.45rem 0.85rem;
+        }
+        #releaseNotesDialog .release-notes-details-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0 0 0.75rem;
+            color: #40526e;
+        }
+        #releaseNotesDialog .release-notes-details-heading > i {
+            color: #2563eb;
+            font-size: 0.88rem;
+            opacity: 1;
+            visibility: visible;
+        }
+        #releaseNotesDialog .release-notes-details-heading h3 {
+            margin: 0;
+            font-size: 0.72rem;
+            font-weight: 850;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        #releaseNotesDialog .release-notes-count {
+            margin-left: auto;
+            padding: 0.22rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(226,232,240,0.8);
+            color: #64748b;
+            font-size: 0.66rem;
+            font-weight: 750;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+        #releaseNotesDialog #releaseNotesList {
+            display: grid;
+            gap: 0.58rem;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        #releaseNotesDialog #releaseNotesList > li {
+            display: grid;
+            grid-template-columns: 2rem minmax(0, 1fr);
+            align-items: start;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(203,216,235,0.72);
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.76);
+            box-shadow: 0 5px 16px rgba(30,58,98,0.045), inset 0 1px 0 rgba(255,255,255,0.9);
+            color: #40516a;
+            font-size: 0.86rem;
+            font-weight: 550;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            animation: release-note-arrive 360ms both;
+        }
+        #releaseNotesDialog .release-note-icon {
+            display: grid;
+            width: 2rem;
+            height: 2rem;
+            place-items: center;
+            border: 1px solid rgba(16,185,129,0.18);
+            border-radius: 0.7rem;
+            background: linear-gradient(145deg, #ecfdf5, #f8fffc);
+            color: #07805f;
+            font-size: 0.78rem;
+            box-shadow: 0 4px 10px rgba(5,150,105,0.08), inset 0 1px 0 #fff;
+        }
+        #releaseNotesDialog .release-note-icon i {
+            color: #07805f;
+            opacity: 1;
+            visibility: visible;
+        }
+        #releaseNotesDialog .release-note-empty {
+            grid-template-columns: 2rem minmax(0, 1fr);
+            background: rgba(239,246,255,0.82) !important;
+            color: #52647e !important;
+        }
+        #releaseNotesDialog .release-note-empty .release-note-icon {
+            border-color: rgba(37,99,235,0.16);
+            background: linear-gradient(145deg, #eff6ff, #fff);
+            color: #2563eb;
+        }
+        #releaseNotesDialog .release-note-empty .release-note-icon i {
+            color: #2563eb;
+        }
+        #releaseNotesDialog .release-notes-footer {
+            padding-top: 0.9rem;
+            border-top: 1px solid rgba(148,163,184,0.2);
+        }
+        #releaseNotesDialog .release-notes-footer button {
+            min-width: 8.5rem;
+            border: 1px solid rgba(37,99,235,0.28);
+            border-radius: 0.9rem;
+            background: linear-gradient(135deg, #2563eb, #1555be);
+            box-shadow: 0 8px 18px rgba(37,99,235,0.2), inset 0 1px 0 rgba(255,255,255,0.22);
+            color: #fff;
+        }
+        #releaseNotesDialog .release-notes-footer button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1d4ed8, #12469e);
+            box-shadow: 0 11px 22px rgba(37,99,235,0.28);
+            transform: translateY(-1px);
+        }
+        @keyframes release-note-arrive {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #releaseNotesDialog #releaseNotesList > li:nth-child(2) { animation-delay: 45ms; }
+        #releaseNotesDialog #releaseNotesList > li:nth-child(3) { animation-delay: 90ms; }
+        #releaseNotesDialog #releaseNotesList > li:nth-child(4) { animation-delay: 135ms; }
+        @media (max-width: 520px) {
+            #releaseNotesDialog {
+                padding: 0.8rem;
+                border-radius: 1.3rem;
+            }
+            #releaseNotesDialog > .modal-heading {
+                gap: 0.8rem;
+                padding: 1.05rem;
+                border-radius: 1.05rem;
+            }
+            #releaseNotesDialog .modal-icon {
+                width: 3.1rem;
+                height: 3.1rem;
+                border-radius: 0.95rem;
+                font-size: 1.2rem;
+            }
+            #releaseNotesDialog #releaseNotesList > li {
+                grid-template-columns: 1.85rem minmax(0, 1fr);
+                gap: 0.65rem;
+                padding: 0.8rem;
+                font-size: 0.82rem;
+            }
+            #releaseNotesDialog .release-note-icon {
+                width: 1.85rem;
+                height: 1.85rem;
+            }
+            #releaseNotesDialog .release-notes-footer button {
+                width: 100%;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #releaseNotesDialog #releaseNotesList > li {
+                animation: none;
+            }
+        }
         @media print {
             @page { margin: 10mm; size: landscape; }
             body { padding: 0; background: #fff; }
@@ -4863,13 +5206,23 @@
     <div class="modal-heading">
         <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
         <div class="modal-heading-copy">
-            <span class="modal-eyebrow">Release notes</span>
+            <span class="modal-eyebrow">Your roster, refined</span>
             <h2 id="releaseNotesTitle">What’s new</h2>
         </div>
     </div>
-    <p id="releaseNotesHeading"></p>
-    <ul id="releaseNotesList"></ul>
-    <div class="flex justify-end">
+    <div class="release-notes-summary">
+        <span class="release-notes-version"><i class="fa-solid fa-tag" aria-hidden="true"></i><span id="releaseNotesVersionLabel">Latest release</span></span>
+        <h3 id="releaseNotesHeading"></h3>
+    </div>
+    <section class="release-notes-details" aria-labelledby="releaseNotesDetailsTitle">
+        <div class="release-notes-details-heading">
+            <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+            <h3 id="releaseNotesDetailsTitle">Release highlights</h3>
+            <span class="release-notes-count" id="releaseNotesCount" aria-live="polite"></span>
+        </div>
+        <ul id="releaseNotesList" aria-label="Release highlights"></ul>
+    </section>
+    <div class="release-notes-footer flex justify-end">
         <button type="button" class="release-primary" id="releaseNotesDoneButton"><i class="fa-solid fa-check" aria-hidden="true"></i> Got it</button>
     </div>
 </dialog>
@@ -4892,11 +5245,39 @@
             if (release.adminOnly && !isRosterAdmin) return;
             document.getElementById('releaseNotesTitle').textContent = 'What’s new';
             document.getElementById('releaseNotesHeading').textContent = release.title;
+            document.getElementById('releaseNotesVersionLabel').textContent =
+                typeof release.versionLabel === 'string' && release.versionLabel.trim()
+                    ? release.versionLabel
+                    : (release.version ? `Version ${release.version.slice(0, 7)}` : 'Latest release');
             const list = document.getElementById('releaseNotesList');
             list.replaceChildren();
+            const notesCount = document.getElementById('releaseNotesCount');
+            notesCount.textContent = `${release.notes.length} ${release.notes.length === 1 ? 'update' : 'updates'}`;
+            if (release.notes.length === 0) {
+                const emptyItem = document.createElement('li');
+                emptyItem.className = 'release-note-empty';
+                const emptyIcon = document.createElement('span');
+                emptyIcon.className = 'release-note-icon';
+                emptyIcon.setAttribute('aria-hidden', 'true');
+                const emptyIconGlyph = document.createElement('i');
+                emptyIconGlyph.className = 'fa-solid fa-circle-info';
+                emptyIcon.appendChild(emptyIconGlyph);
+                const emptyMessage = document.createElement('span');
+                emptyMessage.textContent = 'No individual highlights were included in this release.';
+                emptyItem.append(emptyIcon, emptyMessage);
+                list.appendChild(emptyItem);
+            }
             release.notes.forEach(note => {
                 const item = document.createElement('li');
-                item.textContent = note;
+                const icon = document.createElement('span');
+                icon.className = 'release-note-icon';
+                icon.setAttribute('aria-hidden', 'true');
+                const iconGlyph = document.createElement('i');
+                iconGlyph.className = 'fa-solid fa-check';
+                icon.appendChild(iconGlyph);
+                const noteText = document.createElement('span');
+                noteText.textContent = note;
+                item.append(icon, noteText);
                 list.appendChild(item);
             });
             notesDialog.showModal();
