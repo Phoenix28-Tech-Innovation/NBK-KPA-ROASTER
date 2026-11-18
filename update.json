@@ -2,12 +2,19 @@
   "version": "74ae5f9963c6cee5097674c56a018297e3316190",
   "versionLabel": "v8.8.4",
   "deployedAt": "2026-11-18T07:25:03.405Z",
-  "title": "Add root package lockfile",
+  "title": "Roster workflow improvements",
   "notes": [
-    "General improvements and fixes."
+    "Unsaved draft protection.",
+    "Roster publish validation.",
+    "CSV export and print/PDF support.",
+    "PWA manifest and service worker registration."
   ],
   "features": [
-    "General improvements and maintenance."
+    "Draft unsaved-change protection.",
+    "Publish completeness checks.",
+    "CSV export.",
+    "Print and PDF layout.",
+    "Installable PWA metadata."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."

@@ -28,8 +28,21 @@ function serveAtRequestedUrl(response) {
 
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(releaseCacheName(RELEASE_VERSION))
-            .then(cache => cache.add(releasePageUrl(RELEASE_VERSION)))
+        (async () => {
+            const releaseCache = await caches.open(releaseCacheName(RELEASE_VERSION));
+            await releaseCache.add(releasePageUrl(RELEASE_VERSION));
+            await releaseCache.addAll([
+                new URL('favicon.ico', SCOPE_URL).href,
+                new URL('index.html', SCOPE_URL).href,
+                new URL('manifest.json', SCOPE_URL).href,
+                new URL('update.json', SCOPE_URL).href,
+                new URL('icons/roster-icon.svg', SCOPE_URL).href,
+                new URL('icons/favicon-16x16.png', SCOPE_URL).href,
+                new URL('icons/favicon-32x32.png', SCOPE_URL).href,
+                new URL('icons/roster-icon-192.png', SCOPE_URL).href,
+                new URL('icons/roster-icon-512.png', SCOPE_URL).href
+            ]);
+        })()
     );
 });
 
@@ -54,6 +67,24 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
     const scopePath = new URL(SCOPE_URL).pathname;
+    if (event.request.method === 'GET' &&
+        requestUrl.origin === self.location.origin &&
+        ['/favicon.ico', '/manifest.json', '/manifest.webmanifest', '/index.html', '/update.json',
+         '/icons/roster-icon.svg', '/icons/favicon-16x16.png', '/icons/favicon-32x32.png',
+         '/icons/roster-icon-192.png', '/icons/roster-icon-512.png']
+            .includes(requestUrl.pathname.replace(scopePath, '/'))) {
+        event.respondWith((async () => {
+            const cached = await caches.match(event.request);
+            if (cached) return cached;
+            const response = await fetch(event.request);
+            if (response.ok) {
+                const cache = await caches.open(releaseCacheName(RELEASE_VERSION));
+                await cache.put(event.request, response.clone());
+            }
+            return response;
+        })());
+        return;
+    }
     const isAppNavigation = event.request.method === 'GET' &&
         event.request.mode === 'navigate' &&
         requestUrl.origin === self.location.origin &&
