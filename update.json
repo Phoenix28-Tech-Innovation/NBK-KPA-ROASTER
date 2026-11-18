@@ -1,8 +1,8 @@
 {
-  "version": "3aa1ec7295120bbc591d3f8fe3fbde058c7a95c0",
-  "versionLabel": "v8.8.16",
-  "deployedAt": "2026-11-18T21:35:58.708Z",
-  "title": "Update roster announcement and history UI",
+  "version": "a482bf96ba5608362cf66a63ed016929a366a914",
+  "versionLabel": "v8.8.17",
+  "deployedAt": "2026-11-18T22:32:08.073Z",
+  "title": "Port roster history UI to Pages entry",
   "notes": [
     "General improvements and fixes."
   ],
@@ -13,5 +13,5 @@
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 406047
+  "sizeBytes": 445868
 }
