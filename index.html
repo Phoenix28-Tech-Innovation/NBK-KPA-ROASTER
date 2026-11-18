@@ -20,8 +20,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome 6 (free) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <!-- Google Fonts: Inter + Nunito -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Google Fonts: Inter + Nunito + Caveat -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Nunito:wght@400;600;700;800&family=Caveat:wght@400..700&display=swap" rel="stylesheet" />
 
     <style>
         * { box-sizing: border-box; }
@@ -475,15 +475,105 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .roster-history-entry {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
             align-items: stretch;
-            gap: 0.5rem;
+            gap: 0.55rem;
+            min-width: 0;
+            padding: 0.45rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            background: #f8fafc;
         }
         .roster-history-entry .roster-history-item {
             flex: 1;
             min-width: 0;
+            width: 100%;
+            display: grid;
+            align-content: center;
+            justify-content: start;
+            gap: 0.25rem;
+        }
+        .roster-history-item > strong,
+        .roster-history-item > .history-archived-at {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .roster-history-item > .history-archived-at {
+            color: #64748b;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        .roster-history-select {
+            display: grid;
+            min-width: 2rem;
+            place-items: center;
+            cursor: pointer;
+        }
+        .roster-history-select input {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #2563eb;
+        }
+        .history-selection-tools,
+        .history-preview-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+        }
+        .history-selection-tools {
+            margin-top: 0.85rem;
+            grid-column: 1 / -1;
+            justify-content: space-between;
+        }
+        #rosterHistoryPane > .history-toolbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 1rem;
+        }
+        .history-date-filters {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 0.75rem;
+        }
+        .history-filter-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .history-select-visible {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .history-select-visible input {
+            width: 1.05rem;
+            height: 1.05rem;
+            accent-color: #2563eb;
+        }
+        .history-preview-heading {
+            display: flex;
+            min-width: 0;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+        .history-preview-actions button {
+            min-height: 2.65rem;
         }
         .roster-history-delete {
+            display: inline-grid;
+            min-width: 2.8rem;
+            min-height: 2.8rem;
+            place-items: center;
             padding: 0.65rem 0.85rem;
             border: 1px solid #fecaca;
             border-radius: 0.9rem;
@@ -493,6 +583,94 @@
         }
         .roster-history-delete:hover {
             background: #fef2f2;
+        }
+        @media (max-width: 640px) {
+            #rosterHistoryPane {
+                padding: 0.85rem;
+            }
+            #rosterHistoryPane > .history-toolbar {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1rem;
+            }
+            .history-date-filters {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.6rem;
+                width: 100%;
+            }
+            .history-date-filters label,
+            .history-date-filters input {
+                width: 100%;
+                min-width: 0;
+            }
+            .history-date-filters > label:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+            .history-filter-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-column: 1 / -1;
+            }
+            .history-filter-actions button:last-child {
+                grid-column: 1 / -1;
+            }
+            .history-selection-tools {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0.65rem;
+            }
+            .history-selection-tools button {
+                width: 100%;
+                justify-content: center;
+            }
+            .roster-history-entry {
+                grid-template-columns: 2rem minmax(0, 1fr) 2.8rem;
+                gap: 0.4rem;
+                padding: 0.35rem;
+            }
+            .roster-history-entry .roster-history-item {
+                padding: 0.75rem;
+                min-height: 4.25rem;
+            }
+            .roster-history-delete {
+                min-width: 2.8rem;
+                padding: 0.5rem;
+            }
+            .history-preview-heading {
+                align-items: stretch;
+            }
+            .history-preview-heading h3 {
+                width: 100%;
+                overflow-wrap: anywhere;
+            }
+            .history-preview-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                width: 100%;
+            }
+            .history-preview-actions button {
+                width: 100%;
+                justify-content: center;
+                padding-inline: 0.6rem;
+                font-size: 0.72rem;
+            }
+            .history-preview-actions button:first-child {
+                grid-column: 1 / -1;
+            }
+            #historyRosterPreview .table-card,
+            #historyRosterPreview .table-card > .overflow-x-auto {
+                max-width: 100%;
+                min-width: 0;
+            }
+            #historyRosterPreview .table-card > .overflow-x-auto {
+                overflow-x: auto;
+                overscroll-behavior-x: contain;
+                -webkit-overflow-scrolling: touch;
+            }
+            #historyRosterPreview .compact-table {
+                min-width: 760px;
+            }
         }
         .release-progress-track {
             height: 0.45rem;
@@ -902,13 +1080,335 @@
         #systemSettingsSaveStatus[data-kind="error"] { color: #b42332; }
         #systemSettingsSaveStatus[data-kind="success"] { color: #087c5a; }
         #systemAnnouncementBanner {
-            padding: 0.8rem 1rem;
-            border: 1px solid #bfdbfe;
-            border-radius: 1rem;
-            background: #eff6ff;
+            position: relative;
+            isolation: isolate;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.55rem;
+            overflow: hidden;
+            min-height: 2.25rem;
+            padding: 0.35rem 0.75rem;
+            border: 1px solid rgba(255,255,255,0.88);
+            border-radius: 0.9rem;
+            background: linear-gradient(112deg, rgba(255,255,255,0.8), rgba(239,246,255,0.66) 54%, rgba(235,238,255,0.62));
             color: #1e40af;
-            font-size: 0.8rem;
-            line-height: 1.55;
+            font-size: 0.72rem;
+            line-height: 1.4;
+            -webkit-backdrop-filter: blur(18px) saturate(175%);
+            backdrop-filter: blur(18px) saturate(175%);
+            box-shadow: 0 8px 20px rgba(31,67,133,0.07), 0 1px 3px rgba(31,67,133,0.04),
+                inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(255,255,255,0.5);
+            animation: announcement-arrive 420ms ease-out both;
+        }
+        #systemAnnouncementBanner::before,
+        #systemAnnouncementBanner::after {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            content: "";
+            pointer-events: none;
+        }
+        #systemAnnouncementBanner::before {
+            z-index: 0;
+            background: linear-gradient(145deg, rgba(255,255,255,0.72), transparent 42%, rgba(255,255,255,0.16));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        #systemAnnouncementBanner::after {
+            z-index: 0;
+            inset: -60% auto -60% 0;
+            width: 16%;
+            border-radius: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.62), transparent);
+            transform: translateX(-140%) rotate(18deg);
+            animation: announcement-glint 1.25s 180ms ease-out both;
+        }
+        #systemAnnouncementBanner > * {
+            position: relative;
+            z-index: 1;
+        }
+        .system-announcement-icon {
+            display: grid;
+            width: 1.4rem;
+            height: 1.4rem;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.94);
+            border-radius: 0.68rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(191,219,254,0.7));
+            color: #4263df;
+            font-size: 0.76rem;
+            box-shadow: 0 4px 10px rgba(37,99,235,0.1), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(147,197,253,0.26);
+        }
+        .system-announcement-icon i {
+            animation: announcement-bell-ring 3.4s ease-in-out infinite;
+        }
+        .system-announcement-copy {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            column-gap: 0.5rem;
+            min-width: 0;
+        }
+        .system-announcement-copy strong {
+            color: #2563eb;
+            font-size: 0.61rem;
+            font-weight: 900;
+            letter-spacing: 0.075em;
+            text-transform: uppercase;
+        }
+        .system-announcement-copy p {
+            margin: 0;
+            color: #dc2626;
+            font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+            font-size: 0.98rem;
+            font-weight: 600;
+            line-height: 1.2;
+            overflow-wrap: anywhere;
+        }
+        #userRosterUnavailable {
+            position: relative;
+            isolation: isolate;
+            display: grid;
+            justify-items: center;
+            gap: 0.8rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            padding: clamp(1.5rem, 5vw, 2.7rem) 1.25rem;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 1.8rem;
+            background: radial-gradient(ellipse at 50% -15%, rgba(219,234,254,0.82), transparent 65%),
+                linear-gradient(145deg, rgba(255,255,255,0.82), rgba(241,246,255,0.74));
+            color: #475569;
+            text-align: center;
+            -webkit-backdrop-filter: blur(32px) saturate(185%);
+            backdrop-filter: blur(32px) saturate(185%);
+            box-shadow: 0 24px 58px rgba(31,67,133,0.12), 0 4px 12px rgba(31,67,133,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(255,255,255,0.5);
+            animation: maintenance-arrive 500ms cubic-bezier(0.2,0.75,0.25,1) both;
+        }
+        #userRosterUnavailable::before {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(132deg, rgba(255,255,255,0.78), transparent 36%, rgba(255,255,255,0.22));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.92);
+            content: "";
+            pointer-events: none;
+        }
+        #userRosterUnavailable > * {
+            position: relative;
+            z-index: 1;
+        }
+        .maintenance-icon-shell {
+            position: relative;
+            display: grid;
+            width: 5rem;
+            height: 5rem;
+            place-items: center;
+            margin-bottom: 0.1rem;
+            border: 1px solid rgba(255,255,255,0.96);
+            border-radius: 1.72rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(219,234,254,0.78));
+            color: #3478f6;
+            box-shadow: 0 16px 32px rgba(52,120,246,0.17), 0 3px 8px rgba(30,64,175,0.06),
+                inset 0 1px 0 #fff, inset 0 -1px 0 rgba(147,197,253,0.42);
+            -webkit-backdrop-filter: blur(20px) saturate(175%);
+            backdrop-filter: blur(20px) saturate(175%);
+        }
+        .maintenance-icon-shell::before {
+            position: absolute;
+            inset: -0.5rem;
+            border: 1px solid rgba(96,165,250,0.3);
+            border-radius: 1.9rem;
+            content: "";
+            animation: maintenance-icon-ring 2.8s ease-out infinite;
+        }
+        .maintenance-icon-shell::after {
+            position: absolute;
+            inset: -0.28rem;
+            border: 1px dashed rgba(96,165,250,0.34);
+            border-radius: 1.85rem;
+            content: "";
+            animation: maintenance-icon-orbit 14s linear infinite;
+        }
+        #userRosterUnavailableIcon {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            filter: drop-shadow(0 3px 5px rgba(37,99,235,0.2));
+            animation: maintenance-icon-float 3s ease-in-out infinite;
+        }
+        .maintenance-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #52709a;
+            font-size: 0.65rem;
+            font-weight: 850;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+        .maintenance-eyebrow > i {
+            color: #6889b8;
+            animation: maintenance-sparkle 3.6s ease-in-out infinite;
+        }
+        #userRosterUnavailable strong {
+            display: block;
+            max-width: 38rem;
+            color: #172554;
+            font-size: clamp(1.15rem, 3vw, 1.55rem);
+            font-weight: 850;
+            line-height: 1.2;
+        }
+        #userRosterUnavailable p {
+            max-width: 42rem;
+            margin: 0;
+            color: #52637a;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+        .maintenance-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-top: 0.25rem;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid rgba(255,255,255,0.94);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(245,248,255,0.72));
+            color: #536780;
+            font-size: 0.7rem;
+            font-weight: 750;
+            box-shadow: 0 6px 16px rgba(31,67,133,0.07), inset 0 1px 0 #fff;
+            -webkit-backdrop-filter: blur(18px) saturate(175%);
+            backdrop-filter: blur(18px) saturate(175%);
+        }
+        .maintenance-status-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            background: #3b82f6;
+            box-shadow: 0 0 0 0 rgba(59,130,246,0.32);
+            animation: maintenance-status-pulse 1.8s ease-out infinite;
+        }
+        #userRosterUnavailable[data-kind="maintenance"] .maintenance-icon-shell {
+            border-color: #bfdbfe;
+            color: #2563eb;
+        }
+        #userRosterUnavailable[data-kind="error"] .maintenance-icon-shell {
+            border-color: #fecaca;
+            background: linear-gradient(145deg, #fff1f2, #fff);
+            color: #dc2626;
+        }
+        #userRosterUnavailable[data-kind="hidden"] .maintenance-icon-shell {
+            border-color: #ddd6fe;
+            background: linear-gradient(145deg, #f5f3ff, #fff);
+            color: #7c3aed;
+        }
+        #userRosterUnavailable[data-kind="error"] .maintenance-status-dot {
+            background: #ef4444;
+            box-shadow: 0 0 0 0 rgba(239,68,68,0.3);
+        }
+        #userRosterUnavailable[data-kind="hidden"] .maintenance-status-dot {
+            background: #8b5cf6;
+            box-shadow: 0 0 0 0 rgba(139,92,246,0.3);
+        }
+        @keyframes announcement-arrive {
+            from { opacity: 0; transform: translateY(-0.45rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes announcement-bell-ring {
+            0%, 82%, 100% { transform: rotate(0); }
+            86% { transform: rotate(12deg); }
+            90% { transform: rotate(-10deg); }
+            94% { transform: rotate(7deg); }
+            98% { transform: rotate(-4deg); }
+        }
+        @keyframes announcement-glint {
+            0% { opacity: 0; transform: translateX(-140%) rotate(18deg); }
+            18% { opacity: 0.85; }
+            100% { opacity: 0; transform: translateX(520%) rotate(18deg); }
+        }
+        @keyframes maintenance-arrive {
+            from { opacity: 0; transform: translateY(0.8rem) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes maintenance-icon-ring {
+            0% { opacity: 0.75; transform: scale(0.94); }
+            75%, 100% { opacity: 0; transform: scale(1.12); }
+        }
+        @keyframes maintenance-icon-orbit {
+            to { transform: rotate(1turn); }
+        }
+        @keyframes maintenance-icon-float {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-4px) rotate(3deg); }
+        }
+        @keyframes maintenance-sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(0.9) rotate(-8deg); }
+            50% { opacity: 1; transform: scale(1.12) rotate(10deg); }
+        }
+        @keyframes maintenance-status-pulse {
+            0% { box-shadow: 0 0 0 0 currentColor; }
+            70%, 100% { box-shadow: 0 0 0 0.35rem transparent; }
+        }
+        @media (max-width: 520px) {
+            #systemAnnouncementBanner {
+                gap: 0.5rem;
+                padding: 0.35rem 0.55rem;
+            }
+            .system-announcement-icon {
+                width: 1.35rem;
+                height: 1.35rem;
+                border-radius: 0.62rem;
+                font-size: 0.72rem;
+            }
+            #systemAnnouncementBanner::after {
+                width: 28%;
+            }
+            #userRosterUnavailable {
+                gap: 0.7rem;
+                margin: 0.75rem 0;
+                padding: 1.6rem 1rem;
+                border-radius: 1.15rem;
+            }
+            .maintenance-icon-shell {
+                width: 4.4rem;
+                height: 4.4rem;
+                border-radius: 1.35rem;
+            }
+            .maintenance-icon-shell::after {
+                border-radius: 1.5rem;
+            }
+            .maintenance-status {
+                max-width: 100%;
+                border-radius: 0.85rem;
+                text-align: left;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #systemAnnouncementBanner,
+            #systemAnnouncementBanner::after,
+            .system-announcement-icon i,
+            #userRosterUnavailable,
+            .maintenance-icon-shell::before,
+            .maintenance-icon-shell::after,
+            #userRosterUnavailableIcon,
+            .maintenance-eyebrow > i,
+            .maintenance-status-dot {
+                animation: none !important;
+            }
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            #systemAnnouncementBanner,
+            #userRosterUnavailable,
+            .maintenance-icon-shell,
+            .maintenance-status {
+                background-color: #f7faff;
+            }
         }
         #systemAnnouncementBanner[hidden],
         #userRosterUnavailable[hidden] { display: none !important; }
@@ -976,30 +1476,6 @@
             cursor: pointer;
             font-size: 0.72rem;
             font-weight: 800;
-        }
-        #userRosterUnavailable {
-            margin: 1rem 0;
-            padding: 2rem 1.25rem;
-            border: 1px solid #dbeafe;
-            border-radius: 1.25rem;
-            background: linear-gradient(145deg, #fff, #f8fbff);
-            color: #475569;
-            text-align: center;
-        }
-        #userRosterUnavailable i {
-            display: block;
-            margin-bottom: 0.65rem;
-            color: #3478f6;
-            font-size: 1.5rem;
-        }
-        #userRosterUnavailable strong {
-            display: block;
-            color: #172554;
-            font-size: 1rem;
-        }
-        #userRosterUnavailable p {
-            margin: 0.4rem 0 0;
-            font-size: 0.78rem;
         }
         @media (max-width: 800px) {
             .system-settings-layout { grid-template-columns: 1fr; }
@@ -4490,7 +4966,13 @@
 
 <div id="rosterApp" class="max-w-[1440px] mx-auto space-y-6" aria-hidden="true" hidden>
 
-    <div id="systemAnnouncementBanner" role="status" aria-live="polite" hidden></div>
+    <div id="systemAnnouncementBanner" role="status" aria-live="polite" hidden>
+        <span class="system-announcement-icon" aria-hidden="true"><i class="fa-solid fa-bell"></i></span>
+        <div class="system-announcement-copy">
+            <strong>A NOTE FOR TEAM:</strong>
+            <p id="systemAnnouncementText"></p>
+        </div>
+    </div>
     <div id="offlineBanner" role="status" aria-live="polite" hidden>
         <span><i class="fa-solid fa-wifi" aria-hidden="true"></i> You are offline. Showing the last available app state.</span>
         <button type="button" id="offlineRetryBtn" class="status-action">Retry connection</button>
@@ -4529,9 +5011,16 @@
         </button>
     </div>
     <section id="userRosterUnavailable" aria-live="polite" hidden>
-        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <div class="maintenance-icon-shell" aria-hidden="true">
+            <i id="userRosterUnavailableIcon" class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+        <span class="maintenance-eyebrow"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> Roster service update</span>
         <strong id="userRosterUnavailableTitle">Roster temporarily unavailable</strong>
         <p id="userRosterUnavailableMessage"></p>
+        <span class="maintenance-status">
+            <span class="maintenance-status-dot" aria-hidden="true"></span>
+            <span id="userRosterUnavailableStatus">Roster access is temporarily paused</span>
+        </span>
     </section>
 
     <!-- HEADER with undo/redo and row management -->
@@ -5006,12 +5495,12 @@
     </div>
 
     <section id="rosterHistoryPane" class="roster-history-panel" aria-labelledby="rosterHistoryHeading" hidden>
-        <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="history-toolbar">
             <div>
                 <h2 id="rosterHistoryHeading" class="text-xl font-header font-extrabold text-gray-900">Published roster history</h2>
                 <p class="mt-1 text-sm text-slate-500">Only the roster administrator can view these archived weeks.</p>
             </div>
-            <div class="flex flex-wrap items-end gap-3">
+            <div class="history-date-filters">
                 <label class="grid gap-1 text-xs font-bold text-slate-600">
                     From week
                     <input id="historyFromDate" type="date" class="premium-select" />
@@ -5020,7 +5509,23 @@
                     Through week
                     <input id="historyThroughDate" type="date" class="premium-select" />
                 </label>
-                <button type="button" class="btn-premium" id="filterHistoryBtn"><i class="fa-solid fa-filter"></i> Filter</button>
+                <label class="grid gap-1 text-xs font-bold text-slate-600">
+                    Search weeks
+                    <input id="historySearch" type="search" class="premium-select" placeholder="Search dates or week labels" />
+                </label>
+                <div class="history-filter-actions">
+                    <button type="button" class="btn-premium" id="filterHistoryBtn"><i class="fa-solid fa-filter" aria-hidden="true"></i> Filter</button>
+                    <button type="button" class="btn-premium btn-premium-outline" id="clearHistoryFiltersBtn"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Clear</button>
+                    <button type="button" class="btn-premium btn-premium-outline" id="refreshArchivedRostersBtn" aria-label="Refresh published roster history"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="history-selection-tools">
+                <label class="history-select-visible"><input id="selectVisibleArchivedRosters" type="checkbox" /> Select shown weeks</label>
+                <button type="button" class="btn-premium btn-premium-outline" id="deleteSelectedArchivedRostersBtn" disabled>
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                    <span>Delete selected</span>
+                    <span id="selectedArchivedRosterCount">(0)</span>
+                </button>
             </div>
         </div>
         <p id="historyStatus" class="roster-history-empty" role="status">Loading published weeks…</p>
@@ -5465,6 +5970,9 @@
         let isPreviewMode = false;
         let retrySaveAction = null;
         let archivedRosters = [];
+        let visibleArchivedRosters = [];
+        const selectedArchivedRosterIds = new Set();
+        let selectedArchivedRoster = null;
         const defaultSystemSettings = {
             announcement: '',
             signupsEnabled: true,
@@ -5603,6 +6111,13 @@
             );
         }
 
+        function setRosterUnavailableNotice(kind, iconClass, statusText) {
+            const notice = document.getElementById('userRosterUnavailable');
+            notice.dataset.kind = kind;
+            document.getElementById('userRosterUnavailableIcon').className = iconClass;
+            document.getElementById('userRosterUnavailableStatus').textContent = statusText;
+        }
+
         function applySystemSettings() {
             const signupTab = document.getElementById('signUpTab');
             signupTab.disabled = !systemSettingsLoaded || Boolean(systemSettingsError) || !currentSystemSettings.signupsEnabled;
@@ -5625,7 +6140,7 @@
             }
 
             const announcement = document.getElementById('systemAnnouncementBanner');
-            announcement.textContent = currentSystemSettings.announcement;
+            document.getElementById('systemAnnouncementText').textContent = currentSystemSettings.announcement;
             announcement.hidden = !currentSystemSettings.announcement;
 
             const app = document.getElementById('rosterApp');
@@ -5645,16 +6160,20 @@
                 const title = document.getElementById('userRosterUnavailableTitle');
                 const message = document.getElementById('userRosterUnavailableMessage');
                 if (systemSettingsError) {
+                    setRosterUnavailableNotice('error', 'fa-solid fa-triangle-exclamation', 'Checking system settings');
                     title.textContent = 'Settings unavailable';
                     message.textContent = 'The roster cannot be shown until system settings can be checked. Refresh the page to try again.';
                 } else if (currentSystemSettings.maintenanceMode) {
+                    setRosterUnavailableNotice('maintenance', 'fa-solid fa-screwdriver-wrench', 'Service work is in progress');
                     title.textContent = 'Maintenance in progress';
                     message.textContent = currentSystemSettings.maintenanceMessage ||
                         'The roster is temporarily unavailable. Please check back soon.';
                 } else if (!currentSystemSettings.publishedRosterVisible) {
+                    setRosterUnavailableNotice('hidden', 'fa-solid fa-eye-slash', 'Roster visibility is paused');
                     title.textContent = 'Roster temporarily unavailable';
                     message.textContent = 'The administrator has temporarily hidden the published roster.';
                 } else {
+                    setRosterUnavailableNotice('hidden', 'fa-solid fa-calendar-xmark', 'No roster locations are available');
                     title.textContent = 'No rosters are available';
                     message.textContent = 'The administrator has temporarily hidden all roster locations.';
                 }
@@ -6590,6 +7109,233 @@
             }
         }
 
+        function updateArchivedSelectionControls() {
+            const count = selectedArchivedRosterIds.size;
+            const countLabel = document.getElementById('selectedArchivedRosterCount');
+            const deleteButton = document.getElementById('deleteSelectedArchivedRostersBtn');
+            const selectVisible = document.getElementById('selectVisibleArchivedRosters');
+            if (countLabel) countLabel.textContent = `(${count})`;
+            if (deleteButton) deleteButton.disabled = count === 0;
+            if (selectVisible) {
+                selectVisible.checked = visibleArchivedRosters.length > 0 &&
+                    visibleArchivedRosters.every(roster => selectedArchivedRosterIds.has(roster.id));
+                selectVisible.indeterminate = !selectVisible.checked &&
+                    visibleArchivedRosters.some(roster => selectedArchivedRosterIds.has(roster.id));
+            }
+        }
+
+        async function deleteSelectedArchivedRosters() {
+            if (!canManageRoster()) return;
+            const selected = archivedRosters.filter(roster => selectedArchivedRosterIds.has(roster.id));
+            if (!selected.length) return;
+            const confirmed = await confirmAction({
+                title: `Delete ${selected.length} published roster${selected.length === 1 ? '' : 's'}?`,
+                message: `Permanently remove ${selected.length} selected ${selected.length === 1 ? 'week' : 'weeks'} from published roster history? This cannot be undone.`,
+                confirmLabel: 'Delete selected',
+                icon: 'fa-solid fa-trash-can',
+                theme: 'danger'
+            });
+            if (!confirmed || !canManageRoster()) return;
+
+            try {
+                for (let offset = 0; offset < selected.length; offset += 400) {
+                    const batch = firestore.batch();
+                    selected.slice(offset, offset + 400).forEach(roster => {
+                        batch.delete(rosterHistoryCollection.doc(roster.id));
+                    });
+                    await batch.commit();
+                }
+                const deletedIds = new Set(selected.map(roster => roster.id));
+                archivedRosters = archivedRosters.filter(roster => !deletedIds.has(roster.id));
+                deletedIds.forEach(id => selectedArchivedRosterIds.delete(id));
+                if (selectedArchivedRoster && deletedIds.has(selectedArchivedRoster.id)) {
+                    selectedArchivedRoster = null;
+                }
+                renderHistoryList();
+                showToast(`${selected.length} published roster${selected.length === 1 ? '' : 's'} deleted from history.`);
+            } catch (error) {
+                console.error('Failed to delete selected published rosters:', error);
+                await loadArchivedRosters();
+                showToast(error.code === 'permission-denied'
+                    ? 'Firestore denied deleting roster history. Deploy the current Firestore rules.'
+                    : `Some selected weeks may have been deleted. History was refreshed: ${error.message || 'check the connection'}`);
+            }
+        }
+
+        async function restoreArchivedRoster(roster) {
+            if (!canManageRoster() || !isBackupData(roster.data)) return;
+            const confirmed = await confirmAction({
+                title: 'Restore this published week to the editor?',
+                message: `Load the ${roster.weekLabel} roster into the draft editor? This replaces the roster currently on screen, but does not publish changes or modify the archived copy.`,
+                confirmLabel: 'Restore to editor',
+                icon: 'fa-solid fa-clock-rotate-left',
+                theme: 'warning'
+            });
+            if (!confirmed || !canManageRoster()) return;
+
+            try {
+                pushHistory();
+                if (!applySnapshotData(roster.data)) {
+                    throw new Error('The archived roster could not be applied.');
+                }
+                pushHistory();
+                isPreviewMode = false;
+                showRosterPane('editor');
+                draftHasUnsavedChanges = true;
+                setDraftStatus('Restored week — draft not saved', `${roster.weekLabel} is loaded privately. Save Draft to keep it, or publish when ready.`);
+                setFirestoreLoading(false, true);
+                showToast('Archived roster restored to the editor as a draft');
+            } catch (error) {
+                console.error('Failed to restore archived roster:', error);
+                showToast('Could not restore the archived roster');
+            }
+        }
+
+        function downloadArchivedCsv(roster) {
+            if (!canManageRoster() || !isBackupData(roster.data)) return;
+            try {
+                const escapeCsv = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+                const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                const firstTable = roster.data.tables[0];
+                const dayLabels = firstTable.dates.slice().sort((left, right) => left.day - right.day)
+                    .map((date, index) => date.value || weekdays[index]);
+                const lines = [['Location', 'Week', 'Type', 'Name', ...dayLabels]
+                    .map(escapeCsv).join(',')];
+                roster.data.tables.forEach(tableData => {
+                    const tableInfo = rosterTables.find(table => table.tableId === tableData.tableId);
+                    const dates = tableData.dates.slice().sort((left, right) => left.day - right.day);
+                    tableData.rows.forEach(row => {
+                        if (!row.values.some(value => String(value || '').trim())) return;
+                        const nightShift = row.className.includes('night-row-hover');
+                        lines.push([
+                            tableInfo ? tableInfo.name : tableData.tableId,
+                            roster.weekLabel,
+                            nightShift ? 'Night shift' : 'Day shift',
+                            row.values[0] || '',
+                            ...dates.map(date => row.values[date.day + 1] || '')
+                        ].map(escapeCsv).join(','));
+                    });
+                });
+                const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const anchor = document.createElement('a');
+                anchor.href = url;
+                anchor.download = `published-roster-${roster.weekStart}.csv`;
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                URL.revokeObjectURL(url);
+                showToast('Archived roster CSV exported');
+            } catch (error) {
+                console.error('Could not export archived roster CSV:', error);
+                showToast('Archived roster CSV export failed');
+            }
+        }
+
+        async function downloadArchivedImage(roster) {
+            if (!canManageRoster() || !isBackupData(roster.data)) return;
+            try {
+                const width = 1680;
+                const padding = 48;
+                const titleHeight = 124;
+                const locationHeadingHeight = 54;
+                const tableHeaderHeight = 52;
+                const rowHeight = 42;
+                const columnWidths = [300, 180, 180, 180, 180, 180, 180, 180];
+                const lineHeight = 21;
+                const tableHeight = roster.data.tables.reduce((total, table) =>
+                    total + locationHeadingHeight + tableHeaderHeight + table.rows.filter(row =>
+                        row.values.some(value => String(value || '').trim())).length * rowHeight + 28, 0);
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = titleHeight + tableHeight + padding * 2;
+                const context = canvas.getContext('2d');
+                if (!context) throw new Error('Canvas is unavailable in this browser.');
+
+                context.fillStyle = '#eef4fb';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                const titleGradient = context.createLinearGradient(0, 0, width, titleHeight);
+                titleGradient.addColorStop(0, '#142849');
+                titleGradient.addColorStop(1, '#28619b');
+                context.fillStyle = titleGradient;
+                context.fillRect(0, 0, width, titleHeight);
+                context.fillStyle = '#ffffff';
+                context.font = '700 32px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                context.fillText('Published roster', padding, 50);
+                context.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                context.fillStyle = 'rgba(255,255,255,0.82)';
+                context.fillText(roster.weekLabel, padding, 84);
+
+                let y = titleHeight + padding;
+                roster.data.tables.forEach(tableData => {
+                    const tableInfo = rosterTables.find(table => table.tableId === tableData.tableId);
+                    const rows = tableData.rows.filter(row =>
+                        row.values.some(value => String(value || '').trim()));
+                    context.fillStyle = '#1e3556';
+                    context.font = '700 21px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    context.fillText(tableInfo ? tableInfo.name : tableData.tableId, padding, y + 31);
+                    y += locationHeadingHeight;
+
+                    const headers = ['Name', ...tableData.dates.slice().sort((a, b) => a.day - b.day).map(date => date.value)];
+                    let x = padding;
+                    headers.forEach((header, index) => {
+                        context.fillStyle = index === 0 ? '#214c80' : '#2c6099';
+                        context.fillRect(x, y, columnWidths[index], tableHeaderHeight);
+                        context.fillStyle = '#ffffff';
+                        context.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                        context.fillText(String(header || '').slice(0, 18), x + 12, y + 31);
+                        x += columnWidths[index];
+                    });
+                    y += tableHeaderHeight;
+                    rows.forEach((row, rowIndex) => {
+                        const nightShift = row.className.includes('night-row-hover');
+                        context.fillStyle = nightShift
+                            ? '#25334a'
+                            : (rowIndex % 2 ? '#f8fbff' : '#ffffff');
+                        context.fillRect(padding, y, columnWidths.reduce((sum, widthValue) => sum + widthValue, 0), rowHeight);
+                        context.strokeStyle = '#d8e2ef';
+                        context.beginPath();
+                        context.moveTo(padding, y + rowHeight);
+                        context.lineTo(padding + columnWidths.reduce((sum, widthValue) => sum + widthValue, 0), y + rowHeight);
+                        context.stroke();
+                        let cellX = padding;
+                        const values = Array.from({ length: 8 }, (_, index) => row.values[index] || '');
+                        values.forEach((value, index) => {
+                            context.fillStyle = nightShift ? '#f1f5f9' : '#293b53';
+                            context.font = index === 0
+                                ? '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+                                : '500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                            let text = String(value);
+                            const maxWidth = columnWidths[index] - 22;
+                            while (text && context.measureText(text).width > maxWidth) {
+                                text = text.slice(0, -1);
+                            }
+                            if (text !== String(value) && text.length > 1) text = `${text.slice(0, -1)}…`;
+                            context.fillText(text, cellX + 11, y + Math.round((rowHeight + lineHeight) / 2) - 2);
+                            cellX += columnWidths[index];
+                        });
+                        y += rowHeight;
+                    });
+                    y += 28;
+                });
+
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (!blob) throw new Error('The roster image could not be encoded.');
+                const url = URL.createObjectURL(blob);
+                const anchor = document.createElement('a');
+                anchor.href = url;
+                anchor.download = `published-roster-${roster.weekStart}.png`;
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+                URL.revokeObjectURL(url);
+                showToast('Archived roster image downloaded');
+            } catch (error) {
+                console.error('Could not create archived roster image:', error);
+                showToast(error.message || 'Archived roster image download failed');
+            }
+        }
+
         async function deleteArchivedRoster(roster) {
             if (!canManageRoster()) return;
             const confirmed = await confirmAction({
@@ -6604,6 +7350,10 @@
             try {
                 await rosterHistoryCollection.doc(roster.id).delete();
                 archivedRosters = archivedRosters.filter(item => item.id !== roster.id);
+                selectedArchivedRosterIds.delete(roster.id);
+                if (selectedArchivedRoster && selectedArchivedRoster.id === roster.id) {
+                    selectedArchivedRoster = null;
+                }
                 renderHistoryList();
                 showToast('Published roster deleted from history.');
             } catch (error) {
@@ -6620,39 +7370,63 @@
             if (!list || !status) return;
             const from = document.getElementById('historyFromDate').value;
             const through = document.getElementById('historyThroughDate').value;
+            const search = document.getElementById('historySearch').value.trim().toLocaleLowerCase();
             if (from && through && from > through) {
                 list.replaceChildren();
+                visibleArchivedRosters = [];
                 status.textContent = 'The start week must be on or before the through week.';
                 status.hidden = false;
                 document.getElementById('historyRosterPreview').replaceChildren();
+                updateArchivedSelectionControls();
                 return;
             }
             const filtered = archivedRosters.filter(roster =>
-                (!from || roster.weekEnd >= from) && (!through || roster.weekStart <= through));
+                (!from || roster.weekEnd >= from) &&
+                (!through || roster.weekStart <= through) &&
+                (!search || `${roster.weekLabel} ${roster.weekStart} ${roster.weekEnd}`.toLocaleLowerCase().includes(search)));
+            visibleArchivedRosters = filtered;
             list.replaceChildren();
             document.getElementById('historyRosterPreview').replaceChildren();
             if (!filtered.length) {
+                selectedArchivedRoster = null;
                 status.textContent = archivedRosters.length
                     ? 'No archived rosters match this week-date filter.'
                     : 'No previously published weeks have been archived yet.';
                 status.hidden = false;
-                document.getElementById('historyRosterPreview').replaceChildren();
+                updateArchivedSelectionControls();
                 return;
             }
-            status.textContent = `${filtered.length} archived roster${filtered.length === 1 ? '' : 's'} found. Select a week to view it.`;
+            status.textContent = `${filtered.length} published week${filtered.length === 1 ? '' : 's'} found. Select a week to preview or restore it.`;
             status.hidden = false;
+            if (selectedArchivedRoster && !filtered.some(roster => roster.id === selectedArchivedRoster.id)) {
+                selectedArchivedRoster = null;
+            }
             filtered.forEach(roster => {
                 const entry = document.createElement('div');
                 entry.className = 'roster-history-entry';
+                const selectionLabel = document.createElement('label');
+                selectionLabel.className = 'roster-history-select';
+                selectionLabel.setAttribute('aria-label', `Select ${roster.weekLabel}`);
+                const selectionCheckbox = document.createElement('input');
+                selectionCheckbox.type = 'checkbox';
+                selectionCheckbox.className = 'history-select-archive';
+                selectionCheckbox.checked = selectedArchivedRosterIds.has(roster.id);
+                selectionCheckbox.setAttribute('aria-label', `Select ${roster.weekLabel} for bulk actions`);
+                selectionCheckbox.addEventListener('change', () => {
+                    if (selectionCheckbox.checked) selectedArchivedRosterIds.add(roster.id);
+                    else selectedArchivedRosterIds.delete(roster.id);
+                    updateArchivedSelectionControls();
+                });
+                selectionLabel.appendChild(selectionCheckbox);
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'roster-history-item';
                 button.dataset.historyId = roster.id;
-                button.setAttribute('aria-pressed', 'false');
+                button.setAttribute('aria-pressed', String(Boolean(selectedArchivedRoster && selectedArchivedRoster.id === roster.id)));
                 const week = document.createElement('strong');
                 week.textContent = roster.weekLabel;
                 const archived = document.createElement('span');
-                archived.className = 'text-xs text-slate-500';
+                archived.className = 'history-archived-at';
                 archived.textContent = `Archived ${new Date(roster.archivedAt).toLocaleString()}`;
                 button.append(week, archived);
                 button.addEventListener('click', () => showArchivedRoster(roster));
@@ -6662,16 +7436,20 @@
                 deleteButton.setAttribute('aria-label', `Delete ${roster.weekLabel} from history`);
                 deleteButton.innerHTML = '<i class="fa-solid fa-trash-can" aria-hidden="true"></i>';
                 deleteButton.addEventListener('click', () => deleteArchivedRoster(roster));
-                entry.append(button, deleteButton);
+                entry.append(selectionLabel, button, deleteButton);
                 list.appendChild(entry);
             });
+            updateArchivedSelectionControls();
+            if (selectedArchivedRoster) showArchivedRoster(selectedArchivedRoster);
         }
 
         async function loadArchivedRosters() {
             if (!canManageRoster()) return;
             const status = document.getElementById('historyStatus');
+            const refreshButton = document.getElementById('refreshArchivedRostersBtn');
             status.textContent = 'Loading published weeks…';
             status.hidden = false;
+            if (refreshButton) refreshButton.disabled = true;
             try {
                 const snapshot = await rosterHistoryCollection.get({ source: 'server' });
                 archivedRosters = snapshot.docs.map(document => ({
@@ -6685,11 +7463,20 @@
                     Number.isFinite(roster.archivedAt) &&
                     isBackupData(roster.data)
                 ).sort((left, right) => right.weekStart.localeCompare(left.weekStart) || right.archivedAt - left.archivedAt);
+                const loadedIds = new Set(archivedRosters.map(roster => roster.id));
+                selectedArchivedRosterIds.forEach(id => {
+                    if (!loadedIds.has(id)) selectedArchivedRosterIds.delete(id);
+                });
+                if (selectedArchivedRoster) {
+                    selectedArchivedRoster = archivedRosters.find(roster => roster.id === selectedArchivedRoster.id) || null;
+                }
                 renderHistoryList();
             } catch (error) {
                 console.error('Failed to load published roster history:', error);
                 status.textContent = 'Could not load published weeks. Check the connection and Firestore permissions, then try again.';
                 status.hidden = false;
+            } finally {
+                if (refreshButton) refreshButton.disabled = false;
             }
         }
 
@@ -6698,6 +7485,7 @@
             const editorData = captureState();
             const preview = document.getElementById('historyRosterPreview');
             try {
+                selectedArchivedRoster = roster;
                 if (!applySnapshotData(roster.data)) throw new Error('The selected archived roster could not be displayed.');
                 const locations = rosterTables.map(table => {
                     const source = document.getElementById(table.tableId);
@@ -6709,9 +7497,30 @@
                     return copy;
                 });
                 preview.replaceChildren(...locations);
-                const heading = document.createElement('h3');
-                heading.className = 'text-lg font-header font-extrabold text-slate-800';
-                heading.textContent = `${roster.weekLabel} · archived roster`;
+                const heading = document.createElement('div');
+                heading.className = 'history-preview-heading';
+                const title = document.createElement('h3');
+                title.className = 'text-lg font-header font-extrabold text-slate-800';
+                title.textContent = `${roster.weekLabel} · published roster`;
+                const actions = document.createElement('div');
+                actions.className = 'history-preview-actions';
+                const restoreButton = document.createElement('button');
+                restoreButton.type = 'button';
+                restoreButton.className = 'btn-premium';
+                restoreButton.innerHTML = '<i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Restore to editor';
+                restoreButton.addEventListener('click', () => restoreArchivedRoster(roster));
+                const csvButton = document.createElement('button');
+                csvButton.type = 'button';
+                csvButton.className = 'btn-premium btn-premium-outline';
+                csvButton.innerHTML = '<i class="fa-solid fa-file-csv" aria-hidden="true"></i> Export CSV';
+                csvButton.addEventListener('click', () => downloadArchivedCsv(roster));
+                const imageButton = document.createElement('button');
+                imageButton.type = 'button';
+                imageButton.className = 'btn-premium btn-premium-outline';
+                imageButton.innerHTML = '<i class="fa-solid fa-image" aria-hidden="true"></i> Download image';
+                imageButton.addEventListener('click', () => downloadArchivedImage(roster));
+                actions.append(restoreButton, csvButton, imageButton);
+                heading.append(title, actions);
                 preview.prepend(heading);
                 document.querySelectorAll('.roster-history-item').forEach(button => {
                     button.setAttribute('aria-pressed', String(button.dataset.historyId === roster.id));
@@ -8684,7 +9493,31 @@
             document.getElementById('editorTabBtn').addEventListener('click', () => showRosterPane('editor'));
             document.getElementById('historyTabBtn').addEventListener('click', () => showRosterPane('history'));
             document.getElementById('manageAccountsTabBtn').addEventListener('click', () => showRosterPane('access'));
-            document.getElementById('filterHistoryBtn').addEventListener('click', renderHistoryList);
+            document.getElementById('filterHistoryBtn').addEventListener('click', () => {
+                selectedArchivedRoster = null;
+                renderHistoryList();
+            });
+            document.getElementById('historySearch').addEventListener('input', renderHistoryList);
+            document.getElementById('clearHistoryFiltersBtn').addEventListener('click', () => {
+                document.getElementById('historyFromDate').value = '';
+                document.getElementById('historyThroughDate').value = '';
+                document.getElementById('historySearch').value = '';
+                selectedArchivedRoster = null;
+                renderHistoryList();
+            });
+            document.getElementById('refreshArchivedRostersBtn').addEventListener('click', loadArchivedRosters);
+            document.getElementById('selectVisibleArchivedRosters').addEventListener('change', event => {
+                visibleArchivedRosters.forEach(roster => {
+                    if (event.currentTarget.checked) selectedArchivedRosterIds.add(roster.id);
+                    else selectedArchivedRosterIds.delete(roster.id);
+                });
+                document.querySelectorAll('.history-select-archive').forEach(checkbox => {
+                    checkbox.checked = event.currentTarget.checked;
+                });
+                updateArchivedSelectionControls();
+            });
+            document.getElementById('deleteSelectedArchivedRostersBtn')
+                .addEventListener('click', deleteSelectedArchivedRosters);
             document.getElementById('retryFirestoreLoadBtn').addEventListener('click', () => handleAuthStateChange(auth.currentUser));
             initializeAuthUI();
 
