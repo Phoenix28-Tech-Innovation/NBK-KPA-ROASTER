@@ -4522,6 +4522,13 @@
             padding: 1.35rem 0.45rem 1rem;
             text-align: left;
         }
+        #releaseNotesDialog .release-notes-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
         #releaseNotesDialog .release-notes-version {
             display: inline-flex;
             align-items: center;
@@ -4542,6 +4549,11 @@
             color: #2563eb;
             opacity: 1;
             visibility: visible;
+        }
+        #releaseNotesDialog .release-notes-deployed-at {
+            color: #718198;
+            font-size: 0.68rem;
+            font-weight: 650;
         }
         #releaseNotesDialog #releaseNotesHeading {
             margin: 0.75rem 0 0;
@@ -4586,14 +4598,39 @@
             letter-spacing: 0;
             text-transform: none;
         }
-        #releaseNotesDialog #releaseNotesList {
+        #releaseNotesDialog .release-notes-sections {
+            display: grid;
+            gap: 0.9rem;
+        }
+        #releaseNotesDialog .release-notes-group[hidden] {
+            display: none !important;
+        }
+        #releaseNotesDialog .release-notes-group h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin: 0 0 0.55rem;
+            color: #40526e;
+            font-size: 0.76rem;
+            font-weight: 800;
+        }
+        #releaseNotesDialog .release-notes-group h4 i {
+            color: #16866c;
+        }
+        #releaseNotesDialog .release-notes-group:nth-child(2) h4 i {
+            color: #d97706;
+        }
+        #releaseNotesDialog .release-notes-group:nth-child(3) h4 i {
+            color: #2563eb;
+        }
+        #releaseNotesDialog .release-notes-group ul {
             display: grid;
             gap: 0.58rem;
             margin: 0;
             padding: 0;
             list-style: none;
         }
-        #releaseNotesDialog #releaseNotesList > li {
+        #releaseNotesDialog .release-notes-group li {
             display: grid;
             grid-template-columns: 2rem minmax(0, 1fr);
             align-items: start;
@@ -4627,17 +4664,20 @@
             opacity: 1;
             visibility: visible;
         }
-        #releaseNotesDialog .release-note-empty {
-            grid-template-columns: 2rem minmax(0, 1fr);
-            background: rgba(239,246,255,0.82) !important;
-            color: #52647e !important;
+        #releaseNotesDialog .release-note-icon[data-kind="fixed"] {
+            border-color: rgba(217,119,6,0.2);
+            background: linear-gradient(145deg, #fff7ed, #fff);
+            color: #b45309;
         }
-        #releaseNotesDialog .release-note-empty .release-note-icon {
+        #releaseNotesDialog .release-note-icon[data-kind="fixed"] i {
+            color: #b45309;
+        }
+        #releaseNotesDialog .release-note-icon[data-kind="other"] {
             border-color: rgba(37,99,235,0.16);
             background: linear-gradient(145deg, #eff6ff, #fff);
             color: #2563eb;
         }
-        #releaseNotesDialog .release-note-empty .release-note-icon i {
+        #releaseNotesDialog .release-note-icon[data-kind="other"] i {
             color: #2563eb;
         }
         #releaseNotesDialog .release-notes-footer {
@@ -4661,9 +4701,9 @@
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        #releaseNotesDialog #releaseNotesList > li:nth-child(2) { animation-delay: 45ms; }
-        #releaseNotesDialog #releaseNotesList > li:nth-child(3) { animation-delay: 90ms; }
-        #releaseNotesDialog #releaseNotesList > li:nth-child(4) { animation-delay: 135ms; }
+        #releaseNotesDialog .release-notes-group li:nth-child(2) { animation-delay: 45ms; }
+        #releaseNotesDialog .release-notes-group li:nth-child(3) { animation-delay: 90ms; }
+        #releaseNotesDialog .release-notes-group li:nth-child(4) { animation-delay: 135ms; }
         @media (max-width: 520px) {
             #releaseNotesDialog {
                 padding: 0.8rem;
@@ -4680,7 +4720,7 @@
                 border-radius: 0.95rem;
                 font-size: 1.2rem;
             }
-            #releaseNotesDialog #releaseNotesList > li {
+            #releaseNotesDialog .release-notes-group li {
                 grid-template-columns: 1.85rem minmax(0, 1fr);
                 gap: 0.65rem;
                 padding: 0.8rem;
@@ -4695,7 +4735,7 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            #releaseNotesDialog #releaseNotesList > li {
+            #releaseNotesDialog .release-notes-group li {
                 animation: none;
             }
         }
@@ -5853,7 +5893,7 @@
             <h2 id="releaseUpdateTitle">A new update is available</h2>
         </div>
     </div>
-    <p id="releaseUpdateMessage">A new version of Roster Admin is ready for you.</p>
+    <p id="releaseUpdateMessage">A new roster update is ready. Review what changed before updating.</p>
     <div class="release-update-summary" id="releaseUpdateSummary">
         <span class="release-update-version"><i class="fa-solid fa-tag" aria-hidden="true"></i><span id="releaseUpdateVersion"></span></span>
         <ul class="release-update-highlights" id="releaseUpdateHighlights"></ul>
@@ -5884,16 +5924,32 @@
         </div>
     </div>
     <div class="release-notes-summary">
-        <span class="release-notes-version"><i class="fa-solid fa-tag" aria-hidden="true"></i><span id="releaseNotesVersionLabel">Latest release</span></span>
+        <div class="release-notes-meta">
+            <span class="release-notes-version"><i class="fa-solid fa-tag" aria-hidden="true"></i><span id="releaseNotesVersionLabel">Latest release</span></span>
+            <span class="release-notes-deployed-at" id="releaseNotesDeployedAt"></span>
+        </div>
         <h3 id="releaseNotesHeading"></h3>
     </div>
     <section class="release-notes-details" aria-labelledby="releaseNotesDetailsTitle">
         <div class="release-notes-details-heading">
             <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
-            <h3 id="releaseNotesDetailsTitle">Release highlights</h3>
+            <h3 id="releaseNotesDetailsTitle">Changes in this version</h3>
             <span class="release-notes-count" id="releaseNotesCount" aria-live="polite"></span>
         </div>
-        <ul id="releaseNotesList" aria-label="Release highlights"></ul>
+        <div id="releaseNotesSections" class="release-notes-sections">
+            <section id="releaseNotesAddedSection" class="release-notes-group" hidden>
+                <h4><i class="fa-solid fa-sparkles" aria-hidden="true"></i> Added</h4>
+                <ul id="releaseNotesAddedList" aria-label="Added features"></ul>
+            </section>
+            <section id="releaseNotesFixedSection" class="release-notes-group" hidden>
+                <h4><i class="fa-solid fa-wrench" aria-hidden="true"></i> Fixed</h4>
+                <ul id="releaseNotesFixedList" aria-label="Fixes"></ul>
+            </section>
+            <section id="releaseNotesOtherSection" class="release-notes-group" hidden>
+                <h4><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Other updates</h4>
+                <ul id="releaseNotesOtherList" aria-label="Other release updates"></ul>
+            </section>
+        </div>
     </section>
     <div class="release-notes-footer flex justify-end">
         <button type="button" class="release-primary" id="releaseNotesDoneButton"><i class="fa-solid fa-check" aria-hidden="true"></i> Got it</button>
@@ -5916,45 +5972,61 @@
         let verifiedDisplayName = '';
         let checkInProgress = false;
 
+        function getReleaseChanges(release) {
+            const categorized = release.schemaVersion === 2;
+            const added = categorized && Array.isArray(release.features) ? release.features : [];
+            const fixed = categorized && Array.isArray(release.fixes) ? release.fixes : [];
+            const notes = Array.isArray(release.notes) ? release.notes : [];
+            const categorizedNotes = new Set([...added, ...fixed]);
+            const other = categorized ? notes.filter(note => !categorizedNotes.has(note)) : notes.slice();
+            if (!added.length && !fixed.length && !other.length) {
+                other.push('No individual highlights were included in this release.');
+            }
+            return { added, fixed, other, total: added.length + fixed.length + other.length };
+        }
+
+        function renderReleaseNotesList(listId, entries, kind) {
+            const list = document.getElementById(listId);
+            list.replaceChildren();
+            const iconClass = kind === 'added' ? 'fa-sparkles' : kind === 'fixed' ? 'fa-wrench' : 'fa-check';
+            entries.forEach(note => {
+                const item = document.createElement('li');
+                const icon = document.createElement('span');
+                icon.className = 'release-note-icon';
+                icon.dataset.kind = kind;
+                icon.setAttribute('aria-hidden', 'true');
+                const glyph = document.createElement('i');
+                glyph.className = `fa-solid ${iconClass}`;
+                icon.appendChild(glyph);
+                const text = document.createElement('span');
+                text.textContent = note;
+                item.append(icon, text);
+                list.appendChild(item);
+            });
+        }
+
         function showNotes(release) {
             if (release.adminOnly && !isRosterAdmin) return;
+            const changes = getReleaseChanges(release);
             document.getElementById('releaseNotesTitle').textContent = 'What’s new';
-            document.getElementById('releaseNotesHeading').textContent = release.title;
+            document.getElementById('releaseNotesHeading').textContent = release.title || 'Roster update';
             document.getElementById('releaseNotesVersionLabel').textContent =
                 typeof release.versionLabel === 'string' && release.versionLabel.trim()
                     ? release.versionLabel
                     : (release.version ? `Version ${release.version.slice(0, 7)}` : 'Latest release');
-            const list = document.getElementById('releaseNotesList');
-            list.replaceChildren();
+            const deployedAt = typeof release.deployedAt === 'string' ? new Date(release.deployedAt) : null;
+            document.getElementById('releaseNotesDeployedAt').textContent =
+                deployedAt && !Number.isNaN(deployedAt.getTime())
+                    ? `Updated ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(deployedAt)}`
+                    : '';
             const notesCount = document.getElementById('releaseNotesCount');
-            notesCount.textContent = `${release.notes.length} ${release.notes.length === 1 ? 'update' : 'updates'}`;
-            if (release.notes.length === 0) {
-                const emptyItem = document.createElement('li');
-                emptyItem.className = 'release-note-empty';
-                const emptyIcon = document.createElement('span');
-                emptyIcon.className = 'release-note-icon';
-                emptyIcon.setAttribute('aria-hidden', 'true');
-                const emptyIconGlyph = document.createElement('i');
-                emptyIconGlyph.className = 'fa-solid fa-circle-info';
-                emptyIcon.appendChild(emptyIconGlyph);
-                const emptyMessage = document.createElement('span');
-                emptyMessage.textContent = 'No individual highlights were included in this release.';
-                emptyItem.append(emptyIcon, emptyMessage);
-                list.appendChild(emptyItem);
-            }
-            release.notes.forEach(note => {
-                const item = document.createElement('li');
-                const icon = document.createElement('span');
-                icon.className = 'release-note-icon';
-                icon.setAttribute('aria-hidden', 'true');
-                const iconGlyph = document.createElement('i');
-                iconGlyph.className = 'fa-solid fa-check';
-                icon.appendChild(iconGlyph);
-                const noteText = document.createElement('span');
-                noteText.textContent = note;
-                item.append(icon, noteText);
-                list.appendChild(item);
-            });
+            notesCount.textContent = `${changes.total} ${changes.total === 1 ? 'change' : 'changes'}`;
+            document.getElementById('releaseNotesAddedSection').hidden = !changes.added.length;
+            document.getElementById('releaseNotesFixedSection').hidden = !changes.fixed.length;
+            document.getElementById('releaseNotesOtherSection').hidden = !changes.other.length;
+            renderReleaseNotesList('releaseNotesAddedList', changes.added, 'added');
+            renderReleaseNotesList('releaseNotesFixedList', changes.fixed, 'fixed');
+            renderReleaseNotesList('releaseNotesOtherList', changes.other, 'other');
             notesDialog.showModal();
         }
 
@@ -5981,37 +6053,41 @@
                 sessionStorage.getItem(snoozedVersionKey) === release.version ||
                 updateDialog.open) return;
             availableRelease = release;
-            document.getElementById('releaseUpdateTitle').textContent = release.title || 'A new update is available';
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
             document.getElementById('releaseUpdateMessage').textContent =
-                `Hi ${verifiedDisplayName || 'there'}, a new version of Roster Admin is ready for you.`;
+                `${greeting}, ${verifiedDisplayName || 'there'}. A new Roster Admin update is ready. Review the highlights below, then choose Update now or Later.`;
             document.getElementById('releaseUpdateVersion').textContent =
                 typeof release.versionLabel === 'string' && release.versionLabel.trim()
                     ? release.versionLabel
                     : `Version ${release.version.slice(0, 7)}`;
-            const highlights = document.getElementById('releaseUpdateHighlights');
-            highlights.replaceChildren();
-            const notes = release.notes.length
-                ? release.notes.slice(0, 2)
-                : ['This release includes general improvements and fixes.'];
-            notes.forEach(note => {
+            const changes = getReleaseChanges(release);
+            const highlightEntries = [
+                ...changes.added.map(note => ({ label: 'Added', note, icon: 'fa-sparkles' })),
+                ...changes.fixed.map(note => ({ label: 'Fixed', note, icon: 'fa-wrench' })),
+                ...changes.other.map(note => ({ label: 'Update', note, icon: 'fa-check' }))
+            ];
+            const highlightList = document.getElementById('releaseUpdateHighlights');
+            highlightList.replaceChildren();
+            highlightEntries.slice(0, 2).forEach(highlight => {
                 const item = document.createElement('li');
                 const icon = document.createElement('i');
-                icon.className = 'fa-solid fa-check';
+                icon.className = `fa-solid ${highlight.icon}`;
                 icon.setAttribute('aria-hidden', 'true');
                 const text = document.createElement('span');
-                text.textContent = note;
+                text.textContent = `${highlight.label}: ${highlight.note}`;
                 item.append(icon, text);
-                highlights.appendChild(item);
+                highlightList.appendChild(item);
             });
-            if (release.notes.length > 2) {
+            if (highlightEntries.length > 2) {
                 const item = document.createElement('li');
                 const icon = document.createElement('i');
                 icon.className = 'fa-solid fa-ellipsis';
                 icon.setAttribute('aria-hidden', 'true');
                 const text = document.createElement('span');
-                text.textContent = `${release.notes.length - 2} more improvements included`;
+                text.textContent = `${highlightEntries.length - 2} more changes are listed after updating`;
                 item.append(icon, text);
-                highlights.appendChild(item);
+                highlightList.appendChild(item);
             }
             document.getElementById('releaseUpdateError').hidden = true;
             updateDialog.showModal();
@@ -6028,6 +6104,10 @@
                 const release = await response.json();
                 if (typeof release.version !== 'string' || typeof release.title !== 'string' ||
                     !Array.isArray(release.notes) || release.notes.some(note => typeof note !== 'string') ||
+                    (release.features !== undefined &&
+                        (!Array.isArray(release.features) || release.features.some(note => typeof note !== 'string'))) ||
+                    (release.fixes !== undefined &&
+                        (!Array.isArray(release.fixes) || release.fixes.some(note => typeof note !== 'string'))) ||
                     (release.adminOnly !== undefined && typeof release.adminOnly !== 'boolean')) {
                     throw new Error('The update manifest has an invalid format.');
                 }

@@ -35,18 +35,23 @@ jobs:
             const details = descriptionLines
               .map(line => line.replace(/^\s*(?:[-*]|\d+\.)\s+/, '').trim())
               .filter(Boolean);
-            const notes = details.filter(line =>
+            // Prefix release-note bullets with [feature], [fix], or [security] to categorize them.
+            const detailLines = details.filter(line =>
               !/^(?:co-authored-by|signed-off-by|reviewed-by|tested-by|change-id):/i.test(line)
             );
             const securityPattern = /\b(security\s+(?:fix|update|patch|improvement|hardening)|(?:fix|patch|harden)\w*\s+security|vulnerab\w*|firestore rules|two-factor|multi-factor|(?:require|enforce|restrict|gate|protect)\w*.{0,50}(?:verified users?|email verification|permission|access control|auth)|(?:verified users?|email verification).{0,50}(?:access|auth|permission))\b/i;
-            const security = notes
+            const stripCategory = line => line.replace(/^\[(?:feature|fix|fixed|security)\]\s*/i, '').trim();
+            const notes = detailLines.map(stripCategory);
+            const security = detailLines
               .filter(line => /^\[security\]\s*/i.test(line) ||
                 (!/^\[feature\]\s*/i.test(line) && securityPattern.test(line)))
               .map(line => line.replace(/^\[security\]\s*/i, ''));
-            const features = notes
-              .filter(line => /^\[feature\]\s*/i.test(line) ||
-                (!/^\[security\]\s*/i.test(line) && !securityPattern.test(line)))
-              .map(line => line.replace(/^\[feature\]\s*/i, ''));
+            const features = detailLines
+              .filter(line => /^\[feature\]\s*/i.test(line))
+              .map(stripCategory);
+            const fixes = detailLines
+              .filter(line => /^\[(?:fix|fixed)\]\s*/i.test(line))
+              .map(stripCategory);
             if (!security.length) {
               security.push('Ongoing safeguard: verified-email checks gate update prompts and release notes.');
             }
@@ -71,12 +76,14 @@ jobs:
               `<meta name="app-build-version" content="${context.sha}" />`
             ));
             fs.writeFileSync('update.json', JSON.stringify({
+              schemaVersion: 2,
               version: context.sha,
               versionLabel,
               deployedAt,
               title,
               notes: notes.length ? notes : [adminOnly ? title : 'General improvements and fixes.'],
-              features: features.length ? features : [adminOnly ? title : 'General improvements and maintenance.'],
+              features,
+              fixes,
               security,
               adminOnly,
               sizeBytes: fs.statSync('index.html').size
