@@ -1,19 +1,20 @@
 {
   "schemaVersion": 2,
-  "version": "ab5fd024db62f5ec3e3a99b9ff8edafc588db359",
-  "versionLabel": "v8.8.25",
-  "deployedAt": "2026-11-19T11:47:55.429Z",
-  "title": "Use circular transparent app icons",
+  "version": "40baf3e67c79ba9a45bc0c1dab4bdbf8ec7e510e",
+  "versionLabel": "v8.8.26",
+  "deployedAt": "2026-11-19T15:26:35.152Z",
+  "title": "Refresh account UI and browser session handling",
   "notes": [
-    "Remove the square background from larger roster icons and keep them non-maskable."
+    "Bring the responsive glass account-management UI to the published page.",
+    "Scope sign-in to the browser session and clear roster data on sign-out."
   ],
   "features": [
-    "Remove the square background from larger roster icons and keep them non-maskable."
+    "Bring the responsive glass account-management UI to the published page."
   ],
   "fixes": [],
   "security": [
-    "Ongoing safeguard: verified-email checks gate update prompts and release notes."
+    "Scope sign-in to the browser session and clear roster data on sign-out."
   ],
   "adminOnly": false,
-  "sizeBytes": 467889
+  "sizeBytes": 491893
 }
