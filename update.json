@@ -1,24 +1,21 @@
 {
   "schemaVersion": 2,
-  "version": "d4e79c7a815a9f29672f0a6c52446da473d59f4d",
-  "versionLabel": "v8.8.20",
-  "deployedAt": "2026-11-19T10:27:56.271Z",
-  "title": "Sync modal and installed mobile UI",
+  "version": "a186bad48e4256f1e038035386cc0e83c6d7b60b",
+  "versionLabel": "v8.8.21",
+  "deployedAt": "2026-11-19T10:40:16.669Z",
+  "title": "Emphasize update availability modal",
   "notes": [
-    "Match the Pages update prompt modal to the Roster Admin glass design.",
-    "Improve installed mobile history filters and roster preview guidance.",
-    "Enable safe-area viewport support for installed iOS layouts."
+    "Give the update modal a stronger icon, clearer title hierarchy, and mobile-first actions.",
+    "Keep the redesigned modal consistent across Roter Admin and the Pages entry."
   ],
   "features": [
-    "Match the Pages update prompt modal to the Roster Admin glass design.",
-    "Improve installed mobile history filters and roster preview guidance."
+    "Give the update modal a stronger icon, clearer title hierarchy, and mobile-first actions.",
+    "Keep the redesigned modal consistent across Roter Admin and the Pages entry."
   ],
-  "fixes": [
-    "Enable safe-area viewport support for installed iOS layouts."
-  ],
+  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 461082
+  "sizeBytes": 462285
 }
