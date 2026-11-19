@@ -1,21 +1,19 @@
 {
   "schemaVersion": 2,
-  "version": "4db44f9872c30b6f7e7979acb55867fb6e3b67c1",
-  "versionLabel": "v8.8.27",
-  "deployedAt": "2026-11-19T19:52:28.286Z",
-  "title": "Add roster reminders and responsive draft status",
+  "version": "49c7f30a6878d8f0afbe4f8f25d0effc615f8669",
+  "versionLabel": "v8.8.28",
+  "deployedAt": "2026-11-19T21:22:12.476Z",
+  "title": "Sync index status UI with admin page",
   "notes": [
-    "Add configurable weekly roster reminders, default roster ordering, and publish confirmations.",
-    "Show draft status as a responsive top toast on admin and user pages."
+    "Remove the operational status strip and date edit hints from the published page to match the admin UI."
   ],
-  "features": [
-    "Add configurable weekly roster reminders, default roster ordering, and publish confirmations.",
-    "Show draft status as a responsive top toast on admin and user pages."
+  "features": [],
+  "fixes": [
+    "Remove the operational status strip and date edit hints from the published page to match the admin UI."
   ],
-  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 499765
+  "sizeBytes": 498851
 }
