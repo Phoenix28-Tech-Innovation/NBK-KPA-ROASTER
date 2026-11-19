@@ -1,20 +1,21 @@
 {
   "schemaVersion": 2,
-  "version": "40baf3e67c79ba9a45bc0c1dab4bdbf8ec7e510e",
-  "versionLabel": "v8.8.26",
-  "deployedAt": "2026-11-19T15:26:35.152Z",
-  "title": "Refresh account UI and browser session handling",
+  "version": "4db44f9872c30b6f7e7979acb55867fb6e3b67c1",
+  "versionLabel": "v8.8.27",
+  "deployedAt": "2026-11-19T19:52:28.286Z",
+  "title": "Add roster reminders and responsive draft status",
   "notes": [
-    "Bring the responsive glass account-management UI to the published page.",
-    "Scope sign-in to the browser session and clear roster data on sign-out."
+    "Add configurable weekly roster reminders, default roster ordering, and publish confirmations.",
+    "Show draft status as a responsive top toast on admin and user pages."
   ],
   "features": [
-    "Bring the responsive glass account-management UI to the published page."
+    "Add configurable weekly roster reminders, default roster ordering, and publish confirmations.",
+    "Show draft status as a responsive top toast on admin and user pages."
   ],
   "fixes": [],
   "security": [
-    "Scope sign-in to the browser session and clear roster data on sign-out."
+    "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 491893
+  "sizeBytes": 499765
 }
