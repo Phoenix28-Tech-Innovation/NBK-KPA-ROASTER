@@ -1,24 +1,21 @@
 {
   "schemaVersion": 2,
-  "version": "37f4143a24db69acd90f4279b8e7b9688a818d3e",
-  "versionLabel": "v8.8.18",
-  "deployedAt": "2026-11-19T10:01:05.140Z",
-  "title": "Improve update greeting and release notes",
+  "version": "290bfaaa18cc51fe30d516edccb1f0ad93a6d83b",
+  "versionLabel": "v8.8.19",
+  "deployedAt": "2026-11-19T10:13:41.575Z",
+  "title": "Improve mobile roster history layout",
   "notes": [
-    "Add time-aware personalized update greetings and concise release summaries.",
-    "Display release version and date with Added, Fixed, and Other update sections.",
-    "Categorize release features and fixes in the generated update manifest."
+    "Refine archive filters, action buttons, roster cards, and preview controls for small screens.",
+    "Preserve touch-friendly targets and responsive table scrolling on narrow devices."
   ],
   "features": [
-    "Add time-aware personalized update greetings and concise release summaries.",
-    "Display release version and date with Added, Fixed, and Other update sections."
+    "Refine archive filters, action buttons, roster cards, and preview controls for small screens.",
+    "Preserve touch-friendly targets and responsive table scrolling on narrow devices."
   ],
-  "fixes": [
-    "Categorize release features and fixes in the generated update manifest."
-  ],
+  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 454992
+  "sizeBytes": 456926
 }
