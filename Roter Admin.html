@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon" href="icons/roster-icon-192.png" />
     <meta name="msapplication-TileColor" content="#2563eb" />
     <meta name="msapplication-TileImage" content="icons/roster-icon-192.png" />
-    <title>Admin · Roster Editor Pro</title>
+    <title>Admin · Roster Pro</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -638,11 +638,6 @@
                 white-space: normal;
                 line-height: 1.25;
             }
-            .history-filter-actions button {
-                width: 100%;
-                padding-inline: 0.55rem;
-                font-size: 0.82rem;
-            }
             .history-selection-tools {
                 display: grid;
                 grid-template-columns: minmax(0, 1fr);
@@ -686,9 +681,8 @@
             .history-preview-actions button {
                 width: 100%;
                 justify-content: center;
-                min-height: 3rem;
-                padding-inline: 0.65rem;
-                font-size: 0.9rem;
+                padding-inline: 0.6rem;
+                font-size: 0.72rem;
             }
             .history-preview-actions button:first-child {
                 grid-column: auto;
@@ -702,20 +696,15 @@
                 font-size: 0.75rem;
                 font-weight: 650;
             }
-            #historyRosterPreview > section,
             #historyRosterPreview .table-card,
             #historyRosterPreview .table-card > .overflow-x-auto {
-                width: 100%;
                 max-width: 100%;
                 min-width: 0;
             }
             #historyRosterPreview .table-card > .overflow-x-auto {
-                display: block;
-                overflow-x: scroll !important;
-                overflow-y: hidden;
+                overflow-x: auto;
                 overscroll-behavior-x: contain;
                 -webkit-overflow-scrolling: touch;
-                touch-action: pan-x pan-y;
             }
             #historyRosterPreview .compact-table {
                 min-width: 760px;
@@ -756,59 +745,18 @@
             }
         }
         .release-progress-track {
-            height: 0.65rem;
+            height: 0.45rem;
             overflow: hidden;
-            margin-top: 0.85rem;
+            margin-top: 1.25rem;
             border-radius: 9999px;
             background: #dbeafe;
         }
         .release-progress-bar {
-            width: 0;
+            width: 40%;
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #2563eb, #12a5a2);
-            transition: width 520ms cubic-bezier(0.2,0.75,0.25,1);
-        }
-        .release-progress-track.is-indeterminate .release-progress-bar {
-            width: 34%;
-            animation: release-download 1.8s ease-in-out infinite;
-        }
-        .release-progress-readout {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-top: 1.15rem;
-            text-align: left;
-        }
-        .release-progress-icon {
-            display: grid;
-            flex: 0 0 auto;
-            width: 2.8rem;
-            height: 2.8rem;
-            place-items: center;
-            border: 1px solid rgba(37,99,235,0.15);
-            border-radius: 0.95rem;
-            background: linear-gradient(145deg, #eff6ff, #fff);
-            color: #2563eb;
-            font-size: 1.1rem;
-            box-shadow: 0 6px 16px rgba(37,99,235,0.1);
-        }
-        .release-progress-details {
-            display: grid;
-            min-width: 0;
-            gap: 0.1rem;
-        }
-        .release-progress-details strong {
-            color: #17243b;
-            font-size: 1.35rem;
-            font-weight: 850;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
-        }
-        .release-progress-details span {
-            color: #64748b;
-            font-size: 0.76rem;
-            overflow-wrap: anywhere;
+            background: #2563eb;
+            animation: release-download 1.2s ease-in-out infinite;
         }
         @media (max-width: 520px) {
             .release-dialog {
@@ -5054,6 +5002,944 @@
                 animation: none;
             }
         }
+        #rosterSettingsPane {
+            padding: clamp(1.15rem, 2.2vw, 2rem);
+            background:
+                radial-gradient(ellipse at 2% 0%, rgba(219,234,254,0.42), transparent 28rem),
+                rgba(255,255,255,0.96);
+        }
+        #rosterSettingsPane .account-management-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            padding: 0.25rem 0.15rem 1.35rem;
+            border-bottom: 1px solid #e8eef6;
+        }
+        #rosterSettingsPane .account-management-title {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 1rem;
+        }
+        #rosterSettingsPane .account-management-mark {
+            display: grid;
+            width: 3.5rem;
+            height: 3.5rem;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid #dbeafe;
+            border-radius: 1.15rem;
+            background: linear-gradient(145deg, #eff6ff, #fff);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.1), inset 0 1px 0 #fff;
+            color: #2563eb;
+            font-size: 1.35rem;
+        }
+        #rosterSettingsPane .account-management-title h2 {
+            margin-bottom: 0;
+            color: #172554;
+            font-size: clamp(1.35rem, 2vw, 1.8rem);
+            line-height: 1.2;
+        }
+        #rosterSettingsPane .account-management-title p {
+            max-width: 48rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+        #rosterSettingsPane .access-queue-live {
+            flex: 0 0 auto;
+            margin-top: 0;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.62rem;
+            letter-spacing: 0.07em;
+        }
+        #rosterSettingsPane .access-queue-live i {
+            font-size: 0.68rem;
+        }
+        #rosterSettingsPane .system-settings-layout {
+            grid-template-columns: minmax(19rem, 0.88fr) minmax(0, 1.12fr);
+            gap: 1.15rem;
+            margin-top: 1.35rem;
+        }
+        #rosterSettingsPane .system-settings-card {
+            padding: clamp(1rem, 1.5vw, 1.4rem);
+            border-color: #e4ebf4;
+            border-radius: 1.25rem;
+            box-shadow: 0 12px 30px rgba(15,23,42,0.055), 0 2px 6px rgba(15,23,42,0.025);
+        }
+        #rosterSettingsPane .system-settings-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: #172554;
+            font-size: 1.02rem;
+            line-height: 1.3;
+        }
+        #rosterSettingsPane .settings-heading-icon {
+            display: inline-grid;
+            width: 2.25rem;
+            height: 2.25rem;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid #dbeafe;
+            border-radius: 0.8rem;
+            background: linear-gradient(145deg, #eff6ff, #fff);
+            color: #3478f6;
+            font-size: 0.9rem;
+        }
+        #rosterSettingsPane .settings-heading-icon.settings-icon {
+            border-color: #e0e7ff;
+            background: linear-gradient(145deg, #eef2ff, #fff);
+            color: #4f46e5;
+        }
+        #rosterSettingsPane .settings-heading-icon.notification-icon {
+            border-color: #fef3c7;
+            background: linear-gradient(145deg, #fffbeb, #fff);
+            color: #d97706;
+        }
+        #rosterSettingsPane .access-queue-heading h3 {
+            margin: 0;
+        }
+        #rosterSettingsPane .access-queue-heading p {
+            margin: 0.45rem 0 0 2.95rem;
+        }
+        #rosterSettingsPane .system-settings-group {
+            padding: 1rem;
+            border-color: #e6edf6;
+            border-radius: 1rem;
+            background: linear-gradient(145deg, #fbfdff, #f8fafc);
+        }
+        #rosterSettingsPane .system-settings-group h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            letter-spacing: 0.06em;
+        }
+        #rosterSettingsPane .system-settings-group h4 i {
+            color: #3478f6;
+            font-size: 0.78rem;
+        }
+        #rosterSettingsPane .system-settings-field textarea:focus,
+        #rosterSettingsPane .system-settings-field select:focus {
+            border-color: #60a5fa;
+            outline: 3px solid rgba(59,130,246,0.14);
+        }
+        #rosterSettingsPane .access-request-tabs {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.25rem;
+            padding: 0.3rem;
+            border-color: #e5edf7;
+            border-radius: 0.9rem;
+            background: #f3f7fc;
+        }
+        #rosterSettingsPane .access-request-tab {
+            display: inline-flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.48rem 0.35rem;
+            font-size: 0.66rem;
+        }
+        #rosterSettingsPane .access-request-tab i {
+            color: #8293aa;
+            font-size: 0.68rem;
+        }
+        #rosterSettingsPane .access-request-tab[aria-pressed="true"] i {
+            color: #3478f6;
+        }
+        #rosterSettingsPane .access-request-list {
+            max-height: min(68vh, 42rem);
+            gap: 0.7rem;
+            padding-right: 0.25rem;
+        }
+        #rosterSettingsPane .access-request-item {
+            min-width: 0;
+            padding: 0.95rem;
+            border-color: #e7edf5;
+            border-radius: 1rem;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(37,61,97,0.04);
+        }
+        #rosterSettingsPane .access-request-person {
+            flex: 1 1 auto;
+        }
+        #rosterSettingsPane .access-request-status {
+            letter-spacing: 0.025em;
+        }
+        #rosterSettingsPane .access-request-actions button:focus-visible,
+        #rosterSettingsPane #refreshAccountRequestsBtn:focus-visible,
+        #rosterSettingsPane .access-request-tab:focus-visible,
+        #rosterSettingsPane .system-settings-actions button:focus-visible {
+            outline: 3px solid rgba(59,130,246,0.3);
+            outline-offset: 2px;
+        }
+        #rosterSettingsPane .notification-event-settings {
+            grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+            gap: 0.65rem;
+        }
+        #rosterSettingsPane .notification-event-row {
+            grid-template-columns: minmax(0, 1fr) repeat(2, minmax(4.4rem, auto));
+            min-width: 0;
+            padding: 0.75rem;
+            border: 1px solid #e6edf6;
+            border-radius: 0.9rem;
+            background: #fbfdff;
+        }
+        #rosterSettingsPane .notification-event-row strong {
+            color: #334155;
+            font-size: 0.72rem;
+        }
+        #rosterSettingsPane .notification-event-row label {
+            font-size: 0.68rem;
+            white-space: nowrap;
+        }
+        @media (max-width: 1050px) {
+            #rosterSettingsPane .system-settings-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .access-request-list {
+                max-height: min(56vh, 34rem);
+            }
+        }
+        @media (max-width: 760px) {
+            #rosterSettingsPane {
+                padding: 1rem;
+            }
+            #rosterSettingsPane .account-management-hero {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.85rem;
+            }
+            #rosterSettingsPane .account-management-mark {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 0.95rem;
+            }
+            #rosterSettingsPane .access-queue-live {
+                margin-left: 4rem;
+            }
+            #rosterSettingsPane .system-settings-layout {
+                gap: 0.85rem;
+            }
+        }
+        @media (max-width: 520px) {
+            #rosterSettingsPane .account-management-title {
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            #rosterSettingsPane .account-management-title h2 {
+                font-size: 1.25rem;
+            }
+            #rosterSettingsPane .account-management-title p {
+                font-size: 0.72rem;
+            }
+            #rosterSettingsPane .access-queue-live {
+                margin-left: 3.75rem;
+            }
+            #rosterSettingsPane .system-settings-card {
+                padding: 0.9rem;
+            }
+            #rosterSettingsPane .access-queue-heading {
+                align-items: center;
+            }
+            #rosterSettingsPane .access-queue-heading p {
+                margin-left: 0;
+            }
+            #rosterSettingsPane .access-request-tabs {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            #rosterSettingsPane .access-request-tab {
+                min-height: 2.5rem;
+            }
+            #rosterSettingsPane .access-request-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            #rosterSettingsPane .access-request-actions {
+                width: 100%;
+            }
+            #rosterSettingsPane .access-request-actions button {
+                flex: 1 1 0;
+            }
+            #rosterSettingsPane .notification-event-settings {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .notification-event-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            #rosterSettingsPane .notification-event-row strong {
+                grid-column: 1 / -1;
+            }
+        }
+        #rosterSettingsPane {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            padding: clamp(1.25rem, 3vw, 2.5rem);
+            border: 1px solid rgba(255,255,255,0.82);
+            border-radius: 2rem;
+            background:
+                radial-gradient(ellipse at 4% 0%, rgba(147,197,253,0.24), transparent 34rem),
+                radial-gradient(ellipse at 94% 7%, rgba(167,243,208,0.16), transparent 29rem),
+                linear-gradient(145deg, rgba(255,255,255,0.76), rgba(235,243,253,0.53));
+            box-shadow: 0 30px 90px rgba(34,58,98,0.12), 0 8px 26px rgba(34,58,98,0.045),
+                inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(255,255,255,0.45);
+            -webkit-backdrop-filter: blur(30px) saturate(175%);
+            backdrop-filter: blur(30px) saturate(175%);
+        }
+        #rosterSettingsPane::before,
+        #rosterSettingsPane::after {
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            border-radius: inherit;
+            content: "";
+            pointer-events: none;
+        }
+        #rosterSettingsPane::before {
+            background: linear-gradient(132deg, rgba(255,255,255,0.64), transparent 31%, rgba(255,255,255,0.12) 76%, transparent);
+        }
+        #rosterSettingsPane::after {
+            inset: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.42);
+            border-radius: 1.65rem;
+        }
+        #rosterSettingsPane > * {
+            position: relative;
+            z-index: 1;
+        }
+        #rosterSettingsPane .account-management-hero {
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0 0 clamp(1.35rem, 2.5vw, 2rem);
+            border-bottom: 1px solid rgba(255,255,255,0.72);
+            box-shadow: 0 1px 0 rgba(151,173,201,0.18);
+        }
+        #rosterSettingsPane .account-management-title {
+            gap: clamp(0.9rem, 1.8vw, 1.4rem);
+        }
+        #rosterSettingsPane .account-management-mark {
+            width: clamp(3.75rem, 5vw, 4.5rem);
+            height: clamp(3.75rem, 5vw, 4.5rem);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 1.45rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(206,226,255,0.66));
+            box-shadow: 0 14px 30px rgba(67,117,204,0.16), inset 0 1px 0 #fff, inset 0 -1px 0 rgba(123,165,227,0.2);
+            color: #3878df;
+            font-size: 1.65rem;
+        }
+        #rosterSettingsPane .access-queue-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #53739d;
+            font-size: 0.61rem;
+            font-weight: 850;
+            letter-spacing: 0.16em;
+        }
+        #rosterSettingsPane .access-queue-eyebrow::before {
+            width: 0.38rem;
+            height: 0.38rem;
+            border-radius: 50%;
+            background: #4b8af0;
+            box-shadow: 0 0 0 0.22rem rgba(75,138,240,0.12);
+            content: "";
+        }
+        #rosterSettingsPane .account-management-title h2 {
+            margin-top: 0.35rem;
+            color: #14213a;
+            font-size: clamp(1.65rem, 3vw, 2.35rem);
+            font-weight: 800;
+            letter-spacing: -0.065em;
+            line-height: 1.04;
+        }
+        #rosterSettingsPane .account-management-title p {
+            max-width: 46rem;
+            margin-top: 0.6rem;
+            color: #61728b;
+            font-size: clamp(0.78rem, 1vw, 0.9rem);
+            line-height: 1.6;
+        }
+        #rosterSettingsPane .access-queue-live {
+            gap: 0.5rem;
+            margin: 0;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid rgba(255,255,255,0.9);
+            background: linear-gradient(145deg, rgba(255,255,255,0.84), rgba(226,247,238,0.7));
+            box-shadow: 0 8px 20px rgba(44,119,91,0.08), inset 0 1px 0 #fff;
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            backdrop-filter: blur(16px) saturate(150%);
+            color: #16835d;
+            font-size: 0.59rem;
+            letter-spacing: 0.1em;
+        }
+        #rosterSettingsPane .access-queue-live i {
+            font-size: 0.72rem;
+        }
+        #rosterSettingsPane .system-settings-layout {
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            align-items: stretch;
+            gap: clamp(0.85rem, 1.6vw, 1.35rem);
+            margin-top: clamp(1rem, 2vw, 1.5rem);
+        }
+        #rosterSettingsPane .system-settings-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(1.1rem, 1.8vw, 1.6rem);
+            border: 1px solid rgba(255,255,255,0.88);
+            border-radius: 1.5rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.79), rgba(246,250,255,0.55));
+            box-shadow: 0 18px 48px rgba(45,68,108,0.085), 0 3px 10px rgba(45,68,108,0.035),
+                inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(255,255,255,0.4);
+            -webkit-backdrop-filter: blur(26px) saturate(165%);
+            backdrop-filter: blur(26px) saturate(165%);
+        }
+        #rosterSettingsPane .system-settings-card::before {
+            position: absolute;
+            z-index: 0;
+            inset: 0 0 auto;
+            height: 45%;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255,255,255,0.36), transparent);
+            content: "";
+            pointer-events: none;
+        }
+        #rosterSettingsPane .system-settings-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        #rosterSettingsPane .system-settings-card h3 {
+            align-items: center;
+            gap: 0.75rem;
+            color: #17243b;
+            font-size: clamp(1rem, 1.2vw, 1.15rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+        }
+        #rosterSettingsPane .settings-heading-icon {
+            width: 2.65rem;
+            height: 2.65rem;
+            border: 1px solid rgba(255,255,255,0.94);
+            border-radius: 1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(211,230,255,0.72));
+            box-shadow: 0 8px 18px rgba(51,105,193,0.1), inset 0 1px 0 #fff;
+            color: #3478e5;
+            font-size: 1rem;
+        }
+        #rosterSettingsPane .settings-heading-icon.settings-icon {
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(224,225,255,0.78));
+            color: #635bdb;
+        }
+        #rosterSettingsPane .settings-heading-icon.notification-icon {
+            background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,235,198,0.78));
+            color: #d78a1a;
+        }
+        #rosterSettingsPane .system-settings-card > p,
+        #rosterSettingsPane .access-queue-heading p {
+            margin: 0.55rem 0 0 3.4rem;
+            color: #6a7a91;
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+        #rosterSettingsPane .access-queue-heading {
+            align-items: center;
+        }
+        #rosterSettingsPane .access-queue-heading h3 {
+            margin: 0;
+        }
+        #rosterSettingsPane #refreshAccountRequestsBtn {
+            width: 2.7rem;
+            height: 2.7rem;
+            min-height: 2.7rem;
+            border-radius: 0.95rem;
+        }
+        #rosterSettingsPane #systemSettingsForm.system-settings-form {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+        }
+        #rosterSettingsPane #notificationSettingsForm.system-settings-form {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        #rosterSettingsPane .system-settings-group {
+            gap: 0.75rem;
+            padding: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.88);
+            border-radius: 1.15rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.74), rgba(237,244,253,0.53));
+            box-shadow: 0 7px 20px rgba(42,65,101,0.045), inset 0 1px 0 rgba(255,255,255,0.94);
+        }
+        #rosterSettingsPane .system-settings-group h4 {
+            gap: 0.5rem;
+            color: #43536b;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+        }
+        #rosterSettingsPane .system-settings-group h4 i {
+            color: #6083b4;
+            font-size: 0.78rem;
+        }
+        #rosterSettingsPane .settings-group-notices {
+            display: grid;
+            grid-column: 1 / -1;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        #rosterSettingsPane .settings-group-notices h4,
+        #rosterSettingsPane .settings-group-notices .system-setting-toggle {
+            grid-column: 1 / -1;
+        }
+        #rosterSettingsPane .settings-group-notices .settings-announcement-field {
+            grid-column: 1;
+        }
+        #rosterSettingsPane .settings-group-notices .system-setting-toggle {
+            grid-column: 2;
+        }
+        #rosterSettingsPane .settings-group-notices .settings-maintenance-field {
+            grid-column: 1 / -1;
+        }
+        #rosterSettingsPane .system-setting-toggle {
+            align-items: center;
+            min-height: 3rem;
+            padding: 0.7rem 0.75rem;
+            border: 1px solid rgba(255,255,255,0.76);
+            border-radius: 0.9rem;
+            background: rgba(255,255,255,0.46);
+            color: #35445a;
+        }
+        #rosterSettingsPane .system-setting-toggle input {
+            width: 1.05rem;
+            height: 1.05rem;
+            margin-top: 0;
+            cursor: pointer;
+        }
+        #rosterSettingsPane .system-setting-toggle small {
+            color: #78889d;
+            line-height: 1.45;
+        }
+        #rosterSettingsPane .system-settings-field {
+            gap: 0.45rem;
+            color: #53647b;
+            font-size: 0.66rem;
+            letter-spacing: 0.025em;
+        }
+        #rosterSettingsPane .system-settings-field textarea,
+        #rosterSettingsPane .system-settings-field select {
+            border-color: rgba(202,216,234,0.72);
+            border-radius: 0.85rem;
+            background: rgba(255,255,255,0.72);
+            box-shadow: inset 0 1px 2px rgba(32,56,91,0.035), 0 2px 6px rgba(32,56,91,0.025);
+            color: #26364d;
+        }
+        #rosterSettingsPane .system-settings-field textarea:focus,
+        #rosterSettingsPane .system-settings-field select:focus {
+            border-color: #7aa9ed;
+            outline: 3px solid rgba(77,139,227,0.14);
+        }
+        #rosterSettingsPane .system-settings-actions {
+            grid-column: 1 / -1;
+            margin-top: 0.15rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.75);
+        }
+        #rosterSettingsPane #systemSettingsSaveStatus,
+        #rosterSettingsPane #notificationSettingsStatus {
+            color: #718198;
+            font-size: 0.7rem;
+            line-height: 1.5;
+        }
+        #rosterSettingsPane .access-request-tabs {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 0.22rem;
+            margin-top: 1.15rem;
+            padding: 0.28rem;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 1rem;
+            background: rgba(215,228,245,0.44);
+            box-shadow: inset 0 1px 3px rgba(48,70,105,0.06);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+        #rosterSettingsPane .access-request-tab {
+            display: inline-flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.5rem 0.3rem;
+            border-radius: 0.75rem;
+            color: #62748c;
+            font-size: 0.64rem;
+            letter-spacing: -0.015em;
+        }
+        #rosterSettingsPane .access-request-tab i {
+            color: #8b9bb1;
+            font-size: 0.66rem;
+        }
+        #rosterSettingsPane .access-request-tab[aria-pressed="true"] {
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(242,248,255,0.9));
+            box-shadow: 0 4px 11px rgba(38,63,101,0.1), inset 0 1px 0 #fff;
+            color: #285db4;
+        }
+        #rosterSettingsPane .access-request-tab[aria-pressed="true"] i {
+            color: #3478e5;
+        }
+        #rosterSettingsPane .access-request-list {
+            max-height: min(64vh, 40rem);
+            gap: 0.65rem;
+            margin-top: 0.8rem;
+            padding: 0.15rem 0.25rem 0.3rem 0;
+        }
+        #rosterSettingsPane .access-request-item {
+            min-width: 0;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.92);
+            border-radius: 1.1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.83), rgba(240,246,254,0.65));
+            box-shadow: 0 7px 18px rgba(42,65,101,0.06), inset 0 1px 0 rgba(255,255,255,0.96);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            backdrop-filter: blur(16px) saturate(150%);
+        }
+        #rosterSettingsPane .access-request-item[data-request-state="awaiting_verification"] {
+            border-color: rgba(251,191,36,0.33);
+            background: linear-gradient(145deg, rgba(255,255,255,0.84), rgba(255,249,230,0.7));
+        }
+        #rosterSettingsPane .access-request-person {
+            position: relative;
+            flex: 1 1 auto;
+            padding-left: 2.8rem;
+        }
+        #rosterSettingsPane .access-request-avatar {
+            position: absolute;
+            top: 0.05rem;
+            left: 0;
+            display: grid;
+            width: 2.15rem;
+            height: 2.15rem;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.96);
+            border-radius: 0.8rem;
+            background: linear-gradient(145deg, #fff, #dceaff);
+            box-shadow: 0 5px 13px rgba(47,93,164,0.12), inset 0 1px 0 #fff;
+            color: #4b7fca;
+            font-size: 0.8rem;
+        }
+        #rosterSettingsPane .access-request-person strong {
+            color: #20314b;
+            font-size: 0.82rem;
+            letter-spacing: -0.02em;
+        }
+        #rosterSettingsPane .access-request-person span:not(.access-request-status) {
+            color: #5e7089;
+            font-size: 0.72rem;
+        }
+        #rosterSettingsPane .access-request-person small {
+            color: #8493a8;
+            font-size: 0.65rem;
+        }
+        #rosterSettingsPane .access-request-status {
+            margin-top: 0.45rem;
+            padding: 0.25rem 0.55rem;
+            border: 1px solid rgba(255,255,255,0.75);
+            border-radius: 999px;
+            font-size: 0.56rem;
+            letter-spacing: 0.07em;
+        }
+        #rosterSettingsPane .access-request-actions button {
+            min-height: 2.4rem;
+            border-radius: 0.8rem;
+            box-shadow: 0 4px 10px rgba(35,59,96,0.045), inset 0 1px 0 rgba(255,255,255,0.72);
+        }
+        #rosterSettingsPane .notification-settings-card {
+            margin-top: clamp(0.9rem, 1.6vw, 1.35rem);
+        }
+        #rosterSettingsPane .notification-event-settings {
+            grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+            gap: 0.7rem;
+        }
+        #rosterSettingsPane .notification-event-row {
+            grid-template-columns: minmax(0, 1fr) repeat(2, minmax(4rem, auto));
+            min-width: 0;
+            gap: 0.45rem;
+            padding: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.92);
+            border-radius: 1rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(240,246,254,0.6));
+            box-shadow: 0 6px 16px rgba(42,65,101,0.045), inset 0 1px 0 rgba(255,255,255,0.96);
+        }
+        #rosterSettingsPane .notification-event-row strong {
+            color: #35465e;
+            font-size: 0.7rem;
+            letter-spacing: -0.01em;
+        }
+        #rosterSettingsPane .notification-event-row label {
+            gap: 0.35rem;
+            color: #61728a;
+            font-size: 0.66rem;
+            white-space: nowrap;
+        }
+        #rosterSettingsPane .notification-event-row input {
+            width: 0.95rem;
+            height: 0.95rem;
+        }
+        #rosterSettingsPane .system-settings-actions button {
+            min-height: 2.8rem;
+            padding-inline: 1.15rem;
+            border-radius: 0.9rem;
+        }
+        #rosterSettingsPane .access-request-actions button:focus-visible,
+        #rosterSettingsPane #refreshAccountRequestsBtn:focus-visible,
+        #rosterSettingsPane .access-request-tab:focus-visible,
+        #rosterSettingsPane .system-settings-actions button:focus-visible {
+            outline: 3px solid rgba(59,130,246,0.3);
+            outline-offset: 2px;
+        }
+        @media (max-width: 1080px) {
+            #rosterSettingsPane .system-settings-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .access-request-list {
+                max-height: min(54vh, 32rem);
+            }
+        }
+        @media (max-width: 760px) {
+            #rosterSettingsPane {
+                padding: 1rem;
+                border-radius: 1.45rem;
+            }
+            #rosterSettingsPane::after {
+                inset: 0.35rem;
+                border-radius: 1.15rem;
+            }
+            #rosterSettingsPane .account-management-hero {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.9rem;
+            }
+            #rosterSettingsPane .account-management-mark {
+                width: 3.25rem;
+                height: 3.25rem;
+                border-radius: 1.1rem;
+                font-size: 1.3rem;
+            }
+            #rosterSettingsPane .account-management-title h2 {
+                font-size: clamp(1.45rem, 6vw, 1.85rem);
+            }
+            #rosterSettingsPane .access-queue-live {
+                margin-left: 4.15rem;
+            }
+            #rosterSettingsPane .system-settings-layout {
+                gap: 0.85rem;
+            }
+            #rosterSettingsPane .access-request-list {
+                max-height: 28rem;
+            }
+        }
+        @media (max-width: 560px) {
+            #rosterSettingsPane .account-management-title {
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            #rosterSettingsPane .account-management-title p {
+                font-size: 0.75rem;
+            }
+            #rosterSettingsPane .access-queue-live {
+                margin-left: 4rem;
+            }
+            #rosterSettingsPane .system-settings-card {
+                padding: 0.9rem;
+                border-radius: 1.2rem;
+            }
+            #rosterSettingsPane .system-settings-card > p,
+            #rosterSettingsPane .access-queue-heading p {
+                margin-left: 0;
+            }
+            #rosterSettingsPane #systemSettingsForm.system-settings-form,
+            #rosterSettingsPane .settings-group-notices {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .settings-group-notices,
+            #rosterSettingsPane .settings-group-notices h4,
+            #rosterSettingsPane .settings-group-notices .system-setting-toggle,
+            #rosterSettingsPane .system-settings-actions {
+                grid-column: 1;
+            }
+            #rosterSettingsPane .access-request-tabs {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            #rosterSettingsPane .access-request-tab {
+                min-height: 2.45rem;
+            }
+            #rosterSettingsPane .access-request-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            #rosterSettingsPane .access-request-actions {
+                width: 100%;
+            }
+            #rosterSettingsPane .access-request-actions button {
+                flex: 1 1 0;
+            }
+            #rosterSettingsPane .notification-event-settings {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .notification-event-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            #rosterSettingsPane .notification-event-row strong {
+                grid-column: 1 / -1;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #rosterSettingsPane *,
+            #rosterSettingsPane *::before,
+            #rosterSettingsPane *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            #rosterSettingsPane,
+            #rosterSettingsPane .system-settings-card,
+            #rosterSettingsPane .system-settings-group {
+                background-color: #f5f8fc;
+            }
+        }
+        #rosterSettingsPane .system-settings-layout {
+            grid-template-columns: minmax(0, 1fr);
+            align-items: start;
+            gap: clamp(1rem, 1.8vw, 1.4rem);
+        }
+        #rosterSettingsPane .system-settings-layout > .system-settings-card,
+        #rosterSettingsPane .notification-settings-card {
+            min-width: 0;
+            width: 100%;
+        }
+        #rosterSettingsPane .access-request-list {
+            grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+            max-height: none;
+            overflow: visible;
+        }
+        #rosterSettingsPane .access-request-empty {
+            grid-column: 1 / -1;
+            padding: 1.8rem;
+            border-color: rgba(255,255,255,0.82);
+            background: rgba(255,255,255,0.38);
+        }
+        #rosterSettingsPane #systemSettingsForm.system-settings-form {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-items: stretch;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-group {
+            align-content: start;
+            min-width: 0;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices {
+            grid-column: auto;
+            grid-template-columns: minmax(0, 1fr);
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices > * {
+            grid-column: 1;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-actions {
+            grid-column: 1 / -1;
+        }
+        #rosterSettingsPane .notification-event-settings {
+            grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+        }
+        @media (max-width: 1080px) {
+            #rosterSettingsPane #systemSettingsForm.system-settings-form {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices {
+                grid-column: 1 / -1;
+            }
+        }
+        @media (max-width: 760px) {
+            #rosterSettingsPane .system-settings-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane #systemSettingsForm.system-settings-form {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices,
+            #rosterSettingsPane #systemSettingsForm .system-settings-actions {
+                grid-column: 1;
+            }
+            #rosterSettingsPane .access-request-list {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .notification-event-settings {
+                grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+            }
+        }
+        @media (max-width: 560px) {
+            #rosterSettingsPane {
+                padding: 0.85rem;
+                border-radius: 1.25rem;
+            }
+            #rosterSettingsPane .account-management-title {
+                width: 100%;
+                min-width: 0;
+            }
+            #rosterSettingsPane .account-management-title > div {
+                min-width: 0;
+            }
+            #rosterSettingsPane .account-management-title h2 {
+                overflow-wrap: anywhere;
+                font-size: clamp(1.35rem, 7vw, 1.75rem);
+            }
+            #rosterSettingsPane .account-management-title p {
+                font-size: 0.73rem;
+            }
+            #rosterSettingsPane .access-queue-live {
+                margin-left: 4rem;
+            }
+            #rosterSettingsPane .system-settings-card {
+                padding: 0.85rem;
+                border-radius: 1.05rem;
+            }
+            #rosterSettingsPane .system-settings-card > p,
+            #rosterSettingsPane .access-queue-heading p {
+                margin-left: 0;
+            }
+            #rosterSettingsPane .access-queue-heading {
+                align-items: center;
+            }
+            #rosterSettingsPane .access-request-tabs {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            #rosterSettingsPane .access-request-tab {
+                min-height: 2.5rem;
+                padding-inline: 0.2rem;
+                font-size: 0.62rem;
+            }
+            #rosterSettingsPane .access-request-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            #rosterSettingsPane .access-request-actions {
+                width: 100%;
+            }
+            #rosterSettingsPane .access-request-actions button {
+                flex: 1 1 0;
+            }
+            #rosterSettingsPane .notification-event-settings {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane .notification-event-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            #rosterSettingsPane .notification-event-row strong {
+                grid-column: 1 / -1;
+            }
+        }
         @media print {
             @page { margin: 10mm; size: landscape; }
             body { padding: 0; background: #fff; }
@@ -5889,19 +6775,22 @@
     </section>
 
     <section id="rosterSettingsPane" class="roster-history-panel" aria-labelledby="systemSettingsHeading" hidden>
-        <div class="flex flex-wrap items-end justify-between gap-4">
-            <div>
-                <span class="access-queue-eyebrow">ADMIN WORKSPACE</span>
-                <h2 id="systemSettingsHeading" class="mt-1 text-xl font-header font-extrabold text-gray-900">Account management</h2>
-                <p class="mt-1 text-sm text-slate-500">Review account requests and manage settings shared by the admin and user pages.</p>
+        <div class="account-management-hero">
+            <div class="account-management-title">
+                <span class="account-management-mark" aria-hidden="true"><i class="fa-solid fa-user-gear"></i></span>
+                <div>
+                    <span class="access-queue-eyebrow">ACCESS &amp; CONFIGURATION</span>
+                    <h2 id="systemSettingsHeading" class="mt-1 text-xl font-header font-extrabold text-gray-900">Account management</h2>
+                    <p class="mt-1 text-sm text-slate-500">Review account requests and manage settings shared by the admin and user pages.</p>
+                </div>
             </div>
-            <span class="access-queue-live"><span></span> LIVE SYSTEM SETTINGS</span>
+            <span class="access-queue-live"><span></span><i class="fa-solid fa-signal" aria-hidden="true"></i> LIVE SYSTEM SETTINGS</span>
         </div>
         <div class="system-settings-layout">
             <section class="system-settings-card" aria-labelledby="accountRequestsHeading">
                 <div class="access-queue-heading">
                     <div>
-                        <h3 id="accountRequestsHeading">Account access</h3>
+                        <h3 id="accountRequestsHeading"><span class="settings-heading-icon access-icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></span>Account access</h3>
                         <p>Approve verified users or revoke existing roster access.</p>
                     </div>
                     <button type="button" class="btn-premium btn-premium-outline" id="refreshAccountRequestsBtn" aria-label="Refresh account requests">
@@ -5909,29 +6798,29 @@
                     </button>
                 </div>
                 <div class="access-request-tabs" role="group" aria-label="Filter account requests">
-                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="awaiting_verification">Unverified</button>
-                    <button class="access-request-tab" type="button" aria-pressed="true" data-request-filter="pending">Pending</button>
-                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="approved">Approved</button>
-                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="rejected">Declined</button>
-                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="all">All</button>
+                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="awaiting_verification"><i class="fa-regular fa-envelope" aria-hidden="true"></i> Unverified</button>
+                    <button class="access-request-tab" type="button" aria-pressed="true" data-request-filter="pending"><i class="fa-regular fa-clock" aria-hidden="true"></i> Pending</button>
+                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="approved"><i class="fa-solid fa-check" aria-hidden="true"></i> Approved</button>
+                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="rejected"><i class="fa-solid fa-ban" aria-hidden="true"></i> Declined</button>
+                    <button class="access-request-tab" type="button" aria-pressed="false" data-request-filter="all"><i class="fa-solid fa-users" aria-hidden="true"></i> All</button>
                 </div>
                 <p id="accountRequestsStatus" class="roster-history-empty" role="status" aria-live="polite">Loading requests…</p>
                 <ul class="access-request-list" id="accountAccessRequestList" aria-label="Account access requests"></ul>
             </section>
 
             <section class="system-settings-card" aria-labelledby="systemSettingsFormHeading">
-                <h3 id="systemSettingsFormHeading">System-wide settings</h3>
+                <h3 id="systemSettingsFormHeading"><span class="settings-heading-icon settings-icon"><i class="fa-solid fa-sliders" aria-hidden="true"></i></span>System-wide settings</h3>
                 <p>Saved changes are shared with approved users in real time. Access approval and email verification remain required.</p>
                 <form id="systemSettingsForm" class="system-settings-form">
-                    <div class="system-settings-group">
-                        <h4>Accounts</h4>
+                    <div class="system-settings-group settings-group-accounts">
+                        <h4><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Accounts</h4>
                         <label class="system-setting-toggle">
                             <input id="systemSignupEnabledInput" type="checkbox" />
                             <span>Allow new account signups<small>Existing users can still sign in when signups are paused.</small></span>
                         </label>
                     </div>
-                    <div class="system-settings-group">
-                        <h4>Roster visibility</h4>
+                    <div class="system-settings-group settings-group-visibility">
+                        <h4><i class="fa-solid fa-eye" aria-hidden="true"></i> Roster visibility</h4>
                         <label class="system-setting-toggle">
                             <input id="systemRosterVisibleInput" type="checkbox" />
                             <span>Show published rosters to approved users</span>
@@ -5954,9 +6843,9 @@
                             </select>
                         </label>
                     </div>
-                    <div class="system-settings-group">
-                        <h4>Notices</h4>
-                        <label class="system-settings-field" for="systemAnnouncementInput">
+                    <div class="system-settings-group settings-group-notices">
+                        <h4><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Notices</h4>
+                        <label class="system-settings-field settings-announcement-field" for="systemAnnouncementInput">
                             User-facing announcement
                             <textarea id="systemAnnouncementInput" maxlength="500" placeholder="Optional announcement shown on admin and user pages"></textarea>
                         </label>
@@ -5964,7 +6853,7 @@
                             <input id="systemMaintenanceModeInput" type="checkbox" />
                             <span>Enable user maintenance notice<small>Approved users cannot view rosters while this is enabled; admin access stays available.</small></span>
                         </label>
-                        <label class="system-settings-field" for="systemMaintenanceMessageInput">
+                        <label class="system-settings-field settings-maintenance-field" for="systemMaintenanceMessageInput">
                             Maintenance message
                             <textarea id="systemMaintenanceMessageInput" maxlength="500" placeholder="The roster is temporarily unavailable. Please check back soon."></textarea>
                         </label>
@@ -5978,8 +6867,8 @@
                 </form>
             </section>
         </div>
-        <section class="system-settings-card mt-4" aria-labelledby="notificationSettingsHeading">
-            <h3 id="notificationSettingsHeading">Notification delivery</h3>
+        <section class="system-settings-card notification-settings-card" aria-labelledby="notificationSettingsHeading">
+            <h3 id="notificationSettingsHeading"><span class="settings-heading-icon notification-icon"><i class="fa-solid fa-bell" aria-hidden="true"></i></span>Notification delivery</h3>
             <p>Choose in-app and email delivery for key account and roster events. Email delivery requires the Firebase Trigger Email extension.</p>
             <form id="notificationSettingsForm" class="system-settings-form">
                 <div class="notification-event-settings">
@@ -6057,23 +6946,14 @@
 </dialog>
 <dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
     <div class="modal-heading">
-        <span class="modal-icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
+        <span class="modal-icon" aria-hidden="true"><i class="fa-solid fa-arrows-rotate"></i></span>
         <div class="modal-heading-copy">
             <span class="modal-eyebrow">Please wait</span>
             <h2 id="releaseProgressTitle">Downloading update</h2>
         </div>
     </div>
     <p id="releaseProgressMessage">Checking the latest version…</p>
-    <div class="release-progress-readout">
-        <span class="release-progress-icon" aria-hidden="true"><i class="fa-solid fa-file-arrow-down"></i></span>
-        <div class="release-progress-details">
-            <strong id="releaseProgressPercent">0%</strong>
-            <span id="releaseProgressBytes">Preparing update…</span>
-        </div>
-    </div>
-    <div id="releaseProgressTrack" class="release-progress-track" role="progressbar" aria-label="Update download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div id="releaseProgressBar" class="release-progress-bar"></div>
-    </div>
+    <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
     <div class="modal-heading">
@@ -6285,87 +7165,22 @@
             }
         }
 
-        function formatReleaseBytes(bytes) {
-            if (bytes < 1024) return `${bytes} B`;
-            const units = ['KB', 'MB', 'GB'];
-            let value = bytes / 1024;
-            let unitIndex = 0;
-            while (value >= 1024 && unitIndex < units.length - 1) {
-                value /= 1024;
-                unitIndex += 1;
-            }
-            return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${units[unitIndex]}`;
-        }
-
-        function updateReleaseProgress(loaded, total, complete = false) {
-            const track = document.getElementById('releaseProgressTrack');
-            const bar = document.getElementById('releaseProgressBar');
-            const percent = document.getElementById('releaseProgressPercent');
-            const bytes = document.getElementById('releaseProgressBytes');
-            const hasTotal = Number.isFinite(total) && total > 0;
-            const percentage = complete ? 100 : hasTotal
-                ? Math.min(99, Math.max(0, Math.floor((loaded / total) * 100)))
-                : null;
-            track.classList.toggle('is-indeterminate', percentage === null);
-            if (percentage === null) {
-                percent.textContent = '—%';
-                bytes.textContent = `${formatReleaseBytes(loaded)} received · total size unavailable`;
-                bar.style.width = '34%';
-                track.removeAttribute('aria-valuenow');
-                track.setAttribute('aria-valuetext', `${formatReleaseBytes(loaded)} received`);
-                return;
-            }
-            percent.textContent = `${percentage}%`;
-            bytes.textContent = hasTotal
-                ? `${formatReleaseBytes(loaded)} of ${formatReleaseBytes(total)}`
-                : `${formatReleaseBytes(loaded)} downloaded`;
-            bar.style.width = `${percentage}%`;
-            track.setAttribute('aria-valuenow', String(percentage));
-            track.setAttribute('aria-valuetext', `${percentage}% downloaded`);
-        }
-
-        async function readReleaseDownload(response) {
-            const contentLength = Number(response.headers.get('content-length'));
-            const total = Number.isFinite(contentLength) && contentLength > 0 ? contentLength : null;
-            let loaded = 0;
-            if (!response.body || typeof response.body.getReader !== 'function') {
-                const payload = await response.arrayBuffer();
-                updateReleaseProgress(payload.byteLength, total, true);
-                return;
-            }
-            const reader = response.body.getReader();
-            try {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    loaded += value.byteLength;
-                    updateReleaseProgress(loaded, total);
-                }
-            } finally {
-                reader.releaseLock();
-            }
-            updateReleaseProgress(loaded, total, true);
-        }
-
         async function downloadRelease() {
             if (!availableRelease || !isVerifiedUser ||
                 (availableRelease.adminOnly && !isRosterAdmin)) return;
             const release = availableRelease;
             updateDialog.close();
-            document.getElementById('releaseProgressMessage').textContent = 'Connecting to the update server…';
-            updateReleaseProgress(0, null);
+            document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
             progressDialog.showModal();
             try {
                 const updateUrl = new URL(window.location.href);
                 updateUrl.searchParams.set('__update', release.version);
                 const response = await fetch(updateUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`Update download failed with HTTP ${response.status}`);
-                document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
-                await readReleaseDownload(response);
+                await response.text();
                 localStorage.setItem(acceptedVersionKey, release.version);
                 sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
                 document.getElementById('releaseProgressMessage').textContent = 'Update downloaded. Reloading…';
-                await new Promise(resolve => window.setTimeout(resolve, 450));
                 window.location.replace(updateUrl.href);
             } catch (error) {
                 console.error('Could not download the app update:', error);
@@ -7270,6 +8085,34 @@
         const DEFAULT_ROSTER_FILE_NAME = 'roster-backup.json';
         let rosterFileHandle = null;
 
+        function migrateLegacyRosterStorage() {
+            try {
+                const legacySnapshots = localStorage.getItem(SNAPSHOT_KEY);
+                if (legacySnapshots !== null && sessionStorage.getItem(SNAPSHOT_KEY) === null) {
+                    sessionStorage.setItem(SNAPSHOT_KEY, legacySnapshots);
+                }
+                localStorage.removeItem(SNAPSHOT_KEY);
+                localStorage.removeItem('rosterData');
+                return true;
+            } catch (error) {
+                console.error('Could not move persistent roster backups into this session:', error);
+                return false;
+            }
+        }
+
+        function clearRosterBrowserData() {
+            try {
+                localStorage.removeItem('rosterData');
+                localStorage.removeItem(SNAPSHOT_KEY);
+                sessionStorage.removeItem('rosterData');
+                sessionStorage.removeItem(SNAPSHOT_KEY);
+                return true;
+            } catch (error) {
+                console.error('Could not clear roster data from browser storage:', error);
+                return false;
+            }
+        }
+
         async function ensureRosterFileHandle() {
             if (rosterFileHandle) return rosterFileHandle;
 
@@ -7352,7 +8195,7 @@
             }
 
             try {
-                saveToLocalStorage();
+                saveSessionSnapshot();
                 const fileSaved = await writeRosterFile();
                 if (fileSaved) {
                     showToast('Saved to Firestore and file');
@@ -7360,8 +8203,8 @@
                     showToast('Saved to Firestore');
                 }
             } catch (error) {
-                console.error('Roster saved to Firestore, but the local backup failed:', error);
-                showToast('Saved to Firestore; local backup failed');
+                console.error('Roster saved to Firestore, but the session backup failed:', error);
+                showToast('Saved to Firestore; session backup failed');
             }
         }
 
@@ -8044,7 +8887,6 @@
                 actions.append(restoreButton, csvButton, imageButton);
                 heading.append(title, actions);
                 preview.prepend(heading);
-                preview.insertBefore(scrollHint, preview.children[1] || null);
                 document.querySelectorAll('.roster-history-item').forEach(button => {
                     button.setAttribute('aria-pressed', String(button.dataset.historyId === roster.id));
                 });
@@ -8088,12 +8930,14 @@
 
         function getSnapshots() {
             try {
-                const raw = localStorage.getItem(SNAPSHOT_KEY);
+                const raw = sessionStorage.getItem(SNAPSHOT_KEY);
                 if (!raw) return [];
                 const parsed = JSON.parse(raw);
                 if (!Array.isArray(parsed)) return [];
                 return parsed.filter(entry => entry && isBackupData(entry.data));
-            } catch(e) {
+            } catch (error) {
+                console.error('Could not read roster snapshots for this browser session:', error);
+                showToast('Could not read the roster backup saved in this tab');
                 return [];
             }
         }
@@ -8106,22 +8950,20 @@
                 return age <= STORAGE_TTL_MS && isBackupData(entry.data);
             });
             if (valid.length !== snapshots.length) {
-                localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(valid.slice(-10)));
+                sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(valid.slice(-10)));
             }
             return valid.slice(-10);
         }
 
         function persistSnapshot() {
-            try {
-                const entry = {
-                    savedAt: Date.now(),
-                    data: captureState()
-                };
-                const snapshots = pruneSnapshots();
-                snapshots.push(entry);
-                const trimmed = snapshots.slice(-10);
-                localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(trimmed));
-            } catch(e) {}
+            const entry = {
+                savedAt: Date.now(),
+                data: captureState()
+            };
+            const snapshots = pruneSnapshots();
+            snapshots.push(entry);
+            const trimmed = snapshots.slice(-10);
+            sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(trimmed));
         }
 
         function isAllowedTableId(tableId) {
@@ -8497,7 +9339,7 @@
                 ? 'Create an account and verify your email. Roster access requires approval.'
                 : mode === 'reset'
                     ? 'We’ll email you a secure password reset link.'
-                    : 'Sign in with your email and password.';
+                    : 'Sign in with your email and password. Your session ends when you close this tab.';
             setAuthMessage('');
         }
 
@@ -8555,6 +9397,7 @@
         async function handleAuthStateChange(user) {
             const generation = ++authFlowGeneration;
             if (!user) {
+                const rosterDataCleared = clearRosterBrowserData();
                 window.dispatchEvent(new CustomEvent('roster-auth-status', {
                     detail: { emailVerified: false, isAdmin: false, uid: null }
                 }));
@@ -8587,6 +9430,9 @@
                 setAuthMessage('');
                 showAuthPanel('authForms');
                 showAuthForm('signIn');
+                if (!rosterDataCleared) {
+                    setAuthMessage('You are signed out, but roster data could not be cleared from this browser. Clear this site’s storage before leaving a shared device.');
+                }
                 return;
             }
 
@@ -8932,6 +9778,9 @@
             item.className = 'access-request-item';
             const person = document.createElement('div');
             person.className = 'access-request-person';
+            const avatar = document.createElement('span');
+            avatar.className = 'access-request-avatar';
+            avatar.innerHTML = '<i class="fa-solid fa-user" aria-hidden="true"></i>';
             const name = document.createElement('strong');
             name.textContent = request.displayName || 'Roster user';
             const email = document.createElement('span');
@@ -8947,7 +9796,7 @@
             requestStatus.className = 'access-request-status';
             requestStatus.dataset.status = request.status;
             requestStatus.textContent = request.status;
-            person.append(name, email, requestedAt, requestStatus);
+            person.append(avatar, name, email, requestedAt, requestStatus);
 
             const actions = document.createElement('div');
             actions.className = 'access-request-actions';
@@ -9266,6 +10115,11 @@
             setFirestoreLoading(true, false);
             try {
                 await auth.signOut();
+                if (!clearRosterBrowserData()) {
+                    showAuthPanel('authForms');
+                    showAuthForm('signIn');
+                    setAuthMessage('You are signed out, but roster data could not be cleared from this browser. Clear this site’s storage before leaving a shared device.');
+                }
             } catch (error) {
                 console.error('Failed to sign out:', error);
                 await handleAuthStateChange(auth.currentUser);
@@ -9453,16 +10307,10 @@
             return loadedSuccessfully;
         }
 
-        // ---- Save to localStorage only when explicitly requested ----
-        function saveToLocalStorage() {
+        // ---- Save a session-scoped snapshot after an explicit save ----
+        function saveSessionSnapshot() {
             if (!canManageRoster()) return;
-            const payload = {
-                savedAt: Date.now(),
-                data: captureState()
-            };
-            localStorage.setItem('rosterData', JSON.stringify(payload));
             persistSnapshot();
-
         }
 
         // ---- Add row ----
@@ -9879,13 +10727,11 @@
                 theme: 'danger'
             });
             if (!confirmed) return;
-            try {
-                localStorage.removeItem('rosterData');
-                localStorage.removeItem('rosterSnapshots');
-                showToast('Backups cleared');
-            } catch (error) {
+            if (!clearRosterBrowserData()) {
                 showToast('Failed to clear backups');
+                return;
             }
+            showToast('Backups cleared');
         }
 
         function importBackupFile(file) {
@@ -9936,6 +10782,9 @@
         function init() {
             if (initialized) return;
             initialized = true;
+            if (!migrateLegacyRosterStorage()) {
+                showToast('Could not clear older persistent roster backups. Clear this site’s storage before leaving a shared device.');
+            }
             startSystemSettingsListener();
             setupOperationalStatus();
             setupSessionWarning();
@@ -10080,11 +10929,17 @@
                     });
                 });
             };
-            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(startAuthListener).catch(error => {
-                console.error('Could not initialize Firebase Authentication persistence:', error);
-                showAuthPanel('authForms');
-                setAuthMessage('This browser could not remember your sign-in. Authentication will still be checked securely, but your session may not persist.');
-                startAuthListener();
+            auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(startAuthListener).catch(error => {
+                console.error('Could not initialize session-only Firebase Authentication persistence:', error);
+                auth.setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
+                    showToast('Session-only sign-in is unavailable. You will need to sign in again after reloading.');
+                    startAuthListener();
+                }).catch(fallbackError => {
+                    console.error('Could not initialize non-persistent Firebase Authentication:', fallbackError);
+                    showAuthPanel('authForms');
+                    showAuthForm('signIn');
+                    setAuthMessage('Could not initialize a private sign-in session. Enable browser storage and try again.');
+                });
             });
 
             console.log('Roster Admin loaded — waiting for Firebase Authentication.');
