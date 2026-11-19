@@ -1,21 +1,24 @@
 {
   "schemaVersion": 2,
-  "version": "290bfaaa18cc51fe30d516edccb1f0ad93a6d83b",
-  "versionLabel": "v8.8.19",
-  "deployedAt": "2026-11-19T10:13:41.575Z",
-  "title": "Improve mobile roster history layout",
+  "version": "d4e79c7a815a9f29672f0a6c52446da473d59f4d",
+  "versionLabel": "v8.8.20",
+  "deployedAt": "2026-11-19T10:27:56.271Z",
+  "title": "Sync modal and installed mobile UI",
   "notes": [
-    "Refine archive filters, action buttons, roster cards, and preview controls for small screens.",
-    "Preserve touch-friendly targets and responsive table scrolling on narrow devices."
+    "Match the Pages update prompt modal to the Roster Admin glass design.",
+    "Improve installed mobile history filters and roster preview guidance.",
+    "Enable safe-area viewport support for installed iOS layouts."
   ],
   "features": [
-    "Refine archive filters, action buttons, roster cards, and preview controls for small screens.",
-    "Preserve touch-friendly targets and responsive table scrolling on narrow devices."
+    "Match the Pages update prompt modal to the Roster Admin glass design.",
+    "Improve installed mobile history filters and roster preview guidance."
   ],
-  "fixes": [],
+  "fixes": [
+    "Enable safe-area viewport support for installed iOS layouts."
+  ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 456926
+  "sizeBytes": 461082
 }
