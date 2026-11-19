@@ -24,6 +24,7 @@ const DEFAULT_EVENTS = Object.freeze({
   accessDeclined: { inApp: true, email: false },
   accessRevoked: { inApp: true, email: false },
   rosterPublished: { inApp: true, email: false },
+  weeklyRosterReminder: { inApp: true, email: false },
   announcement: { inApp: true, email: false }
 });
 
@@ -242,6 +243,66 @@ exports.notifyRosterPublished = onDocumentCreated(
   }
 );
 
+exports.sendWeeklyRosterReminder = onSchedule(
+  {
+    schedule: 'every 15 minutes',
+    timeZone: 'Africa/Nairobi',
+    timeoutSeconds: 120
+  },
+  async () => {
+    const now = new Date();
+    const dateKey = nairobiDateKey(now);
+    const runReference = db.collection('rosterReminderRuns').doc(dateKey);
+    const [settingsSnapshot, runSnapshot] = await Promise.all([
+      db.doc('systemSettings/current').get(),
+      runReference.get()
+    ]);
+    if (runSnapshot.exists) return;
+
+    const systemSettings = settingsSnapshot.exists ? settingsSnapshot.data() : {};
+    if (systemSettings.rosterReminderEnabled === false ||
+        systemSettings.publishedRosterVisible === false ||
+        systemSettings.maintenanceMode === true) return;
+
+    const reminderDay = Number.isInteger(systemSettings.rosterReminderDay)
+      ? systemSettings.rosterReminderDay
+      : 0;
+    const reminderTime = typeof systemSettings.rosterReminderTime === 'string' &&
+      /^(?:[01]\d|2[0-3]):(?:00|15|30|45)$/.test(systemSettings.rosterReminderTime)
+      ? systemSettings.rosterReminderTime
+      : '14:00';
+    const localTime = nairobiScheduleTime(now);
+    const [reminderHour, reminderMinute] = reminderTime.split(':').map(Number);
+    if (localTime.dayOfWeek !== reminderDay ||
+        localTime.minuteOfDay < reminderHour * 60 + reminderMinute) return;
+
+    const locations = systemSettings.locations && typeof systemSettings.locations === 'object'
+      ? systemSettings.locations
+      : {};
+    const visibleRosterIds = ROSTER_IDS.filter((_, index) =>
+      locations[index === 0 ? 'island' : 'mainland'] !== false
+    );
+    if (!visibleRosterIds.length) return;
+    const rosterSnapshots = await Promise.all(
+      visibleRosterIds.map(id => db.collection('rosters').doc(id).get())
+    );
+    if (!rosterSnapshots.some(snapshot => snapshot.exists)) return;
+
+    const recipients = await getApprovedUsers();
+    await sendEvent({
+      event: 'weeklyRosterReminder',
+      sourceId: `weekly_roster_reminder_${dateKey}`,
+      title: 'Weekly roster reminder',
+      body: 'Remember to check the latest published roster.',
+      recipients
+    });
+    await runReference.set({
+      dateKey,
+      sentAt: FieldValue.serverTimestamp()
+    });
+  }
+);
+
 exports.notifyAnnouncement = onDocumentWritten(
   'systemSettings/{settingsId}',
   async event => {
@@ -271,6 +332,22 @@ function nairobiDateKey(date) {
   }).formatToParts(date);
   const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
   return `${values.year}-${values.month}-${values.day}`;
+}
+
+function nairobiScheduleTime(date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Africa/Nairobi',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  const dayOfWeek = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[values.weekday];
+  return {
+    dayOfWeek,
+    minuteOfDay: Number(values.hour) * 60 + Number(values.minute)
+  };
 }
 
 exports.backupPublishedRosters = onSchedule(

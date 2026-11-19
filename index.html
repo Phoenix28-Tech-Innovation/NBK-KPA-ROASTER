@@ -1024,25 +1024,57 @@
             -webkit-overflow-scrolling: touch;
         }
         .roster-workflow-status {
+            position: fixed;
+            z-index: 1200;
+            top: max(1rem, env(safe-area-inset-top));
+            left: 50%;
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 0.55rem;
-            width: 100%;
-            padding: 0.65rem 0.8rem;
-            border: 1px solid #dbeafe;
-            border-radius: 0.85rem;
-            background: linear-gradient(110deg, #eff6ff, #f8fafc);
-            color: #475569;
+            gap: 0.7rem;
+            width: max-content;
+            max-width: min(38rem, calc(100vw - 2rem));
+            padding: 0.7rem 1rem;
+            border: 1px solid rgba(191,219,254,0.9);
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.96);
+            color: #334155;
             font-size: 0.75rem;
             font-weight: 700;
+            box-shadow: 0 14px 36px rgba(15,23,42,0.2);
+            backdrop-filter: blur(16px);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -1rem) scale(0.96);
+            transition: opacity 220ms ease, transform 220ms ease;
+        }
+        .roster-workflow-status.show {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
         }
         .roster-workflow-status strong {
+            flex: 0 0 auto;
             padding: 0.3rem 0.7rem;
             border-radius: 9999px;
             background: #fff7ed;
             border: 1px solid #fed7aa;
             color: #9a3412;
+        }
+        .roster-workflow-status span {
+            min-width: 0;
+        }
+        @media (max-width: 640px) {
+            .roster-workflow-status {
+                top: max(0.65rem, env(safe-area-inset-top));
+                gap: 0.5rem;
+                width: calc(100vw - 1rem);
+                max-width: 34rem;
+                padding: 0.65rem 0.8rem;
+                border-radius: 1.1rem;
+                font-size: 0.7rem;
+            }
+            .roster-workflow-status strong {
+                padding: 0.25rem 0.55rem;
+            }
         }
         .roster-workflow-tabs,
         .roster-history-panel {
@@ -1172,7 +1204,8 @@
             font-weight: 750;
         }
         .system-settings-field textarea,
-        .system-settings-field select {
+        .system-settings-field select,
+        .system-settings-field input[type="time"] {
             width: 100%;
             min-height: 2.45rem;
             padding: 0.6rem 0.7rem;
@@ -5336,7 +5369,8 @@
             letter-spacing: 0.025em;
         }
         #rosterSettingsPane .system-settings-field textarea,
-        #rosterSettingsPane .system-settings-field select {
+        #rosterSettingsPane .system-settings-field select,
+        #rosterSettingsPane .system-settings-field input[type="time"] {
             width: 100%;
             min-height: 2.6rem;
             padding: 0.65rem 0.75rem;
@@ -5353,7 +5387,8 @@
             line-height: 1.5;
         }
         #rosterSettingsPane .system-settings-field textarea:focus,
-        #rosterSettingsPane .system-settings-field select:focus {
+        #rosterSettingsPane .system-settings-field select:focus,
+        #rosterSettingsPane .system-settings-field input[type="time"]:focus {
             border-color: #7aa9ed;
             outline: 3px solid rgba(77,139,227,0.14);
         }
@@ -5959,10 +5994,6 @@
             </div>
 
         </div>
-        <div class="roster-workflow-status" id="rosterWorkflowStatus" hidden>
-            <strong id="rosterDraftState">Draft not saved</strong>
-            <span id="rosterLiveState">Edits are private until you publish.</span>
-        </div>
         <nav class="roster-workflow-tabs" id="rosterWorkflowTabs" aria-label="Roster admin views" hidden>
             <div class="flex flex-wrap gap-2">
                 <button type="button" class="btn-premium" id="editorTabBtn" aria-pressed="true">
@@ -6476,6 +6507,43 @@
                                 <option value="iso">YYYY-MM-DD</option>
                             </select>
                         </label>
+                        <label class="system-settings-field" for="systemDefaultLocationInput">
+                            Location shown first
+                            <select id="systemDefaultLocationInput">
+                                <option value="both">ISLAND Mombasa first (show both)</option>
+                                <option value="mainland">MAINLAND Likoni first</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="system-settings-group settings-group-reminders">
+                        <h4><i class="fa-regular fa-bell" aria-hidden="true"></i> Weekly roster reminder</h4>
+                        <label class="system-setting-toggle">
+                            <input id="systemRosterReminderEnabledInput" type="checkbox" />
+                            <span>Remind approved users to check the live roster<small>Sent once per week using the selected Africa/Nairobi day and time.</small></span>
+                        </label>
+                        <label class="system-settings-field" for="systemRosterReminderDayInput">
+                            Day
+                            <select id="systemRosterReminderDayInput">
+                                <option value="0">Sunday</option>
+                                <option value="1">Monday</option>
+                                <option value="2">Tuesday</option>
+                                <option value="3">Wednesday</option>
+                                <option value="4">Thursday</option>
+                                <option value="5">Friday</option>
+                                <option value="6">Saturday</option>
+                            </select>
+                        </label>
+                        <label class="system-settings-field" for="systemRosterReminderTimeInput">
+                            Time (Africa/Nairobi)
+                            <input id="systemRosterReminderTimeInput" type="time" step="900" required />
+                        </label>
+                    </div>
+                    <div class="system-settings-group settings-group-publishing">
+                        <h4><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Publishing</h4>
+                        <label class="system-setting-toggle">
+                            <input id="systemPublishConfirmationInput" type="checkbox" />
+                            <span>Require confirmation before publishing<small>Turn off to publish immediately after selecting Publish.</small></span>
+                        </label>
                     </div>
                     <div class="system-settings-group settings-group-notices">
                         <h4><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Notices</h4>
@@ -6511,6 +6579,7 @@
                     <div class="notification-event-row"><strong>Access declined</strong><label><input type="checkbox" data-notification-event="accessDeclined" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="accessDeclined" data-notification-channel="email" /> Email</label></div>
                     <div class="notification-event-row"><strong>Access revoked</strong><label><input type="checkbox" data-notification-event="accessRevoked" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="accessRevoked" data-notification-channel="email" /> Email</label></div>
                     <div class="notification-event-row"><strong>Roster published</strong><label><input type="checkbox" data-notification-event="rosterPublished" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="rosterPublished" data-notification-channel="email" /> Email</label></div>
+                    <div class="notification-event-row"><strong>Weekly roster reminder</strong><label><input type="checkbox" data-notification-event="weeklyRosterReminder" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="weeklyRosterReminder" data-notification-channel="email" /> Email</label></div>
                     <div class="notification-event-row"><strong>Announcement</strong><label><input type="checkbox" data-notification-event="announcement" data-notification-channel="inApp" checked /> In-app</label><label><input type="checkbox" data-notification-event="announcement" data-notification-channel="email" /> Email</label></div>
                 </div>
                 <label class="system-settings-field" for="notificationAdminEmailsInput">
@@ -6530,6 +6599,11 @@
 
 <!-- Toast notification -->
 <div id="toast" class="toast-message"><i class="fa-regular fa-circle-check text-emerald-400"></i> <span id="toastMsg">Saved</span></div>
+
+<div class="roster-workflow-status" id="rosterWorkflowStatus" role="status" aria-live="polite" hidden>
+    <strong id="rosterDraftState">Draft not saved</strong>
+    <span id="rosterLiveState">Edits are private until you publish.</span>
+</div>
 
 <!-- Action-aware confirmation modal -->
 <div id="confirmModal" class="confirm-overlay" hidden>
@@ -7010,6 +7084,11 @@
             publishedRosterVisible: true,
             locations: { island: true, mainland: true },
             dateFormat: 'weekday',
+            defaultLocation: 'both',
+            requirePublishConfirmation: true,
+            rosterReminderEnabled: true,
+            rosterReminderDay: 0,
+            rosterReminderTime: '14:00',
             maintenanceMode: false,
             maintenanceMessage: ''
         };
@@ -7107,6 +7186,19 @@
                 dateFormat: ['weekday', 'dmy', 'mdy', 'iso'].includes(data.dateFormat)
                     ? data.dateFormat
                     : 'weekday',
+                defaultLocation: ['both', 'mainland'].includes(data.defaultLocation)
+                    ? data.defaultLocation
+                    : 'both',
+                requirePublishConfirmation: data.requirePublishConfirmation !== false,
+                rosterReminderEnabled: data.rosterReminderEnabled !== false,
+                rosterReminderDay: Number.isInteger(data.rosterReminderDay) &&
+                    data.rosterReminderDay >= 0 && data.rosterReminderDay <= 6
+                    ? data.rosterReminderDay
+                    : 0,
+                rosterReminderTime: typeof data.rosterReminderTime === 'string' &&
+                    /^(?:[01]\d|2[0-3]):(?:00|15|30|45)$/.test(data.rosterReminderTime)
+                    ? data.rosterReminderTime
+                    : '14:00',
                 maintenanceMode: data.maintenanceMode === true,
                 maintenanceMessage: typeof data.maintenanceMessage === 'string'
                     ? data.maintenanceMessage.slice(0, 500)
@@ -7129,6 +7221,11 @@
             document.getElementById('systemIslandVisibleInput').checked = currentSystemSettings.locations.island;
             document.getElementById('systemMainlandVisibleInput').checked = currentSystemSettings.locations.mainland;
             document.getElementById('systemDateFormatInput').value = currentSystemSettings.dateFormat;
+            document.getElementById('systemDefaultLocationInput').value = currentSystemSettings.defaultLocation;
+            document.getElementById('systemPublishConfirmationInput').checked = currentSystemSettings.requirePublishConfirmation;
+            document.getElementById('systemRosterReminderEnabledInput').checked = currentSystemSettings.rosterReminderEnabled;
+            document.getElementById('systemRosterReminderDayInput').value = String(currentSystemSettings.rosterReminderDay);
+            document.getElementById('systemRosterReminderTimeInput').value = currentSystemSettings.rosterReminderTime;
             document.getElementById('systemMaintenanceModeInput').checked = currentSystemSettings.maintenanceMode;
             document.getElementById('systemMaintenanceMessageInput').value = currentSystemSettings.maintenanceMessage;
         }
@@ -7178,6 +7275,14 @@
             const isViewer = app.classList.contains('is-approved-viewer');
             const islandSection = document.getElementById('island-table').closest('section');
             const mainlandSection = document.getElementById('mainland-table').closest('section');
+            if (isViewer && islandSection && mainlandSection) {
+                const rosterPane = islandSection.parentElement;
+                if (currentSystemSettings.defaultLocation === 'mainland') {
+                    rosterPane.insertBefore(mainlandSection, islandSection);
+                } else {
+                    rosterPane.insertBefore(islandSection, mainlandSection);
+                }
+            }
             if (islandSection) islandSection.hidden = isViewer && !currentSystemSettings.locations.island;
             if (mainlandSection) mainlandSection.hidden = isViewer && !currentSystemSettings.locations.mainland;
 
@@ -7261,6 +7366,12 @@
         async function saveSystemSettings(event) {
             event.preventDefault();
             if (!isRosterAdmin(auth.currentUser) || !systemSettingsLoaded || systemSettingsError) return;
+            const reminderTimeInput = document.getElementById('systemRosterReminderTimeInput');
+            if (!reminderTimeInput.value || !reminderTimeInput.validity.valid) {
+                setSystemSettingsStatus('Choose a reminder time in 15-minute increments.', 'error');
+                reminderTimeInput.focus();
+                return;
+            }
             const saveButton = document.getElementById('saveSystemSettingsBtn');
             const nextSettings = normalizeSystemSettings({
                 announcement: document.getElementById('systemAnnouncementInput').value.trim(),
@@ -7271,6 +7382,11 @@
                     mainland: document.getElementById('systemMainlandVisibleInput').checked
                 },
                 dateFormat: document.getElementById('systemDateFormatInput').value,
+                defaultLocation: document.getElementById('systemDefaultLocationInput').value,
+                requirePublishConfirmation: document.getElementById('systemPublishConfirmationInput').checked,
+                rosterReminderEnabled: document.getElementById('systemRosterReminderEnabledInput').checked,
+                rosterReminderDay: Number(document.getElementById('systemRosterReminderDayInput').value),
+                rosterReminderTime: document.getElementById('systemRosterReminderTimeInput').value,
                 maintenanceMode: document.getElementById('systemMaintenanceModeInput').checked,
                 maintenanceMessage: document.getElementById('systemMaintenanceMessageInput').value.trim()
             });
@@ -7884,8 +8000,20 @@
         function setDraftStatus(label, detail) {
             const state = document.getElementById('rosterDraftState');
             const live = document.getElementById('rosterLiveState');
+            const status = document.getElementById('rosterWorkflowStatus');
             if (state) state.textContent = label;
             if (live) live.textContent = detail;
+            if (!status || status.hidden) return;
+
+            status.hidden = false;
+            status.classList.add('show');
+            clearTimeout(status._timeout);
+            status._timeout = setTimeout(() => {
+                status.classList.remove('show');
+                status._timeout = setTimeout(() => {
+                    if (!status.classList.contains('show')) status.hidden = true;
+                }, 240);
+            }, 5000);
         }
 
         function setOperationalConnection(online) {
@@ -8074,14 +8202,16 @@
                 return;
             }
             const range = getWeekRange(data);
-            const confirmed = await confirmAction({
-                title: 'Publish this roster?',
-                message: `This makes the ${range.weekLabel} roster live for roster viewers and saves this published roster in admin-only history with its week dates.`,
-                confirmLabel: 'Publish roster',
-                icon: 'fa-solid fa-paper-plane',
-                theme: 'info'
-            });
-            if (!confirmed || !canManageRoster()) return;
+            if (currentSystemSettings.requirePublishConfirmation) {
+                const confirmed = await confirmAction({
+                    title: 'Publish this roster?',
+                    message: `This makes the ${range.weekLabel} roster live for roster viewers and saves this published roster in admin-only history with its week dates.`,
+                    confirmLabel: 'Publish roster',
+                    icon: 'fa-solid fa-paper-plane',
+                    theme: 'info'
+                });
+                if (!confirmed || !canManageRoster()) return;
+            }
 
             try {
                 const draftSnapshot = await rosterDraftReference.get({ source: 'server' });

@@ -24,9 +24,12 @@ Messaging web setup and a VAPID key.
    generation Cloud Functions require a billing-enabled project.
 
 The scheduled backup runs Sundays at 02:00 Africa/Nairobi time and retains the
-12 latest snapshots in `scheduledRosterBackups`. The admin-only Published
-weeks view remains the user-facing restore action for previously published
-rosters.
+12 latest snapshots in `scheduledRosterBackups`. The weekly roster reminder is
+configurable in Account management and defaults to Sundays at 14:00
+Africa/Nairobi time. It is sent once to approved users through the configured
+in-app/email channels when a published roster is available. The admin-only
+Published weeks view remains the user-facing restore action for previously
+published rosters.
 
 ## Configure email delivery
 
@@ -43,6 +46,8 @@ default.
 - `userNotifications/{uid}/items/{notificationId}`: user-visible inbox items.
 - `rosterPublishes/{publishId}`: admin-created publish events used to notify
   approved users.
+- `rosterReminderRuns/{yyyy-mm-dd}`: server-written deduplication records for
+  weekly roster reminders.
 - `scheduledRosterBackups/{yyyy-mm-dd}`: server-written weekly snapshots. These
   records are readable only by the roster admin.
 

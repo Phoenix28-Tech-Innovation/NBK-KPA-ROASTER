@@ -132,11 +132,13 @@ service cloud.firestore {
         && request.resource.data.events is map
         && request.resource.data.events.keys().hasOnly([
           'newAccessRequest', 'accessApproved', 'accessDeclined',
-          'accessRevoked', 'rosterPublished', 'announcement'
+          'accessRevoked', 'rosterPublished', 'weeklyRosterReminder',
+          'announcement'
         ])
         && request.resource.data.events.keys().hasAll([
           'newAccessRequest', 'accessApproved', 'accessDeclined',
-          'accessRevoked', 'rosterPublished', 'announcement'
+          'accessRevoked', 'rosterPublished', 'weeklyRosterReminder',
+          'announcement'
         ])
         && request.resource.data.events.newAccessRequest.inApp is bool
         && request.resource.data.events.newAccessRequest.email is bool
@@ -148,6 +150,8 @@ service cloud.firestore {
         && request.resource.data.events.accessRevoked.email is bool
         && request.resource.data.events.rosterPublished.inApp is bool
         && request.resource.data.events.rosterPublished.email is bool
+        && request.resource.data.events.weeklyRosterReminder.inApp is bool
+        && request.resource.data.events.weeklyRosterReminder.email is bool
         && request.resource.data.events.announcement.inApp is bool
         && request.resource.data.events.announcement.email is bool
         && request.resource.data.updatedAt == request.time
@@ -206,12 +210,18 @@ service cloud.firestore {
         && settingsId == 'current'
         && request.resource.data.keys().hasOnly([
           'announcement', 'signupsEnabled', 'publishedRosterVisible',
-          'locations', 'dateFormat', 'maintenanceMode', 'maintenanceMessage',
+          'locations', 'dateFormat', 'defaultLocation',
+          'requirePublishConfirmation', 'rosterReminderEnabled',
+          'rosterReminderDay', 'rosterReminderTime',
+          'maintenanceMode', 'maintenanceMessage',
           'updatedAt', 'updatedBy'
         ])
         && request.resource.data.keys().hasAll([
           'announcement', 'signupsEnabled', 'publishedRosterVisible',
-          'locations', 'dateFormat', 'maintenanceMode', 'maintenanceMessage',
+          'locations', 'dateFormat', 'defaultLocation',
+          'requirePublishConfirmation', 'rosterReminderEnabled',
+          'rosterReminderDay', 'rosterReminderTime',
+          'maintenanceMode', 'maintenanceMessage',
           'updatedAt', 'updatedBy'
         ])
         && request.resource.data.announcement is string
@@ -224,6 +234,14 @@ service cloud.firestore {
         && request.resource.data.locations.island is bool
         && request.resource.data.locations.mainland is bool
         && request.resource.data.dateFormat in ['weekday', 'dmy', 'mdy', 'iso']
+        && request.resource.data.defaultLocation in ['both', 'mainland']
+        && request.resource.data.requirePublishConfirmation is bool
+        && request.resource.data.rosterReminderEnabled is bool
+        && request.resource.data.rosterReminderDay is int
+        && request.resource.data.rosterReminderDay >= 0
+        && request.resource.data.rosterReminderDay <= 6
+        && request.resource.data.rosterReminderTime is string
+        && request.resource.data.rosterReminderTime.matches('^(0[0-9]|1[0-9]|2[0-3]):(00|15|30|45)$')
         && request.resource.data.maintenanceMode is bool
         && request.resource.data.maintenanceMessage is string
         && request.resource.data.maintenanceMessage.size() <= 500
