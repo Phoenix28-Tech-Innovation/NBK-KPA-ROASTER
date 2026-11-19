@@ -638,6 +638,11 @@
                 white-space: normal;
                 line-height: 1.25;
             }
+            .history-filter-actions button {
+                width: 100%;
+                padding-inline: 0.55rem;
+                font-size: 0.82rem;
+            }
             .history-selection-tools {
                 display: grid;
                 grid-template-columns: minmax(0, 1fr);
@@ -681,8 +686,9 @@
             .history-preview-actions button {
                 width: 100%;
                 justify-content: center;
-                padding-inline: 0.6rem;
-                font-size: 0.72rem;
+                min-height: 3rem;
+                padding-inline: 0.65rem;
+                font-size: 0.9rem;
             }
             .history-preview-actions button:first-child {
                 grid-column: auto;
@@ -696,15 +702,20 @@
                 font-size: 0.75rem;
                 font-weight: 650;
             }
+            #historyRosterPreview > section,
             #historyRosterPreview .table-card,
             #historyRosterPreview .table-card > .overflow-x-auto {
+                width: 100%;
                 max-width: 100%;
                 min-width: 0;
             }
             #historyRosterPreview .table-card > .overflow-x-auto {
-                overflow-x: auto;
+                display: block;
+                overflow-x: scroll !important;
+                overflow-y: hidden;
                 overscroll-behavior-x: contain;
                 -webkit-overflow-scrolling: touch;
+                touch-action: pan-x pan-y;
             }
             #historyRosterPreview .compact-table {
                 min-width: 760px;
@@ -745,18 +756,59 @@
             }
         }
         .release-progress-track {
-            height: 0.45rem;
+            height: 0.65rem;
             overflow: hidden;
-            margin-top: 1.25rem;
+            margin-top: 0.85rem;
             border-radius: 9999px;
             background: #dbeafe;
         }
         .release-progress-bar {
-            width: 40%;
+            width: 0;
             height: 100%;
             border-radius: inherit;
-            background: #2563eb;
-            animation: release-download 1.2s ease-in-out infinite;
+            background: linear-gradient(90deg, #2563eb, #12a5a2);
+            transition: width 520ms cubic-bezier(0.2,0.75,0.25,1);
+        }
+        .release-progress-track.is-indeterminate .release-progress-bar {
+            width: 34%;
+            animation: release-download 1.8s ease-in-out infinite;
+        }
+        .release-progress-readout {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1.15rem;
+            text-align: left;
+        }
+        .release-progress-icon {
+            display: grid;
+            flex: 0 0 auto;
+            width: 2.8rem;
+            height: 2.8rem;
+            place-items: center;
+            border: 1px solid rgba(37,99,235,0.15);
+            border-radius: 0.95rem;
+            background: linear-gradient(145deg, #eff6ff, #fff);
+            color: #2563eb;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 16px rgba(37,99,235,0.1);
+        }
+        .release-progress-details {
+            display: grid;
+            min-width: 0;
+            gap: 0.1rem;
+        }
+        .release-progress-details strong {
+            color: #17243b;
+            font-size: 1.35rem;
+            font-weight: 850;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+        }
+        .release-progress-details span {
+            color: #64748b;
+            font-size: 0.76rem;
+            overflow-wrap: anywhere;
         }
         @media (max-width: 520px) {
             .release-dialog {
@@ -6005,14 +6057,23 @@
 </dialog>
 <dialog id="releaseProgressDialog" class="release-dialog" aria-labelledby="releaseProgressTitle" aria-describedby="releaseProgressMessage">
     <div class="modal-heading">
-        <span class="modal-icon" aria-hidden="true"><i class="fa-solid fa-arrows-rotate"></i></span>
+        <span class="modal-icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
         <div class="modal-heading-copy">
             <span class="modal-eyebrow">Please wait</span>
             <h2 id="releaseProgressTitle">Downloading update</h2>
         </div>
     </div>
     <p id="releaseProgressMessage">Checking the latest version…</p>
-    <div class="release-progress-track" aria-hidden="true"><div class="release-progress-bar"></div></div>
+    <div class="release-progress-readout">
+        <span class="release-progress-icon" aria-hidden="true"><i class="fa-solid fa-file-arrow-down"></i></span>
+        <div class="release-progress-details">
+            <strong id="releaseProgressPercent">0%</strong>
+            <span id="releaseProgressBytes">Preparing update…</span>
+        </div>
+    </div>
+    <div id="releaseProgressTrack" class="release-progress-track" role="progressbar" aria-label="Update download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="releaseProgressBar" class="release-progress-bar"></div>
+    </div>
 </dialog>
 <dialog id="releaseNotesDialog" class="release-dialog" aria-labelledby="releaseNotesTitle">
     <div class="modal-heading">
@@ -6221,21 +6282,86 @@
             }
         }
 
+        function formatReleaseBytes(bytes) {
+            if (bytes < 1024) return `${bytes} B`;
+            const units = ['KB', 'MB', 'GB'];
+            let value = bytes / 1024;
+            let unitIndex = 0;
+            while (value >= 1024 && unitIndex < units.length - 1) {
+                value /= 1024;
+                unitIndex += 1;
+            }
+            return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${units[unitIndex]}`;
+        }
+
+        function updateReleaseProgress(loaded, total, complete = false) {
+            const track = document.getElementById('releaseProgressTrack');
+            const bar = document.getElementById('releaseProgressBar');
+            const percent = document.getElementById('releaseProgressPercent');
+            const bytes = document.getElementById('releaseProgressBytes');
+            const hasTotal = Number.isFinite(total) && total > 0;
+            const percentage = complete ? 100 : hasTotal
+                ? Math.min(99, Math.max(0, Math.floor((loaded / total) * 100)))
+                : null;
+            track.classList.toggle('is-indeterminate', percentage === null);
+            if (percentage === null) {
+                percent.textContent = '—%';
+                bytes.textContent = `${formatReleaseBytes(loaded)} received · total size unavailable`;
+                bar.style.width = '34%';
+                track.removeAttribute('aria-valuenow');
+                track.setAttribute('aria-valuetext', `${formatReleaseBytes(loaded)} received`);
+                return;
+            }
+            percent.textContent = `${percentage}%`;
+            bytes.textContent = hasTotal
+                ? `${formatReleaseBytes(loaded)} of ${formatReleaseBytes(total)}`
+                : `${formatReleaseBytes(loaded)} downloaded`;
+            bar.style.width = `${percentage}%`;
+            track.setAttribute('aria-valuenow', String(percentage));
+            track.setAttribute('aria-valuetext', `${percentage}% downloaded`);
+        }
+
+        async function readReleaseDownload(response) {
+            const contentLength = Number(response.headers.get('content-length'));
+            const total = Number.isFinite(contentLength) && contentLength > 0 ? contentLength : null;
+            let loaded = 0;
+            if (!response.body || typeof response.body.getReader !== 'function') {
+                const payload = await response.arrayBuffer();
+                updateReleaseProgress(payload.byteLength, total, true);
+                return;
+            }
+            const reader = response.body.getReader();
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    loaded += value.byteLength;
+                    updateReleaseProgress(loaded, total);
+                }
+            } finally {
+                reader.releaseLock();
+            }
+            updateReleaseProgress(loaded, total, true);
+        }
+
         async function downloadRelease() {
             if (!availableRelease || !isVerifiedUser ||
                 (availableRelease.adminOnly && !isRosterAdmin)) return;
             const release = availableRelease;
             updateDialog.close();
-            document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
+            document.getElementById('releaseProgressMessage').textContent = 'Connecting to the update server…';
+            updateReleaseProgress(0, null);
             progressDialog.showModal();
             try {
                 const updateUrl = new URL(window.location.href);
                 updateUrl.searchParams.set('__update', release.version);
                 const response = await fetch(updateUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`Update download failed with HTTP ${response.status}`);
-                await response.text();
+                document.getElementById('releaseProgressMessage').textContent = 'Downloading the latest app version…';
+                await readReleaseDownload(response);
                 sessionStorage.setItem(pendingReleaseKey, JSON.stringify(release));
                 document.getElementById('releaseProgressMessage').textContent = 'Update downloaded. Reloading…';
+                await new Promise(resolve => window.setTimeout(resolve, 450));
                 window.location.replace(updateUrl.href);
             } catch (error) {
                 console.error('Could not download the app update:', error);
@@ -7911,6 +8037,7 @@
                 actions.append(restoreButton, csvButton, imageButton);
                 heading.append(title, actions);
                 preview.prepend(heading);
+                preview.insertBefore(scrollHint, preview.children[1] || null);
                 document.querySelectorAll('.roster-history-item').forEach(button => {
                     button.setAttribute('aria-pressed', String(button.dataset.historyId === roster.id));
                 });
