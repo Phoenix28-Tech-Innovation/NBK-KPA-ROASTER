@@ -1,17 +1,24 @@
 {
-  "version": "a482bf96ba5608362cf66a63ed016929a366a914",
-  "versionLabel": "v8.8.17",
-  "deployedAt": "2026-11-18T22:32:08.073Z",
-  "title": "Port roster history UI to Pages entry",
+  "schemaVersion": 2,
+  "version": "37f4143a24db69acd90f4279b8e7b9688a818d3e",
+  "versionLabel": "v8.8.18",
+  "deployedAt": "2026-11-19T10:01:05.140Z",
+  "title": "Improve update greeting and release notes",
   "notes": [
-    "General improvements and fixes."
+    "Add time-aware personalized update greetings and concise release summaries.",
+    "Display release version and date with Added, Fixed, and Other update sections.",
+    "Categorize release features and fixes in the generated update manifest."
   ],
   "features": [
-    "General improvements and maintenance."
+    "Add time-aware personalized update greetings and concise release summaries.",
+    "Display release version and date with Added, Fixed, and Other update sections."
+  ],
+  "fixes": [
+    "Categorize release features and fixes in the generated update manifest."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 445868
+  "sizeBytes": 454992
 }
