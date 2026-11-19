@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
     <meta name="app-build-version" content="74ae5f9963c6cee5097674c56a018297e3316190" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="description" content="Manage, preview, publish, and archive team rosters." />
@@ -566,6 +566,9 @@
             justify-content: space-between;
             gap: 0.8rem;
         }
+        .history-preview-scroll-hint {
+            display: none;
+        }
         .history-preview-actions button {
             min-height: 2.65rem;
         }
@@ -603,7 +606,7 @@
             }
             .history-date-filters {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: minmax(0, 1fr);
                 gap: 0.6rem;
                 width: 100%;
             }
@@ -617,7 +620,7 @@
                 font-size: 16px;
             }
             .history-date-filters > label:nth-child(3) {
-                grid-column: 1 / -1;
+                grid-column: auto;
             }
             .history-filter-actions {
                 display: grid;
@@ -639,6 +642,10 @@
                 display: grid;
                 grid-template-columns: minmax(0, 1fr);
                 gap: 0.65rem;
+                padding: 0.75rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 0.9rem;
+                background: #f8fafc;
             }
             .history-selection-tools button {
                 width: 100%;
@@ -648,6 +655,8 @@
                 grid-template-columns: 2rem minmax(0, 1fr) 2.8rem;
                 gap: 0.4rem;
                 padding: 0.35rem;
+                background: #fff;
+                box-shadow: 0 3px 10px rgba(15,23,42,0.04);
             }
             .roster-history-entry .roster-history-item {
                 padding: 0.75rem;
@@ -666,7 +675,7 @@
             }
             .history-preview-actions {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: minmax(0, 1fr);
                 width: 100%;
             }
             .history-preview-actions button {
@@ -676,7 +685,16 @@
                 font-size: 0.72rem;
             }
             .history-preview-actions button:first-child {
-                grid-column: 1 / -1;
+                grid-column: auto;
+            }
+            .history-preview-scroll-hint {
+                display: flex;
+                align-items: center;
+                gap: 0.45rem;
+                margin: -0.5rem 0 0;
+                color: #64748b;
+                font-size: 0.75rem;
+                font-weight: 650;
             }
             #historyRosterPreview .table-card,
             #historyRosterPreview .table-card > .overflow-x-auto {
@@ -702,8 +720,7 @@
                 line-height: 1.25;
             }
             .history-date-filters {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 0.5rem;
+                gap: 0.55rem;
             }
             .history-filter-actions {
                 gap: 0.45rem;
@@ -725,9 +742,6 @@
             .history-preview-actions {
                 grid-template-columns: minmax(0, 1fr);
                 gap: 0.5rem;
-            }
-            .history-preview-actions button:first-child {
-                grid-column: auto;
             }
         }
         .release-progress-track {
@@ -7845,6 +7859,13 @@
                     return copy;
                 });
                 preview.replaceChildren(...locations);
+                const scrollHint = document.createElement('p');
+                scrollHint.className = 'history-preview-scroll-hint';
+                const scrollIcon = document.createElement('i');
+                scrollIcon.className = 'fa-solid fa-arrows-left-right';
+                scrollIcon.setAttribute('aria-hidden', 'true');
+                scrollHint.append(scrollIcon, document.createTextNode('Swipe horizontally to view the full roster.'));
+                preview.appendChild(scrollHint);
                 const heading = document.createElement('div');
                 heading.className = 'history-preview-heading';
                 const title = document.createElement('h3');
