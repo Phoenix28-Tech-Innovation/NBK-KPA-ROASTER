@@ -586,7 +586,15 @@
         }
         @media (max-width: 640px) {
             #rosterHistoryPane {
+                width: 100%;
+                min-width: 0;
                 padding: 0.85rem;
+            }
+            #rosterHistoryPane .history-toolbar,
+            #rosterHistoryPane .history-date-filters,
+            #rosterHistoryList,
+            #historyRosterPreview {
+                min-width: 0;
             }
             #rosterHistoryPane > .history-toolbar {
                 display: grid;
@@ -604,6 +612,10 @@
                 width: 100%;
                 min-width: 0;
             }
+            .history-date-filters input {
+                min-height: 2.9rem;
+                font-size: 16px;
+            }
             .history-date-filters > label:nth-child(3) {
                 grid-column: 1 / -1;
             }
@@ -614,6 +626,14 @@
             }
             .history-filter-actions button:last-child {
                 grid-column: 1 / -1;
+            }
+            .history-filter-actions button,
+            .history-selection-tools button,
+            .history-preview-actions button {
+                min-width: 0;
+                min-height: 2.9rem;
+                white-space: normal;
+                line-height: 1.25;
             }
             .history-selection-tools {
                 display: grid;
@@ -670,6 +690,44 @@
             }
             #historyRosterPreview .compact-table {
                 min-width: 760px;
+            }
+        }
+        @media (max-width: 420px) {
+            #rosterHistoryPane {
+                padding: 0.7rem;
+                border-radius: 1rem;
+            }
+            #rosterHistoryHeading {
+                font-size: 1.15rem;
+                line-height: 1.25;
+            }
+            .history-date-filters {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.5rem;
+            }
+            .history-filter-actions {
+                gap: 0.45rem;
+            }
+            .roster-history-entry {
+                grid-template-columns: 1.75rem minmax(0, 1fr) 2.75rem;
+                gap: 0.3rem;
+                padding: 0.3rem;
+                border-radius: 0.85rem;
+            }
+            .roster-history-entry .roster-history-item {
+                padding: 0.65rem 0.55rem;
+            }
+            .roster-history-delete {
+                min-width: 2.75rem;
+                min-height: 2.75rem;
+                padding: 0.4rem;
+            }
+            .history-preview-actions {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0.5rem;
+            }
+            .history-preview-actions button:first-child {
+                grid-column: auto;
             }
         }
         .release-progress-track {
