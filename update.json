@@ -1,14 +1,14 @@
 {
   "schemaVersion": 2,
-  "version": "bae2375339efe85b23ccfa140a5a658405fd82da",
-  "versionLabel": "v8.8.23",
-  "deployedAt": "2026-11-19T11:08:15.552Z",
-  "title": "Update application favicon",
+  "version": "1cbcf41b0e70ed8917979886d36931d0faf68516",
+  "versionLabel": "v8.8.24",
+  "deployedAt": "2026-11-19T11:28:16.907Z",
+  "title": "Sync app icons with roster favicon",
   "notes": [
-    "Refresh the application icon assets."
+    "Refresh PNG and SVG app icons to match the roster favicon artwork."
   ],
   "features": [
-    "Refresh the application icon assets."
+    "Refresh PNG and SVG app icons to match the roster favicon artwork."
   ],
   "fixes": [],
   "security": [
