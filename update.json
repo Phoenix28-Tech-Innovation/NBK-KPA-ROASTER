@@ -1,19 +1,16 @@
 {
   "schemaVersion": 2,
-  "version": "a639032311de00d50f5f1e777ab16a4db3a05bcf",
-  "versionLabel": "v8.8.22",
-  "deployedAt": "2026-11-19T11:01:41.633Z",
-  "title": "Improve update progress and mobile roster preview",
+  "version": "bae2375339efe85b23ccfa140a5a658405fd82da",
+  "versionLabel": "v8.8.23",
+  "deployedAt": "2026-11-19T11:08:15.552Z",
+  "title": "Update application favicon",
   "notes": [
-    "Show streamed update download percentage and byte progress with accessible feedback.",
-    "Make archived roster previews swipeable and controls easier to use on mobile."
+    "Refresh the application icon assets."
   ],
   "features": [
-    "Show streamed update download percentage and byte progress with accessible feedback."
+    "Refresh the application icon assets."
   ],
-  "fixes": [
-    "Make archived roster previews swipeable and controls easier to use on mobile."
-  ],
+  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
