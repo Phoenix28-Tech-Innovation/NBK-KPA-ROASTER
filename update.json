@@ -1,14 +1,14 @@
 {
   "schemaVersion": 2,
-  "version": "1cbcf41b0e70ed8917979886d36931d0faf68516",
-  "versionLabel": "v8.8.24",
-  "deployedAt": "2026-11-19T11:28:16.907Z",
-  "title": "Sync app icons with roster favicon",
+  "version": "ab5fd024db62f5ec3e3a99b9ff8edafc588db359",
+  "versionLabel": "v8.8.25",
+  "deployedAt": "2026-11-19T11:47:55.429Z",
+  "title": "Use circular transparent app icons",
   "notes": [
-    "Refresh PNG and SVG app icons to match the roster favicon artwork."
+    "Remove the square background from larger roster icons and keep them non-maskable."
   ],
   "features": [
-    "Refresh PNG and SVG app icons to match the roster favicon artwork."
+    "Remove the square background from larger roster icons and keep them non-maskable."
   ],
   "fixes": [],
   "security": [
