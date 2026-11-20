@@ -5609,6 +5609,611 @@
             #rosterSettingsPane .system-settings-card,
             #rosterSettingsPane .system-settings-group { background-color: #f5f8fc; }
         }
+        #authGate {
+            background:
+                radial-gradient(ellipse at 12% 18%, rgba(108,158,255,0.3), transparent 34rem),
+                radial-gradient(ellipse at 88% 82%, rgba(74,220,192,0.24), transparent 31rem),
+                radial-gradient(ellipse at 55% 48%, rgba(177,160,255,0.12), transparent 38rem),
+                linear-gradient(145deg, #f3f7ff 0%, #e8f0fc 48%, #f2f7fc 100%);
+        }
+        #authGate::before,
+        #authGate::after {
+            z-index: 0;
+            border: 1px solid rgba(255,255,255,0.4);
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.42), rgba(108,158,255,0.08) 42%, transparent 72%);
+            box-shadow: inset 0 0 5rem rgba(255,255,255,0.12);
+            filter: blur(1px);
+            animation: auth-orb-drift 18s ease-in-out infinite alternate;
+        }
+        #authGate::after {
+            background: radial-gradient(circle at 60% 40%, rgba(255,255,255,0.38), rgba(74,220,192,0.1) 45%, transparent 72%);
+            animation-delay: -8s;
+        }
+        .auth-layout {
+            position: relative;
+            z-index: 1;
+        }
+        .auth-panel {
+            border-color: rgba(255,255,255,0.74);
+            background:
+                radial-gradient(ellipse at 100% 0, rgba(216,233,255,0.36), transparent 58%),
+                linear-gradient(145deg, rgba(255,255,255,0.72), rgba(239,246,255,0.46));
+            box-shadow: 0 32px 90px rgba(37,61,97,0.14), inset 0 1px 0 rgba(255,255,255,0.92);
+            backdrop-filter: blur(34px) saturate(175%);
+            -webkit-backdrop-filter: blur(34px) saturate(175%);
+        }
+        .auth-panel::after {
+            position: absolute;
+            inset: -20% -70%;
+            z-index: 0;
+            background: linear-gradient(112deg, transparent 38%, rgba(255,255,255,0.24) 48%, transparent 58%);
+            content: "";
+            pointer-events: none;
+            transform: translateX(-45%);
+            animation: auth-glass-sheen 9s ease-in-out 1s infinite;
+        }
+        .auth-benefit {
+            border-color: rgba(255,255,255,0.72);
+            background: rgba(255,255,255,0.4);
+            box-shadow: 0 8px 24px rgba(37,61,97,0.045), inset 0 1px 0 rgba(255,255,255,0.86);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            transition: transform 220ms ease, background 220ms ease, box-shadow 220ms ease;
+        }
+        .auth-benefit:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.58);
+            box-shadow: 0 12px 28px rgba(37,61,97,0.075), inset 0 1px 0 rgba(255,255,255,0.94);
+        }
+        .auth-tabs {
+            position: relative;
+            isolation: isolate;
+            border-color: rgba(255,255,255,0.62);
+            background: rgba(203,218,239,0.34);
+            box-shadow: inset 0 1px 3px rgba(48,70,105,0.07);
+            backdrop-filter: blur(18px) saturate(145%);
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+        }
+        .auth-tabs::before {
+            position: absolute;
+            top: 0.3rem;
+            bottom: 0.3rem;
+            left: 0.3rem;
+            z-index: 0;
+            width: calc((100% - 0.95rem) / 2);
+            border: 1px solid rgba(255,255,255,0.74);
+            border-radius: 0.78rem;
+            background: linear-gradient(145deg, rgba(255,255,255,0.66), rgba(225,239,255,0.42));
+            box-shadow: 0 5px 16px rgba(35,55,85,0.08), inset 0 1px 0 rgba(255,255,255,0.88);
+            content: "";
+            pointer-events: none;
+            transform: translateX(0) scaleX(1);
+            transform-origin: left center;
+            transition: transform 580ms cubic-bezier(0.22,1.18,0.36,1), border-radius 260ms ease;
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+        }
+        .auth-tab {
+            position: relative;
+            z-index: 1;
+        }
+        @supports selector(.auth-tabs:has(#signUpTab:hover)) {
+            .auth-tabs:has(#signInTab[aria-selected="true"]) #signInTab,
+            .auth-tabs:has(#signUpTab[aria-selected="true"]) #signUpTab {
+                border-color: transparent;
+                background: transparent;
+                box-shadow: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+            }
+            .auth-tabs:has(#signUpTab[aria-selected="true"])::before,
+            .auth-tabs:has(#signUpTab:hover)::before,
+            .auth-tabs:has(#signUpTab:focus-visible)::before {
+                border-radius: 0.9rem 0.72rem 0.88rem 0.68rem;
+                transform: translateX(calc(100% + 0.35rem)) scaleX(1.04);
+                transform-origin: right center;
+            }
+            .auth-tabs:has(#signInTab:hover)::before,
+            .auth-tabs:has(#signInTab:focus-visible)::before {
+                border-radius: 0.72rem 0.9rem 0.68rem 0.88rem;
+                transform: translateX(0) scaleX(1.04);
+            }
+        }
+        .auth-tab:focus-visible {
+            outline: 2px solid rgba(52,120,246,0.62);
+            outline-offset: -3px;
+        }
+        .auth-tab:hover {
+            color: #2459b9;
+        }
+        .auth-tab[aria-selected="true"] {
+            border-color: rgba(255,255,255,0.78);
+            background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(246,250,255,0.68));
+            box-shadow: 0 5px 16px rgba(35,55,85,0.09), inset 0 1px 0 rgba(255,255,255,0.96);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .auth-field input {
+            border-color: rgba(255,255,255,0.78);
+            background: rgba(255,255,255,0.5);
+            box-shadow: inset 0 1px 2px rgba(31,53,86,0.035), 0 3px 12px rgba(37,61,97,0.025);
+        }
+        .auth-field input:focus {
+            background: rgba(255,255,255,0.78);
+        }
+        .auth-submit {
+            border-color: rgba(255,255,255,0.5);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.24), transparent 58%),
+                linear-gradient(125deg, rgba(59,130,246,0.96), rgba(37,88,198,0.94) 72%, rgba(23,72,181,0.96));
+            box-shadow: 0 10px 24px rgba(37,99,235,0.2), inset 0 1px 0 rgba(255,255,255,0.42);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        @media (max-width: 760px) {
+            #authGate {
+                background:
+                    radial-gradient(ellipse at 12% 0, rgba(97,157,255,0.26), transparent 23rem),
+                    radial-gradient(ellipse at 100% 78%, rgba(74,220,192,0.16), transparent 22rem),
+                    linear-gradient(180deg, #eaf2ff 0, #eff4fc 15rem, #eef4fa 100%);
+            }
+            .auth-layout:not(.is-admin-queue) .auth-intro {
+                border-color: rgba(255,255,255,0.72);
+                background:
+                    radial-gradient(ellipse at 100% 0, rgba(255,255,255,0.52), transparent 58%),
+                    linear-gradient(135deg, rgba(255,255,255,0.54), rgba(221,235,255,0.42));
+                box-shadow: 0 12px 30px rgba(37,61,97,0.065), inset 0 1px 0 rgba(255,255,255,0.86);
+                backdrop-filter: blur(24px) saturate(160%);
+                -webkit-backdrop-filter: blur(24px) saturate(160%);
+            }
+            .auth-layout:not(.is-admin-queue) .auth-panel,
+            .auth-layout.is-admin-queue .auth-panel {
+                border-color: rgba(255,255,255,0.74);
+                background:
+                    radial-gradient(ellipse at 100% 0, rgba(215,232,255,0.32), transparent 60%),
+                    linear-gradient(145deg, rgba(255,255,255,0.76), rgba(238,246,255,0.56));
+                box-shadow: 0 18px 42px rgba(37,61,97,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+                backdrop-filter: blur(30px) saturate(170%);
+                -webkit-backdrop-filter: blur(30px) saturate(170%);
+            }
+            .auth-layout:not(.is-admin-queue) .auth-field input {
+                border-color: rgba(255,255,255,0.8);
+                background: rgba(255,255,255,0.58);
+            }
+            .auth-layout:not(.is-admin-queue) .auth-field input:focus {
+                background: rgba(255,255,255,0.82);
+            }
+            .auth-layout.is-admin-queue .auth-panel {
+                padding: 1.15rem;
+                border-radius: 1.35rem;
+            }
+        }
+        .auth-input-wrap {
+            isolation: isolate;
+            border-radius: 1rem;
+        }
+        .auth-input-wrap::after {
+            position: absolute;
+            inset: 0.06rem;
+            z-index: 0;
+            border-radius: inherit;
+            background: linear-gradient(112deg, transparent 28%, rgba(255,255,255,0.65) 46%, rgba(139,190,255,0.2) 53%, transparent 72%);
+            background-size: 220% 100%;
+            background-position: 100% 0;
+            content: "";
+            opacity: 0;
+            pointer-events: none;
+            transition: background-position 680ms cubic-bezier(0.2,0.8,0.25,1), opacity 180ms ease;
+        }
+        .auth-input-wrap:hover::after,
+        .auth-input-wrap:focus-within::after {
+            opacity: 1;
+            background-position: 0 0;
+        }
+        .auth-input-wrap > i {
+            z-index: 2;
+        }
+        .auth-field input {
+            position: relative;
+            z-index: 1;
+            border-color: rgba(255,255,255,0.82);
+            border-radius: 1rem 1.12rem 0.92rem 1.08rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.66), rgba(236,245,255,0.46));
+            box-shadow: inset 0 1px 2px rgba(31,53,86,0.035), 0 4px 14px rgba(37,61,97,0.035);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            transition: border-color 200ms ease, box-shadow 220ms ease, background 220ms ease, transform 220ms ease, border-radius 220ms ease;
+        }
+        .auth-field input:hover {
+            border-color: rgba(255,255,255,0.98);
+            background: linear-gradient(135deg, rgba(255,255,255,0.76), rgba(235,245,255,0.56));
+            box-shadow: inset 0 1px 2px rgba(31,53,86,0.025), 0 7px 19px rgba(37,61,97,0.065);
+            transform: translateY(-1px);
+        }
+        .auth-field input:focus {
+            border-color: rgba(91,151,241,0.72);
+            border-radius: 1.12rem 0.94rem 1.1rem 0.96rem;
+            background: rgba(255,255,255,0.82);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12), 0 9px 24px rgba(37,99,235,0.1), inset 0 1px 0 rgba(255,255,255,0.94);
+            transform: translateY(-1px);
+        }
+        .auth-password-toggle {
+            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.48);
+            background: rgba(255,255,255,0.24);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.58);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+        }
+        .auth-password-toggle:hover {
+            border-color: rgba(255,255,255,0.86);
+            background: rgba(255,255,255,0.72);
+            box-shadow: 0 4px 12px rgba(37,61,97,0.09), inset 0 1px 0 #fff;
+            color: #2459b9;
+            transform: translateY(-50%) scale(1.06);
+        }
+        .auth-link-button {
+            position: relative;
+            isolation: isolate;
+            padding: 0.12rem 0.58rem;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            background: transparent;
+            transition: color 200ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+        }
+        .auth-link-button:hover {
+            border-color: rgba(255,255,255,0.76);
+            background: rgba(255,255,255,0.48);
+            box-shadow: 0 5px 15px rgba(37,61,97,0.07), inset 0 1px 0 rgba(255,255,255,0.85);
+            backdrop-filter: blur(14px) saturate(155%);
+            -webkit-backdrop-filter: blur(14px) saturate(155%);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        .auth-link-button:active {
+            transform: translateY(0) scale(0.97);
+        }
+        .auth-submit {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            border-radius: 1rem 1.12rem 0.94rem 1.06rem;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.3), transparent 58%),
+                linear-gradient(125deg, rgba(59,130,246,0.9), rgba(37,88,198,0.88) 72%, rgba(23,72,181,0.92));
+            box-shadow: 0 10px 24px rgba(37,99,235,0.19), inset 0 1px 0 rgba(255,255,255,0.48);
+            backdrop-filter: blur(16px) saturate(165%);
+            -webkit-backdrop-filter: blur(16px) saturate(165%);
+            transition: transform 220ms cubic-bezier(0.2,0.8,0.25,1), box-shadow 220ms ease, filter 220ms ease, opacity 160ms ease, border-radius 220ms ease;
+        }
+        .auth-submit::before {
+            position: absolute;
+            inset: -35% auto -35% -55%;
+            z-index: 0;
+            width: 44%;
+            border-radius: 50%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.62), transparent);
+            content: "";
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-130%) skewX(-16deg);
+            filter: blur(8px);
+            transition: transform 720ms cubic-bezier(0.2,0.8,0.25,1), opacity 180ms ease;
+        }
+        .auth-submit > * {
+            position: relative;
+            z-index: 1;
+        }
+        .auth-submit:hover:not(:disabled) {
+            border-radius: 1.12rem 0.94rem 1.08rem 0.96rem;
+            box-shadow: 0 14px 30px rgba(37,99,235,0.25), inset 0 1px 0 rgba(255,255,255,0.58);
+        }
+        .auth-submit:hover:not(:disabled)::before {
+            opacity: 0.9;
+            transform: translateX(345%) skewX(-16deg);
+        }
+        .auth-submit:active:not(:disabled) {
+            transform: translateY(0) scale(0.985);
+        }
+        #signInForm .auth-submit {
+            animation: auth-signin-button-arrive 620ms 140ms cubic-bezier(0.2,0.85,0.25,1) both;
+        }
+        #signInForm .auth-submit::before {
+            opacity: 0.4;
+            animation: auth-signin-liquid-sweep 3.2s ease-in-out 700ms infinite;
+        }
+        #signInForm .auth-submit:hover:not(:disabled)::before {
+            animation-duration: 850ms;
+        }
+        #signInForm .auth-submit .auth-button-icon {
+            transition: transform 280ms cubic-bezier(0.2,0.8,0.25,1);
+        }
+        #signInForm .auth-submit > span:last-child {
+            display: inline-block;
+            transition: transform 280ms cubic-bezier(0.2,0.8,0.25,1), letter-spacing 280ms ease;
+        }
+        #signInForm .auth-submit:hover:not(:disabled) .auth-button-icon {
+            transform: translateX(4px) rotate(-5deg);
+        }
+        #signInForm .auth-submit:hover:not(:disabled) > span:last-child {
+            letter-spacing: 0.015em;
+            transform: translateX(2px);
+        }
+        .auth-panel .access-request-tab {
+            border: 1px solid rgba(255,255,255,0.34);
+            background: rgba(255,255,255,0.2);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.38);
+            backdrop-filter: blur(12px) saturate(145%);
+            -webkit-backdrop-filter: blur(12px) saturate(145%);
+            transition: color 200ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+        }
+        .auth-panel .access-request-tab:hover,
+        .auth-panel .access-request-tab[aria-pressed="true"] {
+            border-color: rgba(255,255,255,0.78);
+            background: rgba(255,255,255,0.68);
+            box-shadow: 0 5px 15px rgba(37,61,97,0.075), inset 0 1px 0 rgba(255,255,255,0.92);
+            color: #285db4;
+        }
+        .auth-panel .access-request-tab:hover {
+            transform: translateY(-1px);
+        }
+        .auth-panel .access-request-actions button {
+            border-color: rgba(255,255,255,0.56);
+            backdrop-filter: blur(12px) saturate(145%);
+            -webkit-backdrop-filter: blur(12px) saturate(145%);
+            transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+        }
+        .auth-panel .access-request-actions button:hover:not(:disabled) {
+            filter: saturate(1.08) brightness(1.04);
+            transform: translateY(-1px);
+        }
+        .auth-panel .access-request-actions button:active:not(:disabled) {
+            transform: translateY(0) scale(0.98);
+        }
+        .auth-submit:focus-visible,
+        .auth-link-button:focus-visible,
+        .auth-password-toggle:focus-visible,
+        .auth-panel .access-request-tab:focus-visible,
+        .auth-panel .access-request-actions button:focus-visible {
+            outline: 2px solid rgba(52,120,246,0.68);
+            outline-offset: 2px;
+        }
+        @keyframes auth-signin-button-arrive {
+            from {
+                opacity: 0;
+                filter: blur(5px);
+                transform: translateY(10px) scale(0.97);
+            }
+            68% {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(-2px) scale(1.015);
+            }
+            to {
+                opacity: 1;
+                filter: none;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes auth-signin-liquid-sweep {
+            0%, 12% {
+                opacity: 0;
+                transform: translateX(-130%) skewX(-16deg);
+            }
+            38% {
+                opacity: 0.8;
+            }
+            72%, 100% {
+                opacity: 0;
+                transform: translateX(345%) skewX(-16deg);
+            }
+        }
+        @keyframes auth-orb-drift {
+            from { transform: translate3d(-1.5rem, -0.5rem, 0) scale(0.96); }
+            to { transform: translate3d(1.7rem, 1.1rem, 0) scale(1.04); }
+        }
+        @keyframes auth-glass-sheen {
+            0%, 62% { transform: translateX(-45%); opacity: 0; }
+            72% { opacity: 1; }
+            100% { transform: translateX(45%); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #authGate::before,
+            #authGate::after,
+            .auth-panel::after,
+            .auth-benefit {
+                animation: none;
+                transition: none;
+            }
+            .auth-tabs::before {
+                display: none;
+            }
+            @supports selector(.auth-tabs:has(#signUpTab:hover)) {
+                .auth-tabs:has(#signInTab[aria-selected="true"]) #signInTab,
+                .auth-tabs:has(#signUpTab[aria-selected="true"]) #signUpTab {
+                    border-color: rgba(255,255,255,0.78);
+                    background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(246,250,255,0.68));
+                    box-shadow: 0 5px 16px rgba(35,55,85,0.09), inset 0 1px 0 rgba(255,255,255,0.96);
+                    backdrop-filter: blur(14px);
+                    -webkit-backdrop-filter: blur(14px);
+                }
+            }
+            .auth-input-wrap::after,
+            .auth-submit::before {
+                display: none;
+            }
+            .auth-field input,
+            .auth-password-toggle,
+            .auth-link-button,
+            .auth-submit,
+            #signInForm .auth-submit,
+            #signInForm .auth-submit .auth-button-icon,
+            #signInForm .auth-submit > span:last-child,
+            .auth-panel .access-request-tab,
+            .auth-panel .access-request-actions button {
+                transition: none;
+            }
+            #signInForm .auth-submit {
+                animation: none;
+            }
+            #signInForm .auth-submit::before {
+                animation: none;
+            }
+            .auth-field input:hover,
+            .auth-field input:focus,
+            .auth-link-button:hover,
+            .auth-link-button:active,
+            .auth-submit:hover:not(:disabled),
+            .auth-submit:active:not(:disabled),
+            .auth-panel .access-request-tab:hover,
+            .auth-panel .access-request-actions button:hover:not(:disabled),
+            .auth-panel .access-request-actions button:active:not(:disabled) {
+                transform: none;
+            }
+            .auth-password-toggle:hover {
+                transform: translateY(-50%);
+            }
+            .auth-benefit:hover {
+                transform: none;
+            }
+        }
+        button,
+        a[href] {
+            position: relative;
+            isolation: isolate;
+            transition: transform 220ms cubic-bezier(0.2,0.8,0.25,1), box-shadow 260ms ease,
+                filter 240ms ease, border-radius 320ms ease, background-color 240ms ease,
+                border-color 240ms ease, opacity 180ms ease;
+        }
+        button::after,
+        a[href]::after {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border: 1px solid rgba(255,255,255,0.36);
+            border-radius: inherit;
+            background: linear-gradient(112deg, transparent 20%, rgba(255,255,255,0.38) 46%, rgba(255,255,255,0.08) 54%, transparent 78%);
+            background-size: 220% 100%;
+            background-position: 100% 0;
+            content: "";
+            opacity: 0;
+            pointer-events: none;
+            transition: background-position 620ms cubic-bezier(0.2,0.8,0.25,1), opacity 200ms ease;
+        }
+        button:not(:disabled):hover,
+        button:not(:disabled):focus-visible,
+        a[href]:hover,
+        a[href]:focus-visible {
+            filter: saturate(1.06);
+            box-shadow: 0 8px 20px rgba(29,48,82,0.11), inset 0 1px 0 rgba(255,255,255,0.26);
+        }
+        button:not(:disabled):hover {
+            transform: translateY(-1px);
+        }
+        a[href]:hover {
+            transform: translateY(-1px);
+        }
+        button:not(:disabled):active {
+            transform: translateY(0) scale(0.985);
+        }
+        a[href]:active {
+            transform: translateY(0) scale(0.985);
+        }
+        button:not(:disabled):hover::after,
+        button:not(:disabled):focus-visible::after,
+        button:not(:disabled):active::after,
+        a[href]:hover::after,
+        a[href]:focus-visible::after,
+        a[href]:active::after {
+            background-position: 0 0;
+            opacity: 1;
+            -webkit-backdrop-filter: blur(9px) saturate(155%);
+            backdrop-filter: blur(9px) saturate(155%);
+        }
+        button:focus-visible,
+        a[href]:focus-visible {
+            outline: 2px solid rgba(59,130,246,0.58);
+            outline-offset: 2px;
+        }
+        #rosterWorkflowTabs .btn-premium {
+            border: 1px solid rgba(255,255,255,0.38);
+            backdrop-filter: blur(16px) saturate(155%);
+            -webkit-backdrop-filter: blur(16px) saturate(155%);
+            transition: transform 220ms cubic-bezier(0.2,0.8,0.25,1), background 240ms ease,
+                box-shadow 260ms ease, border-color 240ms ease, filter 240ms ease;
+        }
+        #rosterWorkflowTabs .btn-premium[aria-pressed="true"] {
+            border-color: rgba(255,255,255,0.68);
+            background: linear-gradient(145deg, rgba(30,41,59,0.88), rgba(15,23,42,0.78));
+            box-shadow: 0 8px 22px rgba(15,23,42,0.16), inset 0 1px 0 rgba(255,255,255,0.32);
+        }
+        #rosterWorkflowTabs .btn-premium:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            button,
+            button::after,
+            a[href],
+            a[href]::after {
+                transition: none;
+            }
+            button::after,
+            a[href]::after {
+                display: none;
+            }
+            button:not(:disabled):hover,
+            button:not(:disabled):active,
+            a[href]:hover,
+            a[href]:active,
+            #rosterWorkflowTabs .btn-premium:hover:not(:disabled) {
+                transform: none !important;
+            }
+            .auth-password-toggle:hover {
+                transform: translateY(-50%) !important;
+            }
+        }
+        #toast {
+            isolation: isolate;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.78);
+            background: linear-gradient(135deg, rgba(255,255,255,0.84), rgba(233,243,255,0.68));
+            color: #17243b;
+            box-shadow: 0 16px 42px rgba(27,46,85,0.18), inset 0 1px 0 rgba(255,255,255,0.96);
+            -webkit-backdrop-filter: blur(22px) saturate(170%);
+            backdrop-filter: blur(22px) saturate(170%);
+            transition: opacity 280ms ease, transform 360ms cubic-bezier(0.2,0.8,0.25,1);
+        }
+        #toast::before {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: inherit;
+            background: linear-gradient(112deg, transparent 18%, rgba(255,255,255,0.62) 48%, rgba(153,196,255,0.16) 56%, transparent 82%);
+            background-size: 220% 100%;
+            background-position: 100% 0;
+            content: "";
+            opacity: 0;
+            pointer-events: none;
+            transition: background-position 900ms cubic-bezier(0.2,0.8,0.25,1), opacity 260ms ease;
+        }
+        #toast.show::before {
+            background-position: 0 0;
+            opacity: 0.72;
+        }
+        #toast > * {
+            position: relative;
+            z-index: 1;
+        }
+        #toast > i {
+            color: #07805b;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #toast,
+            #toast::before {
+                transition: none;
+            }
+        }
         @media print {
             @page { margin: 10mm; size: landscape; }
             body { padding: 0; background: #fff; }
@@ -5666,8 +6271,8 @@
                 <span class="auth-brand-icon"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i></span>
                 <span>Roster Admin</span>
             </div>
-            <div class="auth-kicker"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> YOUR TEAM WORKSPACE</div>
-            <h1 id="authPageTitle">Your team,<br><span>in sync.</span></h1>
+            <div class="auth-kicker"><i class="fa-solid fa-sparkles" aria-hidden="true"></i> NBK TEAM WORKSPACE</div>
+            <h1 id="authPageTitle">Jambo Pay,<br><span>Ambassadors.</span></h1>
             <p>Sign in securely to manage the weekly roster. Access requires an approved account and a verified email.</p>
             <div class="auth-benefits" aria-label="Account access requirements">
                 <div class="auth-benefit">
@@ -5679,7 +6284,7 @@
                     <span><strong>Approved access</strong><small>For your roster team</small></span>
                 </div>
             </div>
-            <div class="auth-trust-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure sign-in powered by Firebase</div>
+            <div class="auth-trust-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure sign-in powered by Phoenix28-Tech Inc</div>
         </div>
 
         <div class="auth-panel">
