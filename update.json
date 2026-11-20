@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "version": "b095f94de653b73ff21d786f857a53ed206f7f68",
-  "versionLabel": "v8.8.29",
-  "deployedAt": "2026-11-20T11:27:08.097Z",
-  "title": "Update liquid glass admin UI",
+  "version": "a9d918bb5b063831a04d9cc52977fbce96dfb620",
+  "versionLabel": "v8.8.30",
+  "deployedAt": "2026-11-20T11:49:27.320Z",
+  "title": "Mirror liquid glass UI to published page",
   "notes": [
-    "Update liquid glass admin UI"
+    "Mirror liquid glass UI to published page"
   ],
   "features": [],
   "fixes": [],
@@ -13,5 +13,5 @@
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": true,
-  "sizeBytes": 498851
+  "sizeBytes": 524984
 }
