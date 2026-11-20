@@ -1,19 +1,17 @@
 {
   "schemaVersion": 2,
-  "version": "49c7f30a6878d8f0afbe4f8f25d0effc615f8669",
-  "versionLabel": "v8.8.28",
-  "deployedAt": "2026-11-19T21:22:12.476Z",
-  "title": "Sync index status UI with admin page",
+  "version": "b095f94de653b73ff21d786f857a53ed206f7f68",
+  "versionLabel": "v8.8.29",
+  "deployedAt": "2026-11-20T11:27:08.097Z",
+  "title": "Update liquid glass admin UI",
   "notes": [
-    "Remove the operational status strip and date edit hints from the published page to match the admin UI."
+    "Update liquid glass admin UI"
   ],
   "features": [],
-  "fixes": [
-    "Remove the operational status strip and date edit hints from the published page to match the admin UI."
-  ],
+  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": false,
+  "adminOnly": true,
   "sizeBytes": 498851
 }
