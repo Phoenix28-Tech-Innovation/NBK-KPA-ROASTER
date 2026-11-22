@@ -34,7 +34,8 @@ Africa/Nairobi time and retains the 12 latest snapshots in
 Account management and defaults to Sundays at 14:00 Africa/Nairobi time.
 Reminder times can be set to any hour and minute. The admin-only Published
 weeks view remains the user-facing restore action for previously published
-rosters.
+rosters. The admin chooses the hour and any minute from `00` through `59`
+using separate selectors.
 
 ## Configure email delivery
 

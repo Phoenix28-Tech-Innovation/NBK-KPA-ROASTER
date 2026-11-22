@@ -1151,9 +1151,18 @@
             font-size: 0.7rem;
             font-weight: 750;
         }
+        .system-settings-time-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .system-settings-time-controls select {
+            min-width: 0;
+            text-align: center;
+        }
         .system-settings-field textarea,
-        .system-settings-field select,
-        .system-settings-field input[type="time"] {
+        .system-settings-field select {
             width: 100%;
             min-height: 2.45rem;
             padding: 0.6rem 0.7rem;
@@ -5154,8 +5163,7 @@
             font-size: 0.78rem;
         }
         #rosterSettingsPane .system-settings-field textarea:focus,
-        #rosterSettingsPane .system-settings-field select:focus,
-        #rosterSettingsPane .system-settings-field input[type="time"]:focus {
+        #rosterSettingsPane .system-settings-field select:focus {
             border-color: #60a5fa;
             outline: 3px solid rgba(59,130,246,0.14);
         }
@@ -5560,8 +5568,7 @@
             letter-spacing: 0.025em;
         }
         #rosterSettingsPane .system-settings-field textarea,
-        #rosterSettingsPane .system-settings-field select,
-        #rosterSettingsPane .system-settings-field input[type="time"] {
+        #rosterSettingsPane .system-settings-field select {
             border-color: rgba(202,216,234,0.72);
             border-radius: 0.85rem;
             background: rgba(255,255,255,0.72);
@@ -5569,8 +5576,7 @@
             color: #26364d;
         }
         #rosterSettingsPane .system-settings-field textarea:focus,
-        #rosterSettingsPane .system-settings-field select:focus,
-        #rosterSettingsPane .system-settings-field input[type="time"]:focus {
+        #rosterSettingsPane .system-settings-field select:focus {
             border-color: #7aa9ed;
             outline: 3px solid rgba(77,139,227,0.14);
         }
@@ -7499,9 +7505,13 @@
                                 <option value="6">Saturday</option>
                             </select>
                         </label>
-                        <label class="system-settings-field" for="systemRosterReminderTimeInput">
+                        <label class="system-settings-field">
                             Time (Africa/Nairobi)
-                            <input id="systemRosterReminderTimeInput" type="time" step="60" required />
+                            <span class="system-settings-time-controls">
+                                <select id="systemRosterReminderHourInput" aria-label="Reminder hour" required></select>
+                                <span aria-hidden="true">:</span>
+                                <select id="systemRosterReminderMinuteInput" aria-label="Reminder minute" required></select>
+                            </span>
                         </label>
                     </div>
                     <div class="system-settings-group settings-group-publishing">
@@ -8133,7 +8143,25 @@
             status.dataset.kind = kind;
         }
 
+        function initializeReminderTimeInputs() {
+            const hourInput = document.getElementById('systemRosterReminderHourInput');
+            const minuteInput = document.getElementById('systemRosterReminderMinuteInput');
+            if (!hourInput.options.length) {
+                for (let hour = 0; hour < 24; hour++) {
+                    const value = String(hour).padStart(2, '0');
+                    hourInput.add(new Option(value, value));
+                }
+            }
+            if (!minuteInput.options.length) {
+                for (let minute = 0; minute < 60; minute++) {
+                    const value = String(minute).padStart(2, '0');
+                    minuteInput.add(new Option(value, value));
+                }
+            }
+        }
+
         function applySystemSettingsToForm() {
+            initializeReminderTimeInputs();
             if (systemSettingsFormDirty) return;
             document.getElementById('systemAnnouncementInput').value = currentSystemSettings.announcement;
             document.getElementById('systemSignupEnabledInput').checked = currentSystemSettings.signupsEnabled;
@@ -8145,7 +8173,9 @@
             document.getElementById('systemPublishConfirmationInput').checked = currentSystemSettings.requirePublishConfirmation;
             document.getElementById('systemRosterReminderEnabledInput').checked = currentSystemSettings.rosterReminderEnabled;
             document.getElementById('systemRosterReminderDayInput').value = String(currentSystemSettings.rosterReminderDay);
-            document.getElementById('systemRosterReminderTimeInput').value = currentSystemSettings.rosterReminderTime;
+            const [reminderHour, reminderMinute] = currentSystemSettings.rosterReminderTime.split(':');
+            document.getElementById('systemRosterReminderHourInput').value = reminderHour;
+            document.getElementById('systemRosterReminderMinuteInput').value = reminderMinute;
             document.getElementById('systemMaintenanceModeInput').checked = currentSystemSettings.maintenanceMode;
             document.getElementById('systemMaintenanceMessageInput').value = currentSystemSettings.maintenanceMessage;
         }
@@ -8286,10 +8316,12 @@
         async function saveSystemSettings(event) {
             event.preventDefault();
             if (!isRosterAdmin(auth.currentUser) || !systemSettingsLoaded || systemSettingsError) return;
-            const reminderTimeInput = document.getElementById('systemRosterReminderTimeInput');
-            if (!reminderTimeInput.value || !reminderTimeInput.validity.valid) {
-                setSystemSettingsStatus('Choose a valid reminder time.', 'error');
-                reminderTimeInput.focus();
+            const reminderHourInput = document.getElementById('systemRosterReminderHourInput');
+            const reminderMinuteInput = document.getElementById('systemRosterReminderMinuteInput');
+            if (!/^(?:[01]\d|2[0-3])$/.test(reminderHourInput.value) ||
+                !/^[0-5]\d$/.test(reminderMinuteInput.value)) {
+                setSystemSettingsStatus('Choose a valid reminder hour and minute.', 'error');
+                reminderHourInput.focus();
                 return;
             }
             const saveButton = document.getElementById('saveSystemSettingsBtn');
@@ -8306,7 +8338,7 @@
                 requirePublishConfirmation: document.getElementById('systemPublishConfirmationInput').checked,
                 rosterReminderEnabled: document.getElementById('systemRosterReminderEnabledInput').checked,
                 rosterReminderDay: Number(document.getElementById('systemRosterReminderDayInput').value),
-                rosterReminderTime: document.getElementById('systemRosterReminderTimeInput').value,
+                rosterReminderTime: `${reminderHourInput.value}:${reminderMinuteInput.value}`,
                 maintenanceMode: document.getElementById('systemMaintenanceModeInput').checked,
                 maintenanceMessage: document.getElementById('systemMaintenanceMessageInput').value.trim()
             });
