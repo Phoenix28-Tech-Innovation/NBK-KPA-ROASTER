@@ -1,22 +1,22 @@
 {
   "schemaVersion": 2,
-  "version": "2f6267bced319baaa9c007ffc3c6eb93c25dd7b0",
-  "versionLabel": "v8.8.33",
-  "deployedAt": "2026-11-22T09:57:27.731Z",
-  "title": "[feature] Show personalized roster reminders in the open app",
+  "version": "0504096bce3b4deccdebe4a1c6d688fd872514a8",
+  "versionLabel": "v8.8.34",
+  "deployedAt": "2026-11-22T10:35:33.867Z",
+  "title": "[feature] Add unrestricted reminder time selectors",
   "notes": [
-    "Check the Nairobi reminder schedule for approved, verified non-admin users.",
-    "Greet users by name and show the reminder when they reopen the app later that day."
+    "Let admins select every hour and each minute from 00 to 59.",
+    "Save arbitrary reminder times consistently in both admin pages."
   ],
   "features": [
-    "Check the Nairobi reminder schedule for approved, verified non-admin users."
+    "Let admins select every hour and each minute from 00 to 59."
   ],
   "fixes": [
-    "Greet users by name and show the reminder when they reopen the app later that day."
+    "Save arbitrary reminder times consistently in both admin pages."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 540132
+  "sizeBytes": 541685
 }
