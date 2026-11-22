@@ -1,22 +1,17 @@
 {
   "schemaVersion": 2,
-  "version": "6d5fcc82c68448e3a38fe3e71bddcd312b1f2d68",
-  "versionLabel": "v8.8.36",
-  "deployedAt": "2026-11-22T13:49:38.687Z",
-  "title": "[feature] Rename weekly roster reminder action",
+  "version": "9e4196aed646f406dee67be87993dee58b570819",
+  "versionLabel": "v8.8.37",
+  "deployedAt": "2026-11-22T15:05:59.459Z",
+  "title": "Add scheduled roster publishing",
   "notes": [
-    "Make the reminder button invite viewers to see the roster.",
-    "Keep the existing acknowledgement and navigation behavior."
+    "General improvements and fixes."
   ],
-  "features": [
-    "Make the reminder button invite viewers to see the roster."
-  ],
-  "fixes": [
-    "Keep the existing acknowledgement and navigation behavior."
-  ],
+  "features": [],
+  "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 545937
+  "sizeBytes": 551239
 }
