@@ -1,9 +1,12 @@
 # Notification and recovery setup
 
-The app delivers in-app notifications and optional email. Weekly reminders
-show an in-app modal and play a short chime while the app is open, when browser
-audio is available and has been unlocked by a user interaction. This does not
-send a notification while the app is closed. Background browser notifications
+The app delivers in-app notifications and optional email. For weekly roster
+reminders, the open app checks the configured Africa/Nairobi day and time for
+each verified, approved non-admin user, then shows a personalized modal and
+plays a short chime when browser audio is available. If the app is closed at
+that time, the reminder can appear when the user opens the app later that day.
+This foreground reminder does not require Cloud Scheduler or billing; it
+cannot notify users while the app is closed. Background browser notifications
 require a separate Firebase Cloud Messaging web setup and a VAPID key.
 
 ## Deploy
@@ -25,14 +28,13 @@ require a separate Firebase Cloud Messaging web setup and a VAPID key.
 3. Enable billing for the Firebase project. Cloud Scheduler and second
    generation Cloud Functions require a billing-enabled project.
 
-The scheduled backup runs Sundays at 02:00 Africa/Nairobi time and retains the
-12 latest snapshots in `scheduledRosterBackups`. The weekly roster reminder is
-configurable in Account management and defaults to Sundays at 14:00
-Africa/Nairobi time. It is sent once to approved users through the configured
-in-app/email channels when a published roster is available. The admin-only
-Published weeks view remains the user-facing restore action for previously
-published rosters. Reminder times can be set to any hour and minute; the
-scheduler checks once per minute in the Africa/Nairobi time zone.
+The scheduled backup function, if deployed, runs Sundays at 02:00
+Africa/Nairobi time and retains the 12 latest snapshots in
+`scheduledRosterBackups`. The weekly roster reminder is configurable in
+Account management and defaults to Sundays at 14:00 Africa/Nairobi time.
+Reminder times can be set to any hour and minute. The admin-only Published
+weeks view remains the user-facing restore action for previously published
+rosters.
 
 ## Configure email delivery
 
