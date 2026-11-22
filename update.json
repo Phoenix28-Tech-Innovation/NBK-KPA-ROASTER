@@ -1,22 +1,22 @@
 {
   "schemaVersion": 2,
-  "version": "f17e12898522cb7f7b7d08e9511c9ea0a6690af1",
-  "versionLabel": "v8.8.32",
-  "deployedAt": "2026-11-22T09:43:50.206Z",
-  "title": "[feature] Schedule reminders for all approved roster users",
+  "version": "2f6267bced319baaa9c007ffc3c6eb93c25dd7b0",
+  "versionLabel": "v8.8.33",
+  "deployedAt": "2026-11-22T09:57:27.731Z",
+  "title": "[feature] Show personalized roster reminders in the open app",
   "notes": [
-    "Allow reminder times to be set at any minute in Africa/Nairobi.",
-    "Deliver weekly reminder modals to approved non-admin users."
+    "Check the Nairobi reminder schedule for approved, verified non-admin users.",
+    "Greet users by name and show the reminder when they reopen the app later that day."
   ],
   "features": [
-    "Allow reminder times to be set at any minute in Africa/Nairobi."
+    "Check the Nairobi reminder schedule for approved, verified non-admin users."
   ],
   "fixes": [
-    "Deliver weekly reminder modals to approved non-admin users."
+    "Greet users by name and show the reminder when they reopen the app later that day."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 533454
+  "sizeBytes": 540132
 }
