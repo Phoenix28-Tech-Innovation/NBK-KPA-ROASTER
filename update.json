@@ -1,19 +1,22 @@
 {
   "schemaVersion": 2,
-  "version": "68e1d8ce2ffeeddef53c45abe668eeaf931a74da",
-  "versionLabel": "v8.8.35",
-  "deployedAt": "2026-11-22T11:04:08.309Z",
-  "title": "[fix] Keep weekly roster reminders until acknowledged",
+  "version": "6d5fcc82c68448e3a38fe3e71bddcd312b1f2d68",
+  "versionLabel": "v8.8.36",
+  "deployedAt": "2026-11-22T13:49:38.687Z",
+  "title": "[feature] Rename weekly roster reminder action",
   "notes": [
-    "Show reminders from the configured Nairobi schedule and persist them until users acknowledge."
+    "Make the reminder button invite viewers to see the roster.",
+    "Keep the existing acknowledgement and navigation behavior."
   ],
-  "features": [],
+  "features": [
+    "Make the reminder button invite viewers to see the roster."
+  ],
   "fixes": [
-    "Show reminders from the configured Nairobi schedule and persist them until users acknowledge."
+    "Keep the existing acknowledgement and navigation behavior."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 545932
+  "sizeBytes": 545937
 }
