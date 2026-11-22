@@ -1,8 +1,10 @@
 # Notification and recovery setup
 
-The app currently delivers in-app notifications and optional email. It does not
-send browser push notifications; those require a separate Firebase Cloud
-Messaging web setup and a VAPID key.
+The app delivers in-app notifications and optional email. Weekly reminders
+show an in-app modal and play a short chime while the app is open, when browser
+audio is available and has been unlocked by a user interaction. This does not
+send a notification while the app is closed. Background browser notifications
+require a separate Firebase Cloud Messaging web setup and a VAPID key.
 
 ## Deploy
 

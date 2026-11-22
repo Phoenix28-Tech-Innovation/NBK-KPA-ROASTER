@@ -6757,14 +6757,13 @@
                 <h2>Verify your email</h2>
                 <p>We sent a verification link to:</p>
                 <p class="auth-email-value" id="verificationEmailValue"></p>
-                <p>Verify your address, then sign in again. Roster access is limited to approved accounts.</p>
+                <p>We’ll check automatically and continue when your email is verified. Roster access is limited to approved accounts.</p>
                 <div class="auth-state-actions">
                     <button class="auth-submit" type="button" id="resendVerificationBtn">
                         <i class="auth-button-icon fa-solid fa-paper-plane" aria-hidden="true"></i>
                         <span class="auth-button-spinner" aria-hidden="true"></span>
                         <span>Resend verification</span>
                     </button>
-                    <button class="auth-link-button" type="button" id="checkVerificationBtn">I’ve verified my email</button>
                     <button class="auth-link-button" type="button" id="verificationSignOutBtn">Sign out</button>
                 </div>
                 <p id="verificationMessage" role="status" aria-live="polite" hidden></p>
@@ -7600,6 +7599,20 @@
     </div>
 </dialog>
 
+<dialog id="weeklyRosterReminderDialog" class="auth-notice-dialog" aria-labelledby="weeklyRosterReminderTitle" aria-describedby="weeklyRosterReminderMessage">
+    <div class="auth-notice-content">
+        <div class="modal-heading">
+            <div class="auth-state-icon" data-kind="success" aria-hidden="true"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i></div>
+            <div class="modal-heading-copy">
+                <span class="modal-eyebrow">Weekly roster reminder</span>
+                <h2 id="weeklyRosterReminderTitle">Check the live roster</h2>
+            </div>
+        </div>
+        <p id="weeklyRosterReminderMessage">The latest roster is ready to review.</p>
+        <button type="button" class="auth-modal-close" id="weeklyRosterReminderCloseBtn"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> View live roster</button>
+    </div>
+</dialog>
+
 <dialog id="releaseUpdateDialog" class="release-dialog" aria-labelledby="releaseUpdateTitle" aria-describedby="releaseUpdateMessage releaseUpdateSummary">
     <div class="modal-heading">
         <span class="modal-icon" data-kind="success" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i></span>
@@ -8000,6 +8013,9 @@
         const systemSettingsReady = new Promise(resolve => { resolveSystemSettingsReady = resolve; });
         let notificationUnsubscribe = null;
         let notificationSettingsLoading = false;
+        let reminderAudioContext = null;
+        let lastPresentedWeeklyReminderId = null;
+        let activeWeeklyReminderReference = null;
 
         const confirmationThemes = {
             danger: { color: '#dc2626', soft: '#fef2f2', border: '#fecaca', shadow: 'rgba(220,38,38,0.2)' },
@@ -8331,12 +8347,112 @@
             });
         }
 
+        function unlockReminderAudio() {
+            const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextConstructor) return;
+
+            try {
+                if (!reminderAudioContext) reminderAudioContext = new AudioContextConstructor();
+                if (reminderAudioContext.state === 'suspended') {
+                    reminderAudioContext.resume().then(() => {
+                        if (reminderAudioContext.state === 'running') {
+                            document.removeEventListener('pointerdown', unlockReminderAudio);
+                            document.removeEventListener('keydown', unlockReminderAudio);
+                        }
+                    }).catch(error => console.warn('Could not enable reminder audio:', error));
+                } else if (reminderAudioContext.state === 'running') {
+                    document.removeEventListener('pointerdown', unlockReminderAudio);
+                    document.removeEventListener('keydown', unlockReminderAudio);
+                }
+            } catch (error) {
+                console.warn('Could not enable reminder audio:', error);
+            }
+        }
+
+        function playWeeklyReminderSound() {
+            if (!reminderAudioContext) return;
+
+            const play = () => {
+                if (reminderAudioContext.state !== 'running') return;
+                try {
+                    const startTime = reminderAudioContext.currentTime;
+                    [{ frequency: 880, offset: 0 }, { frequency: 1174.66, offset: 0.18 }]
+                        .forEach(({ frequency, offset }) => {
+                            const oscillator = reminderAudioContext.createOscillator();
+                            const volume = reminderAudioContext.createGain();
+                            const noteStart = startTime + offset;
+                            oscillator.type = 'sine';
+                            oscillator.frequency.value = frequency;
+                            volume.gain.setValueAtTime(0.0001, noteStart);
+                            volume.gain.exponentialRampToValueAtTime(0.055, noteStart + 0.025);
+                            volume.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.28);
+                            oscillator.connect(volume);
+                            volume.connect(reminderAudioContext.destination);
+                            oscillator.start(noteStart);
+                            oscillator.stop(noteStart + 0.29);
+                        });
+                } catch (error) {
+                    console.warn('Could not play the weekly roster reminder sound:', error);
+                }
+            };
+
+            if (reminderAudioContext.state === 'running') {
+                play();
+            } else {
+                reminderAudioContext.resume().then(play)
+                    .catch(error => console.warn('Could not resume reminder audio:', error));
+            }
+        }
+
+        function showLatestWeeklyRosterReminder(snapshot) {
+            const reminder = snapshot.docs.find(record =>
+                record.data().event === 'weeklyRosterReminder'
+            );
+            if (!reminder || reminder.id === lastPresentedWeeklyReminderId) return;
+
+            const data = reminder.data();
+            const createdAt = data.createdAt && typeof data.createdAt.toDate === 'function'
+                ? data.createdAt.toDate()
+                : null;
+            const age = createdAt ? Date.now() - createdAt.getTime() : Infinity;
+            if (data.read === true || !createdAt || age < -5 * 60 * 1000 || age > 8 * 24 * 60 * 60 * 1000) return;
+
+            const dialog = document.getElementById('weeklyRosterReminderDialog');
+            document.getElementById('weeklyRosterReminderMessage').textContent =
+                typeof data.body === 'string' ? data.body : 'The latest roster is ready to review.';
+            activeWeeklyReminderReference = reminder.ref;
+            try {
+                if (!dialog.open) dialog.showModal();
+                lastPresentedWeeklyReminderId = reminder.id;
+                playWeeklyReminderSound();
+                document.getElementById('weeklyRosterReminderCloseBtn').focus();
+            } catch (error) {
+                activeWeeklyReminderReference = null;
+                console.error('Could not open the weekly roster reminder:', error);
+            }
+        }
+
+        async function markWeeklyReminderRead() {
+            const reminderReference = activeWeeklyReminderReference;
+            activeWeeklyReminderReference = null;
+            if (!reminderReference) return;
+
+            try {
+                await reminderReference.update({ read: true });
+            } catch (error) {
+                console.error('Could not mark the weekly roster reminder as read:', error);
+                document.getElementById('notificationListStatus').textContent =
+                    'Could not mark the weekly reminder as read. Please retry.';
+            }
+        }
+
         function renderNotifications(snapshot) {
             const list = document.getElementById('userNotificationList');
             const status = document.getElementById('notificationListStatus');
             list.replaceChildren();
             const unreadCount = snapshot.docs.filter(record => record.data().read !== true).length;
             updateNotificationCount(unreadCount);
+            showLatestWeeklyRosterReminder(snapshot);
             if (snapshot.empty) {
                 status.textContent = 'You have no notifications.';
                 return;
@@ -8392,6 +8508,8 @@
         function startNotificationListener(user) {
             if (notificationUnsubscribe) notificationUnsubscribe();
             notificationUnsubscribe = null;
+            lastPresentedWeeklyReminderId = null;
+            activeWeeklyReminderReference = null;
             updateNotificationCount(0);
             if (!user || !user.emailVerified) return;
             notificationUnsubscribe = firestore.collection('userNotifications')
@@ -8925,16 +9043,25 @@
             }
         }
 
-        function setDraftStatus(label, detail) {
+        function setDraftStatus(label, detail, forcePopup = false) {
             const state = document.getElementById('rosterDraftState');
             const live = document.getElementById('rosterLiveState');
             const status = document.getElementById('rosterWorkflowStatus');
+            const statusChanged = Boolean(forcePopup || (state && live &&
+                (state.textContent !== label || live.textContent !== detail)));
             if (state) state.textContent = label;
             if (live) live.textContent = detail;
-            if (!status || status.hidden) return;
+            if (!status || !currentRosterUserIsAdmin) return;
 
-            status.hidden = false;
-            status.classList.add('show');
+            if (statusChanged) {
+                status.hidden = false;
+                status.classList.remove('show');
+                void status.offsetWidth;
+                status.classList.add('show');
+                showToast(label);
+            } else if (status.hidden) {
+                return;
+            }
             clearTimeout(status._timeout);
             status._timeout = setTimeout(() => {
                 status.classList.remove('show');
@@ -9104,7 +9231,7 @@
                 draftHasUnsavedChanges = false;
                 clearSaveFailure();
                 markLastSynchronized('Draft synchronized');
-                setDraftStatus('Draft saved', `Saved privately ${new Date(savedAt).toLocaleString()}. Live roster is unchanged.`);
+                setDraftStatus('Draft saved', `Saved privately ${new Date(savedAt).toLocaleString()}. Live roster is unchanged.`, true);
                 showToast('Draft saved privately');
             } catch (error) {
                 console.error('Failed to save roster draft:', error);
@@ -9188,7 +9315,7 @@
                 draftHasUnsavedChanges = false;
                 clearSaveFailure();
                 markLastSynchronized('Roster published');
-                setDraftStatus('Live roster published', `${range.weekLabel} is now live. Further edits remain private until published.`);
+                setDraftStatus('Live roster published', `${range.weekLabel} is now live. Further edits remain private until published.`, true);
                 showToast('Roster published');
                 loadArchivedRosters();
             } catch (error) {
@@ -9973,6 +10100,8 @@
         let authBusy = false;
         let currentRosterUserIsAdmin = false;
         let rosterAccessUnsubscribe = null;
+        let verificationCheckTimer = null;
+        let verificationCheckInProgress = false;
 
         function setAuthMessage(message = '', kind = 'error') {
             const element = document.getElementById('authMessage');
@@ -9988,6 +10117,24 @@
             element.textContent = message;
             element.dataset.kind = kind;
             element.hidden = !message;
+        }
+
+        function stopVerificationStatusMonitor() {
+            if (verificationCheckTimer) {
+                clearInterval(verificationCheckTimer);
+                verificationCheckTimer = null;
+            }
+            document.removeEventListener('visibilitychange', checkVerificationWhenVisible);
+        }
+
+        function checkVerificationWhenVisible() {
+            if (!document.hidden) checkEmailVerification();
+        }
+
+        function startVerificationStatusMonitor() {
+            if (verificationCheckTimer) return;
+            verificationCheckTimer = setInterval(checkEmailVerification, 10000);
+            document.addEventListener('visibilitychange', checkVerificationWhenVisible);
         }
 
         function showAuthPanel(panelId = 'authForms') {
@@ -10126,6 +10273,7 @@
         }
 
         async function handleAuthStateChange(user) {
+            stopVerificationStatusMonitor();
             const generation = ++authFlowGeneration;
             if (!user) {
                 const rosterDataCleared = clearRosterBrowserData();
@@ -10196,6 +10344,7 @@
                     setVerificationMessage(accessRequestErrorMessage(error), 'error');
                 }
                 showAuthPanel('verifyEmailPanel');
+                startVerificationStatusMonitor();
                 return;
             }
 
@@ -10828,16 +10977,23 @@
 
         async function checkEmailVerification() {
             const user = auth.currentUser;
-            if (!user) return;
+            if (!user || verificationCheckInProgress) return;
+            verificationCheckInProgress = true;
             try {
                 await user.reload();
-                if (auth.currentUser && auth.currentUser.emailVerified) {
-                    await handleAuthStateChange(auth.currentUser);
+                const currentUser = auth.currentUser;
+                if (!currentUser || currentUser.uid !== user.uid) return;
+                if (currentUser.emailVerified) {
+                    stopVerificationStatusMonitor();
+                    await handleAuthStateChange(currentUser);
                 } else {
-                    setVerificationMessage('Your email is not verified yet. Open the link in your inbox, then try again.', 'error');
+                    setVerificationMessage('We’ll keep checking automatically. Verify your address using the link in your inbox.');
                 }
             } catch (error) {
+                console.error('Could not automatically check email verification status:', error);
                 setVerificationMessage('Could not check verification status. Check your connection and try again.', 'error');
+            } finally {
+                verificationCheckInProgress = false;
             }
         }
 
@@ -10867,7 +11023,6 @@
             document.getElementById('signUpForm').addEventListener('submit', submitSignUp);
             document.getElementById('resetPasswordForm').addEventListener('submit', submitPasswordReset);
             document.getElementById('resendVerificationBtn').addEventListener('click', resendVerificationEmail);
-            document.getElementById('checkVerificationBtn').addEventListener('click', checkEmailVerification);
             document.getElementById('verificationSignOutBtn').addEventListener('click', signOutUser);
             document.getElementById('accessDeniedSignOutBtn').addEventListener('click', signOutUser);
             document.getElementById('pendingSignOutBtn').addEventListener('click', signOutUser);
@@ -10905,6 +11060,17 @@
             });
             document.getElementById('authNoticeCloseBtn').addEventListener('click', () => {
                 document.getElementById('authNoticeDialog').close();
+            });
+            document.addEventListener('pointerdown', unlockReminderAudio);
+            document.addEventListener('keydown', unlockReminderAudio);
+            document.getElementById('weeklyRosterReminderDialog')
+                .addEventListener('close', markWeeklyReminderRead);
+            document.getElementById('weeklyRosterReminderCloseBtn').addEventListener('click', () => {
+                document.getElementById('weeklyRosterReminderDialog').close();
+                document.getElementById('rosterApp').scrollIntoView({
+                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                    block: 'start'
+                });
             });
             document.querySelectorAll('.auth-password-toggle').forEach(button => {
                 button.addEventListener('click', () => {
