@@ -1,17 +1,22 @@
 {
   "schemaVersion": 2,
-  "version": "1d79e9aa4778c53cc49a95bdf3c9752e76c893c9",
-  "versionLabel": "v8.8.31",
-  "deployedAt": "2026-11-22T09:14:04.591Z",
-  "title": "Add weekly roster reminder modal and toast updates",
+  "version": "f17e12898522cb7f7b7d08e9511c9ea0a6690af1",
+  "versionLabel": "v8.8.32",
+  "deployedAt": "2026-11-22T09:43:50.206Z",
+  "title": "[feature] Schedule reminders for all approved roster users",
   "notes": [
-    "General improvements and fixes."
+    "Allow reminder times to be set at any minute in Africa/Nairobi.",
+    "Deliver weekly reminder modals to approved non-admin users."
   ],
-  "features": [],
-  "fixes": [],
+  "features": [
+    "Allow reminder times to be set at any minute in Africa/Nairobi."
+  ],
+  "fixes": [
+    "Deliver weekly reminder modals to approved non-admin users."
+  ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 533463
+  "sizeBytes": 533454
 }
