@@ -1,22 +1,19 @@
 {
   "schemaVersion": 2,
-  "version": "0504096bce3b4deccdebe4a1c6d688fd872514a8",
-  "versionLabel": "v8.8.34",
-  "deployedAt": "2026-11-22T10:35:33.867Z",
-  "title": "[feature] Add unrestricted reminder time selectors",
+  "version": "68e1d8ce2ffeeddef53c45abe668eeaf931a74da",
+  "versionLabel": "v8.8.35",
+  "deployedAt": "2026-11-22T11:04:08.309Z",
+  "title": "[fix] Keep weekly roster reminders until acknowledged",
   "notes": [
-    "Let admins select every hour and each minute from 00 to 59.",
-    "Save arbitrary reminder times consistently in both admin pages."
+    "Show reminders from the configured Nairobi schedule and persist them until users acknowledge."
   ],
-  "features": [
-    "Let admins select every hour and each minute from 00 to 59."
-  ],
+  "features": [],
   "fixes": [
-    "Save arbitrary reminder times consistently in both admin pages."
+    "Show reminders from the configured Nairobi schedule and persist them until users acknowledge."
   ],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 541685
+  "sizeBytes": 545932
 }
