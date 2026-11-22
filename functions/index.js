@@ -356,6 +356,136 @@ function nairobiScheduleTime(date) {
   };
 }
 
+function getScheduledWeekRange(data) {
+  if (!data || data.schemaVersion !== 2 || !Array.isArray(data.tables) ||
+      data.tables.length !== 2) {
+    throw new Error('The saved draft has an unsupported roster format.');
+  }
+  const expectedTableIds = new Set(['island-table', 'mainland-table']);
+  const tableIds = new Set();
+  for (const table of data.tables) {
+    if (!table || !expectedTableIds.has(table.tableId) || tableIds.has(table.tableId) ||
+        !Array.isArray(table.dates) || table.dates.length !== 7 ||
+        !Array.isArray(table.rows)) {
+      throw new Error('The saved draft is missing a valid roster location.');
+    }
+    tableIds.add(table.tableId);
+  }
+
+  const mondayDate = data.tables[0].dates.find(date => date && date.day === 0);
+  const match = mondayDate && typeof mondayDate.isoDate === 'string' &&
+    mondayDate.isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) throw new Error('The Monday date in the saved draft is invalid.');
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const monday = new Date(Date.UTC(year, month - 1, day));
+  if (monday.getUTCFullYear() !== year ||
+      monday.getUTCMonth() !== month - 1 ||
+      monday.getUTCDate() !== day) {
+    throw new Error('The Monday date in the saved draft is invalid.');
+  }
+  const dayOffset = monday.getUTCDay() === 0 ? -6 : 1 - monday.getUTCDay();
+  monday.setUTCDate(monday.getUTCDate() + dayOffset);
+  const sunday = new Date(monday);
+  sunday.setUTCDate(sunday.getUTCDate() + 6);
+  const formatDate = date => new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'UTC',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+  return {
+    weekStart: monday.toISOString().slice(0, 10),
+    weekEnd: sunday.toISOString().slice(0, 10),
+    weekLabel: `${formatDate(monday)} – ${formatDate(sunday)}`
+  };
+}
+
+exports.publishScheduledRoster = onSchedule(
+  {
+    schedule: '* * * * *',
+    timeZone: 'Africa/Nairobi',
+    timeoutSeconds: 120
+  },
+  async () => {
+    const now = Date.now();
+    const settingsReference = db.doc('systemSettings/current');
+    const draftReference = db.doc('rosterDrafts/current');
+    const historyReference = db.collection('rosterHistory').doc();
+    const publishReference = db.collection('rosterPublishes').doc();
+    const result = await db.runTransaction(async transaction => {
+      const settingsSnapshot = await transaction.get(settingsReference);
+      if (!settingsSnapshot.exists) return { status: 'not-scheduled' };
+      const settings = settingsSnapshot.data();
+      if (!Number.isSafeInteger(settings.scheduledPublishAt) ||
+          settings.scheduledPublishAt > now) {
+        return { status: 'not-due' };
+      }
+
+      const draftSnapshot = await transaction.get(draftReference);
+      if (!draftSnapshot.exists) {
+        transaction.update(settingsReference, { scheduledPublishAt: null });
+        return { status: 'missing-draft' };
+      }
+      const draft = draftSnapshot.data();
+      let range;
+      try {
+        range = getScheduledWeekRange(draft.data);
+      } catch (error) {
+        transaction.update(settingsReference, { scheduledPublishAt: null });
+        return { status: 'invalid-draft', message: error.message };
+      }
+      const publishedBy = typeof draft.savedBy === 'string'
+        ? draft.savedBy
+        : typeof settings.updatedBy === 'string'
+          ? settings.updatedBy
+          : '';
+      const publishedAt = now;
+      transaction.set(historyReference, {
+        schemaVersion: 2,
+        weekStart: range.weekStart,
+        weekEnd: range.weekEnd,
+        weekLabel: range.weekLabel,
+        archivedAt: publishedAt,
+        publishedAt,
+        publishedBy,
+        data: draft.data
+      });
+      for (const table of draft.data.tables) {
+        const isIsland = table.tableId === 'island-table';
+        const rosterId = isIsland ? 'island-mombasa' : 'mainland-likoni';
+        transaction.set(db.collection('rosters').doc(rosterId), {
+          location: isIsland ? 'ISLAND Mombasa' : 'MAINLAND Likoni',
+          tableId: table.tableId,
+          schemaVersion: 2,
+          savedAt: publishedAt,
+          data: {
+            schemaVersion: 2,
+            tables: [table]
+          }
+        });
+      }
+      transaction.create(publishReference, {
+        weekLabel: range.weekLabel,
+        publishedAt,
+        publishedBy
+      });
+      transaction.delete(draftReference);
+      transaction.update(settingsReference, { scheduledPublishAt: null });
+      return { status: 'published', weekLabel: range.weekLabel };
+    });
+
+    if (result.status === 'missing-draft') {
+      console.error('Scheduled roster publication was cancelled because no saved draft exists.');
+    } else if (result.status === 'invalid-draft') {
+      console.error(`Scheduled roster publication was cancelled: ${result.message}`);
+    } else if (result.status === 'published') {
+      console.log(`Scheduled roster publication completed for ${result.weekLabel}.`);
+    }
+  }
+);
+
 exports.backupPublishedRosters = onSchedule(
   {
     schedule: '0 2 * * 0',
