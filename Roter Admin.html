@@ -7619,7 +7619,7 @@
             </div>
         </div>
         <p id="weeklyRosterReminderMessage">The latest roster is ready to review.</p>
-        <button type="button" class="auth-modal-close" id="weeklyRosterReminderCloseBtn"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> View live roster</button>
+        <button type="button" class="auth-modal-close" id="weeklyRosterReminderCloseBtn"><i class="fa-solid fa-check" aria-hidden="true"></i> I have seen the roster</button>
     </div>
 </dialog>
 
@@ -8028,7 +8028,9 @@
         let activeWeeklyReminderReference = null;
         let weeklyReminderMonitor = null;
         let weeklyReminderUser = null;
-        let lastLocalWeeklyReminder = null;
+        let lastAcknowledgedWeeklyReminder = null;
+        let lastPendingWeeklyReminder = null;
+        let activeWeeklyReminderDateKey = null;
         let weeklyReminderStorageUnavailable = false;
 
         const confirmationThemes = {
@@ -8405,33 +8407,93 @@
             };
         }
 
-        function weeklyReminderStorageKey(uid) {
-            return `rosterWeeklyReminderShown:${uid}`;
+        function getDueWeeklyReminderOccurrenceKey(reminderTime, scheduledDay, scheduledMinute) {
+            if (reminderTime.dayOfWeek !== scheduledDay ||
+                reminderTime.minuteOfDay < scheduledMinute) return null;
+            return reminderTime.dateKey;
         }
 
-        function hasShownWeeklyReminder(uid, dateKey) {
-            if (lastLocalWeeklyReminder &&
-                lastLocalWeeklyReminder.uid === uid &&
-                lastLocalWeeklyReminder.dateKey === dateKey) return true;
+        function weeklyReminderStorageKey(uid) {
+            return `rosterWeeklyReminderAcknowledged:${uid}`;
+        }
+
+        function pendingWeeklyReminderStorageKey(uid) {
+            return `rosterWeeklyReminderPending:${uid}`;
+        }
+
+        function hasAcknowledgedWeeklyReminder(uid, dateKey) {
+            if (lastAcknowledgedWeeklyReminder &&
+                lastAcknowledgedWeeklyReminder.uid === uid &&
+                lastAcknowledgedWeeklyReminder.dateKey === dateKey) return true;
             if (weeklyReminderStorageUnavailable) return false;
             try {
                 return localStorage.getItem(weeklyReminderStorageKey(uid)) === dateKey;
             } catch (error) {
                 weeklyReminderStorageUnavailable = true;
-                console.warn('Could not read the weekly reminder display date:', error);
+                console.warn('Could not read the weekly reminder acknowledgement date:', error);
                 return false;
             }
         }
 
-        function recordWeeklyReminderShown(uid, dateKey) {
-            lastLocalWeeklyReminder = { uid, dateKey };
+        function getPendingWeeklyReminder(uid) {
+            if (lastPendingWeeklyReminder && lastPendingWeeklyReminder.uid === uid) {
+                return lastPendingWeeklyReminder.dateKey;
+            }
+            if (weeklyReminderStorageUnavailable) return null;
+            try {
+                const dateKey = localStorage.getItem(pendingWeeklyReminderStorageKey(uid));
+                if (dateKey) lastPendingWeeklyReminder = { uid, dateKey };
+                return dateKey;
+            } catch (error) {
+                weeklyReminderStorageUnavailable = true;
+                console.warn('Could not read the pending weekly reminder:', error);
+                return null;
+            }
+        }
+
+        function recordWeeklyReminderPending(uid, dateKey) {
+            lastPendingWeeklyReminder = { uid, dateKey };
+            if (weeklyReminderStorageUnavailable) return;
+            try {
+                localStorage.setItem(pendingWeeklyReminderStorageKey(uid), dateKey);
+            } catch (error) {
+                weeklyReminderStorageUnavailable = true;
+                console.warn('Could not save the pending weekly reminder:', error);
+            }
+        }
+
+        function recordWeeklyReminderAcknowledged(uid, dateKey) {
+            lastAcknowledgedWeeklyReminder = { uid, dateKey };
             if (weeklyReminderStorageUnavailable) return;
             try {
                 localStorage.setItem(weeklyReminderStorageKey(uid), dateKey);
+                if (localStorage.getItem(pendingWeeklyReminderStorageKey(uid)) === dateKey) {
+                    localStorage.removeItem(pendingWeeklyReminderStorageKey(uid));
+                    lastPendingWeeklyReminder = null;
+                }
             } catch (error) {
                 weeklyReminderStorageUnavailable = true;
-                console.warn('Could not save the weekly reminder display date:', error);
+                console.warn('Could not save the weekly reminder acknowledgement:', error);
             }
+        }
+
+        function getPendingOrDueWeeklyReminder(uid, reminderTime) {
+            const scheduledMinute = Number(currentSystemSettings.rosterReminderTime.slice(0, 2)) * 60 +
+                Number(currentSystemSettings.rosterReminderTime.slice(3, 5));
+            const dueDateKey = getDueWeeklyReminderOccurrenceKey(
+                reminderTime,
+                currentSystemSettings.rosterReminderDay,
+                scheduledMinute
+            );
+            if (dueDateKey && !hasAcknowledgedWeeklyReminder(uid, dueDateKey)) {
+                recordWeeklyReminderPending(uid, dueDateKey);
+                return dueDateKey;
+            }
+
+            const pendingDateKey = getPendingWeeklyReminder(uid);
+            return pendingDateKey && !hasAcknowledgedWeeklyReminder(uid, pendingDateKey)
+                ? pendingDateKey
+                : null;
         }
 
         function showWeeklyRosterReminderModal(displayName, message, dateKey) {
@@ -8454,9 +8516,9 @@
             document.getElementById('weeklyRosterReminderMessage').textContent =
                 message || 'It’s time to check the latest live roster.';
             activeWeeklyReminderReference = null;
+            activeWeeklyReminderDateKey = dateKey || reminderTime.dateKey;
             try {
                 dialog.showModal();
-                recordWeeklyReminderShown(user.uid, dateKey || reminderTime.dateKey);
                 playWeeklyReminderSound();
                 document.getElementById('weeklyRosterReminderCloseBtn').focus();
                 return true;
@@ -8485,16 +8547,13 @@
                 console.error('Could not check the weekly roster reminder schedule:', error);
                 return;
             }
-            const scheduledMinute = Number(currentSystemSettings.rosterReminderTime.slice(0, 2)) * 60 +
-                Number(currentSystemSettings.rosterReminderTime.slice(3, 5));
-            if (reminderTime.dayOfWeek !== currentSystemSettings.rosterReminderDay ||
-                reminderTime.minuteOfDay < scheduledMinute ||
-                hasShownWeeklyReminder(user.uid, reminderTime.dateKey)) return;
+            const occurrenceKey = getPendingOrDueWeeklyReminder(user.uid, reminderTime);
+            if (!occurrenceKey) return;
 
             showWeeklyRosterReminderModal(
                 weeklyReminderUser.displayName,
                 'It’s time to check the latest live roster.',
-                reminderTime.dateKey
+                occurrenceKey
             );
         }
 
@@ -8591,13 +8650,45 @@
             if (data.read === true || !createdAt || age < -5 * 60 * 1000 || age > 8 * 24 * 60 * 60 * 1000) return;
 
             const user = auth.currentUser;
-            if (!user || !showWeeklyRosterReminderModal(
-                accountDisplayName(user),
-                typeof data.body === 'string' ? data.body : 'It’s time to check the latest live roster.',
-                createdAt ? getNairobiReminderTime(createdAt).dateKey : undefined
-            )) return;
+            const app = document.getElementById('rosterApp');
+            if (!user || !user.emailVerified || isRosterAdmin(user) ||
+                user.uid !== (weeklyReminderUser && weeklyReminderUser.uid) ||
+                !systemSettingsLoaded || systemSettingsError ||
+                !currentSystemSettings.rosterReminderEnabled ||
+                !currentSystemSettings.publishedRosterVisible ||
+                currentSystemSettings.maintenanceMode ||
+                (!currentSystemSettings.locations.island && !currentSystemSettings.locations.mainland) ||
+                document.hidden || !app || app.hidden || isViewerRosterUnavailable()) return;
+            let reminderTime;
+            try {
+                reminderTime = getNairobiReminderTime();
+            } catch (error) {
+                console.error('Could not check the weekly roster notification schedule:', error);
+                return;
+            }
+            const occurrenceKey = getPendingOrDueWeeklyReminder(user.uid, reminderTime);
+            if (!occurrenceKey || !showWeeklyRosterReminderModal(
+                    accountDisplayName(user),
+                    typeof data.body === 'string' ? data.body : 'It’s time to check the latest live roster.',
+                    occurrenceKey
+                )) return;
             activeWeeklyReminderReference = reminder.ref;
             lastPresentedWeeklyReminderId = reminder.id;
+        }
+
+        async function acknowledgeWeeklyRosterReminder() {
+            const user = auth.currentUser;
+            if (!user || !document.getElementById('weeklyRosterReminderDialog').open) return;
+            if (activeWeeklyReminderDateKey) {
+                recordWeeklyReminderAcknowledged(user.uid, activeWeeklyReminderDateKey);
+            }
+            activeWeeklyReminderDateKey = null;
+            document.getElementById('weeklyRosterReminderDialog').close();
+            document.getElementById('rosterApp').scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                block: 'start'
+            });
+            await markWeeklyReminderRead();
         }
 
         async function markWeeklyReminderRead() {
@@ -8678,6 +8769,9 @@
             notificationUnsubscribe = null;
             lastPresentedWeeklyReminderId = null;
             activeWeeklyReminderReference = null;
+            activeWeeklyReminderDateKey = null;
+            const reminderDialog = document.getElementById('weeklyRosterReminderDialog');
+            if (reminderDialog.open) reminderDialog.close();
             updateNotificationCount(0);
             if (!user || !user.emailVerified) return;
             notificationUnsubscribe = firestore.collection('userNotifications')
@@ -11237,15 +11331,11 @@
             });
             document.addEventListener('pointerdown', unlockReminderAudio);
             document.addEventListener('keydown', unlockReminderAudio);
-            document.getElementById('weeklyRosterReminderDialog')
-                .addEventListener('close', markWeeklyReminderRead);
-            document.getElementById('weeklyRosterReminderCloseBtn').addEventListener('click', () => {
-                document.getElementById('weeklyRosterReminderDialog').close();
-                document.getElementById('rosterApp').scrollIntoView({
-                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-                    block: 'start'
-                });
+            document.getElementById('weeklyRosterReminderDialog').addEventListener('cancel', event => {
+                event.preventDefault();
             });
+            document.getElementById('weeklyRosterReminderCloseBtn')
+                .addEventListener('click', acknowledgeWeeklyRosterReminder);
             document.querySelectorAll('.auth-password-toggle').forEach(button => {
                 button.addEventListener('click', () => {
                     const input = document.getElementById(button.dataset.passwordTarget);

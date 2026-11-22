@@ -5,6 +5,8 @@ reminders, the open app checks the configured Africa/Nairobi day and time for
 each verified, approved non-admin user, then shows a personalized modal and
 plays a short chime when browser audio is available. If the app is closed at
 that time, the reminder can appear when the user opens the app later that day.
+Once due, it stays pending across app reloads until the user selects
+“I have seen the roster.” The modal cannot be dismissed with Escape.
 This foreground reminder does not require Cloud Scheduler or billing; it
 cannot notify users while the app is closed. Background browser notifications
 require a separate Firebase Cloud Messaging web setup and a VAPID key.
