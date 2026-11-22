@@ -245,7 +245,7 @@ exports.notifyRosterPublished = onDocumentCreated(
 
 exports.sendWeeklyRosterReminder = onSchedule(
   {
-    schedule: 'every 15 minutes',
+    schedule: '* * * * *',
     timeZone: 'Africa/Nairobi',
     timeoutSeconds: 120
   },
@@ -268,7 +268,7 @@ exports.sendWeeklyRosterReminder = onSchedule(
       ? systemSettings.rosterReminderDay
       : 0;
     const reminderTime = typeof systemSettings.rosterReminderTime === 'string' &&
-      /^(?:[01]\d|2[0-3]):(?:00|15|30|45)$/.test(systemSettings.rosterReminderTime)
+      /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(systemSettings.rosterReminderTime)
       ? systemSettings.rosterReminderTime
       : '14:00';
     const localTime = nairobiScheduleTime(now);
@@ -288,7 +288,13 @@ exports.sendWeeklyRosterReminder = onSchedule(
     );
     if (!rosterSnapshots.some(snapshot => snapshot.exists)) return;
 
-    const recipients = await getApprovedUsers();
+    const recipients = (await getApprovedUsers()).filter(user =>
+      user.email !== normalizedEmail(DEFAULT_ADMIN_EMAIL)
+    );
+    if (!recipients.length) {
+      console.warn('Weekly roster reminder skipped because no approved non-admin users were found.');
+      return;
+    }
     await sendEvent({
       event: 'weeklyRosterReminder',
       sourceId: `weekly_roster_reminder_${dateKey}`,

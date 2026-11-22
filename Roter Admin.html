@@ -7501,7 +7501,7 @@
                         </label>
                         <label class="system-settings-field" for="systemRosterReminderTimeInput">
                             Time (Africa/Nairobi)
-                            <input id="systemRosterReminderTimeInput" type="time" step="900" required />
+                            <input id="systemRosterReminderTimeInput" type="time" step="60" required />
                         </label>
                     </div>
                     <div class="system-settings-group settings-group-publishing">
@@ -8112,7 +8112,7 @@
                     ? data.rosterReminderDay
                     : 0,
                 rosterReminderTime: typeof data.rosterReminderTime === 'string' &&
-                    /^(?:[01]\d|2[0-3]):(?:00|15|30|45)$/.test(data.rosterReminderTime)
+                    /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(data.rosterReminderTime)
                     ? data.rosterReminderTime
                     : '14:00',
                 maintenanceMode: data.maintenanceMode === true,

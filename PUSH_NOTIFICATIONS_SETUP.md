@@ -31,7 +31,8 @@ configurable in Account management and defaults to Sundays at 14:00
 Africa/Nairobi time. It is sent once to approved users through the configured
 in-app/email channels when a published roster is available. The admin-only
 Published weeks view remains the user-facing restore action for previously
-published rosters.
+published rosters. Reminder times can be set to any hour and minute; the
+scheduler checks once per minute in the Africa/Nairobi time zone.
 
 ## Configure email delivery
 
