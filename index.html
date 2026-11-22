@@ -1203,12 +1203,6 @@
             font-size: 0.7rem;
             font-weight: 750;
         }
-        .system-settings-field > small {
-            color: #718198;
-            font-size: 0.66rem;
-            font-weight: 500;
-            line-height: 1.45;
-        }
         .system-settings-time-controls {
             display: grid;
             grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -1220,8 +1214,7 @@
             text-align: center;
         }
         .system-settings-field textarea,
-        .system-settings-field select,
-        .system-settings-field input[type="datetime-local"] {
+        .system-settings-field select {
             width: 100%;
             min-height: 2.45rem;
             padding: 0.6rem 0.7rem;
@@ -7158,11 +7151,6 @@
                             <input id="systemPublishConfirmationInput" type="checkbox" />
                             <span>Require confirmation before publishing<small>Turn off to publish immediately after selecting Publish.</small></span>
                         </label>
-                        <label class="system-settings-field" for="systemScheduledPublishInput">
-                            Publish saved draft at (Africa/Nairobi)
-                            <input id="systemScheduledPublishInput" type="datetime-local" />
-                            <small>One-time schedule for the current saved draft. Leave blank to cancel. The draft must be saved before scheduling.</small>
-                        </label>
                     </div>
                     <div class="system-settings-group settings-group-notices">
                         <h4><i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Notices</h4>
@@ -7722,7 +7710,6 @@
             rosterReminderEnabled: true,
             rosterReminderDay: 0,
             rosterReminderTime: '14:00',
-            scheduledPublishAt: null,
             maintenanceMode: false,
             maintenanceMessage: ''
         };
@@ -7842,39 +7829,11 @@
                     /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(data.rosterReminderTime)
                     ? data.rosterReminderTime
                     : '14:00',
-                scheduledPublishAt: Number.isSafeInteger(data.scheduledPublishAt) &&
-                    data.scheduledPublishAt > 0
-                    ? data.scheduledPublishAt
-                    : null,
                 maintenanceMode: data.maintenanceMode === true,
                 maintenanceMessage: typeof data.maintenanceMessage === 'string'
                     ? data.maintenanceMessage.slice(0, 500)
                     : ''
             };
-        }
-
-        function parseNairobiDateTime(value) {
-            const match = typeof value === 'string' &&
-                value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
-            if (!match) return null;
-            const year = Number(match[1]);
-            const month = Number(match[2]);
-            const day = Number(match[3]);
-            const hour = Number(match[4]);
-            const minute = Number(match[5]);
-            const localAsUtc = new Date(Date.UTC(year, month - 1, day, hour, minute));
-            if (localAsUtc.getUTCFullYear() !== year ||
-                localAsUtc.getUTCMonth() !== month - 1 ||
-                localAsUtc.getUTCDate() !== day ||
-                localAsUtc.getUTCHours() !== hour ||
-                localAsUtc.getUTCMinutes() !== minute) return null;
-            return localAsUtc.getTime() - 3 * 60 * 60 * 1000;
-        }
-
-        function nairobiDateTimeInputValue(timestamp) {
-            return Number.isSafeInteger(timestamp)
-                ? new Date(timestamp + 3 * 60 * 60 * 1000).toISOString().slice(0, 16)
-                : '';
         }
 
         function setSystemSettingsStatus(message, kind = '') {
@@ -7917,8 +7876,6 @@
             const [reminderHour, reminderMinute] = currentSystemSettings.rosterReminderTime.split(':');
             document.getElementById('systemRosterReminderHourInput').value = reminderHour;
             document.getElementById('systemRosterReminderMinuteInput').value = reminderMinute;
-            document.getElementById('systemScheduledPublishInput').value =
-                nairobiDateTimeInputValue(currentSystemSettings.scheduledPublishAt);
             document.getElementById('systemMaintenanceModeInput').checked = currentSystemSettings.maintenanceMode;
             document.getElementById('systemMaintenanceMessageInput').value = currentSystemSettings.maintenanceMessage;
         }
@@ -8067,22 +8024,6 @@
                 reminderHourInput.focus();
                 return;
             }
-            const scheduledPublishInput = document.getElementById('systemScheduledPublishInput');
-            const scheduledPublishAt = scheduledPublishInput.value
-                ? parseNairobiDateTime(scheduledPublishInput.value)
-                : null;
-            if (scheduledPublishInput.value && !Number.isSafeInteger(scheduledPublishAt)) {
-                setSystemSettingsStatus('Choose a valid scheduled publish date and time.', 'error');
-                scheduledPublishInput.focus();
-                return;
-            }
-            if (scheduledPublishAt !== null &&
-                scheduledPublishAt !== currentSystemSettings.scheduledPublishAt &&
-                scheduledPublishAt <= Date.now()) {
-                setSystemSettingsStatus('Scheduled publish time must be in the future.', 'error');
-                scheduledPublishInput.focus();
-                return;
-            }
             const saveButton = document.getElementById('saveSystemSettingsBtn');
             const nextSettings = normalizeSystemSettings({
                 announcement: document.getElementById('systemAnnouncementInput').value.trim(),
@@ -8098,7 +8039,6 @@
                 rosterReminderEnabled: document.getElementById('systemRosterReminderEnabledInput').checked,
                 rosterReminderDay: Number(document.getElementById('systemRosterReminderDayInput').value),
                 rosterReminderTime: `${reminderHourInput.value}:${reminderMinuteInput.value}`,
-                scheduledPublishAt,
                 maintenanceMode: document.getElementById('systemMaintenanceModeInput').checked,
                 maintenanceMessage: document.getElementById('systemMaintenanceMessageInput').value.trim()
             });
@@ -8106,24 +8046,6 @@
             saveButton.setAttribute('aria-busy', 'true');
             setSystemSettingsStatus('Saving system settings…');
             try {
-                if (scheduledPublishAt !== null &&
-                    scheduledPublishAt !== currentSystemSettings.scheduledPublishAt) {
-                    if (draftHasUnsavedChanges) {
-                        setSystemSettingsStatus('Save the roster draft before scheduling its publication.', 'error');
-                        return;
-                    }
-                    const draftSnapshot = await rosterDraftReference.get({ source: 'server' });
-                    const draftSavedAt = draftSnapshot.exists
-                        ? Number(draftSnapshot.data().savedAt)
-                        : null;
-                    if (!draftSnapshot.exists || !Number.isFinite(draftSavedAt) ||
-                        (currentDraftExists && Number.isFinite(currentDraftSavedAt) &&
-                            draftSavedAt !== currentDraftSavedAt) ||
-                        !isBackupData(draftSnapshot.data().data)) {
-                        setSystemSettingsStatus('The saved draft changed or is invalid. Reload or save the draft before scheduling.', 'error');
-                        return;
-                    }
-                }
                 await systemSettingsReference.set({
                     ...nextSettings,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -9279,62 +9201,47 @@
             }
 
             try {
-                if (!Number.isFinite(currentDraftSavedAt)) {
+                const draftSnapshot = await rosterDraftReference.get({ source: 'server' });
+                if (!draftSnapshot.exists ||
+                    !Number.isFinite(currentDraftSavedAt) ||
+                    Number(draftSnapshot.data().savedAt) !== currentDraftSavedAt) {
                     throw new Error('The saved draft changed after it was loaded. Reload or save the draft before publishing.');
                 }
-                const historyReference = rosterHistoryCollection.doc();
-                const publishReference = rosterPublishesCollection.doc();
+                const batch = firestore.batch();
                 const publishedAt = Date.now();
-                await firestore.runTransaction(async transaction => {
-                    const [draftSnapshot, settingsSnapshot] = await Promise.all([
-                        transaction.get(rosterDraftReference),
-                        transaction.get(systemSettingsReference)
-                    ]);
-                    if (!draftSnapshot.exists ||
-                        Number(draftSnapshot.data().savedAt) !== currentDraftSavedAt) {
-                        throw new Error('The saved draft changed after it was loaded. Reload or save the draft before publishing.');
-                    }
-                    transaction.set(historyReference, {
-                        schemaVersion: 2,
-                        weekStart: range.weekStart,
-                        weekEnd: range.weekEnd,
-                        weekLabel: range.weekLabel,
-                        archivedAt: publishedAt,
-                        publishedAt,
-                        publishedBy: auth.currentUser.uid,
-                        data
-                    });
-                    rosterDocuments.forEach(table => {
-                        const tableData = {
-                            schemaVersion: data.schemaVersion,
-                            tables: data.tables.filter(snapshot => snapshot.tableId === table.tableId)
-                        };
-                        if (!isBackupData(tableData, table.tableId)) {
-                            throw new Error(`The ${table.name} roster snapshot failed validation.`);
-                        }
-                        transaction.set(table.reference, {
-                            location: table.name,
-                            tableId: table.tableId,
-                            schemaVersion: 2,
-                            savedAt: publishedAt,
-                            data: tableData
-                        });
-                    });
-                    transaction.set(publishReference, {
-                        weekLabel: range.weekLabel,
-                        publishedAt,
-                        publishedBy: auth.currentUser.uid
-                    });
-                    transaction.delete(rosterDraftReference);
-                    if (settingsSnapshot.exists &&
-                        Number.isSafeInteger(settingsSnapshot.data().scheduledPublishAt)) {
-                        transaction.update(systemSettingsReference, {
-                            scheduledPublishAt: null,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            updatedBy: auth.currentUser.uid
-                        });
-                    }
+                batch.set(rosterHistoryCollection.doc(), {
+                    schemaVersion: 2,
+                    weekStart: range.weekStart,
+                    weekEnd: range.weekEnd,
+                    weekLabel: range.weekLabel,
+                    archivedAt: publishedAt,
+                    publishedAt,
+                    publishedBy: auth.currentUser.uid,
+                    data
                 });
+                rosterDocuments.forEach(table => {
+                    const tableData = {
+                        schemaVersion: data.schemaVersion,
+                        tables: data.tables.filter(snapshot => snapshot.tableId === table.tableId)
+                    };
+                    if (!isBackupData(tableData, table.tableId)) {
+                        throw new Error(`The ${table.name} roster snapshot failed validation.`);
+                    }
+                    batch.set(table.reference, {
+                        location: table.name,
+                        tableId: table.tableId,
+                        schemaVersion: 2,
+                        savedAt: publishedAt,
+                        data: tableData
+                    });
+                });
+                batch.set(rosterPublishesCollection.doc(), {
+                    weekLabel: range.weekLabel,
+                    publishedAt,
+                    publishedBy: auth.currentUser.uid
+                });
+                batch.delete(rosterDraftReference);
+                await batch.commit();
                 currentDraftExists = false;
                 currentDraftSavedAt = null;
                 draftHasUnsavedChanges = false;

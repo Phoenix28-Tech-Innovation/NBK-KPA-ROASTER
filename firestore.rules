@@ -220,7 +220,7 @@ service cloud.firestore {
           'announcement', 'signupsEnabled', 'publishedRosterVisible',
           'locations', 'dateFormat', 'defaultLocation',
           'requirePublishConfirmation', 'rosterReminderEnabled',
-          'rosterReminderDay', 'rosterReminderTime', 'scheduledPublishAt',
+          'rosterReminderDay', 'rosterReminderTime',
           'maintenanceMode', 'maintenanceMessage',
           'updatedAt', 'updatedBy'
         ])
@@ -242,7 +242,8 @@ service cloud.firestore {
         && request.resource.data.rosterReminderDay <= 6
         && request.resource.data.rosterReminderTime is string
         && request.resource.data.rosterReminderTime.matches('^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
-        && (request.resource.data.scheduledPublishAt == null
+        && (!request.resource.data.keys().hasAny(['scheduledPublishAt'])
+          || request.resource.data.scheduledPublishAt == null
           || (request.resource.data.scheduledPublishAt is int
             && request.resource.data.scheduledPublishAt > 0))
         && request.resource.data.maintenanceMode is bool
