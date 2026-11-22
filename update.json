@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": "9e4196aed646f406dee67be87993dee58b570819",
-  "versionLabel": "v8.8.37",
-  "deployedAt": "2026-11-22T15:05:59.459Z",
-  "title": "Add scheduled roster publishing",
+  "version": "8281d31cec50f12f2614a35f3c573dcd87d0ad69",
+  "versionLabel": "v8.8.38",
+  "deployedAt": "2026-11-22T15:46:13.683Z",
+  "title": "Remove scheduled roster publishing",
   "notes": [
     "General improvements and fixes."
   ],
@@ -13,5 +13,5 @@
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 551239
+  "sizeBytes": 545937
 }
