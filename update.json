@@ -1,17 +1,17 @@
 {
   "schemaVersion": 2,
-  "version": "a9d918bb5b063831a04d9cc52977fbce96dfb620",
-  "versionLabel": "v8.8.30",
-  "deployedAt": "2026-11-20T11:49:27.320Z",
-  "title": "Mirror liquid glass UI to published page",
+  "version": "1d79e9aa4778c53cc49a95bdf3c9752e76c893c9",
+  "versionLabel": "v8.8.31",
+  "deployedAt": "2026-11-22T09:14:04.591Z",
+  "title": "Add weekly roster reminder modal and toast updates",
   "notes": [
-    "Mirror liquid glass UI to published page"
+    "General improvements and fixes."
   ],
   "features": [],
   "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": true,
-  "sizeBytes": 524984
+  "adminOnly": false,
+  "sizeBytes": 533463
 }
