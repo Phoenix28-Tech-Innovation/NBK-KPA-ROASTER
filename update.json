@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "version": "62542989ac215dc8549ad0a0f602711be24499cf",
-  "versionLabel": "v8.8.40",
-  "deployedAt": "2026-11-23T13:52:28.874Z",
-  "title": "Update system-wide settings UI",
+  "version": "ed82c073895cb98ce412e04abb24befb29258cee",
+  "versionLabel": "v8.8.41",
+  "deployedAt": "2026-11-23T15:45:37.442Z",
+  "title": "Polish Island and Mainland roster tables",
   "notes": [
-    "Align the published settings cards with the responsive admin layout and place Publishing beside Accounts."
+    "General improvements and fixes."
   ],
   "features": [],
   "fixes": [],
