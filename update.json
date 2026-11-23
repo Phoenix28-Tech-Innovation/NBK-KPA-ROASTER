@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": "ed82c073895cb98ce412e04abb24befb29258cee",
-  "versionLabel": "v8.8.41",
-  "deployedAt": "2026-11-23T15:45:37.442Z",
-  "title": "Polish Island and Mainland roster tables",
+  "version": "b812b0299df1f8bb48e91f256078ae0f17385d9a",
+  "versionLabel": "v8.8.42",
+  "deployedAt": "2026-11-23T15:57:19.931Z",
+  "title": "Redeploy updated roster UI",
   "notes": [
     "General improvements and fixes."
   ],
