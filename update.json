@@ -1,19 +1,19 @@
 {
   "schemaVersion": 2,
-  "version": "c00741f383206b5996786834a152239d672a03d1",
-  "versionLabel": "v8.8.46",
-  "deployedAt": "2026-11-23T22:00:40.465Z",
-  "title": "[feature] Add animated sign-in result modals",
+  "version": "8b8811dda37714896b8d9d51b1d19c5980db74ba",
+  "versionLabel": "v8.8.47",
+  "deployedAt": "2026-11-23T22:41:51.943Z",
+  "title": "Sync animated sign-in modals to published page",
   "notes": [
-    "Show animated success and generic credential-error feedback in Roter Admin."
+    "Add animated success and credential-error modals to the public sign-in page."
   ],
   "features": [
-    "Show animated success and generic credential-error feedback in Roter Admin."
+    "Add animated success and credential-error modals to the public sign-in page."
   ],
   "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": true,
-  "sizeBytes": 562688
+  "adminOnly": false,
+  "sizeBytes": 565016
 }
