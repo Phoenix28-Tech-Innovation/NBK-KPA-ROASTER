@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "version": "8281d31cec50f12f2614a35f3c573dcd87d0ad69",
-  "versionLabel": "v8.8.38",
-  "deployedAt": "2026-11-22T15:46:13.683Z",
-  "title": "Remove scheduled roster publishing",
+  "version": "f9d958ae9a40eccd52a5df7d89ca1be5c4e91b37",
+  "versionLabel": "v8.8.39",
+  "deployedAt": "2026-11-23T13:34:07.756Z",
+  "title": "Update roster UI cards",
   "notes": [
-    "General improvements and fixes."
+    "Match island and mainland glass cards, right-aligned badges, and editable Monday date styling across the admin and published roster."
   ],
   "features": [],
   "fixes": [],
@@ -13,5 +13,5 @@
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 545937
+  "sizeBytes": 551927
 }
