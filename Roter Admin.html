@@ -4199,6 +4199,14 @@
         .auth-notice-content .auth-state-icon {
             animation: none;
         }
+        .auth-notice-dialog[data-kind="success"] .auth-notice-content .auth-state-icon {
+            animation: auth-success-icon-arrive 600ms cubic-bezier(0.2,0.75,0.25,1) both,
+                auth-success-icon-glow 2.8s 600ms ease-in-out infinite;
+        }
+        .auth-notice-dialog[data-kind="error"] .auth-notice-content .auth-state-icon {
+            animation: auth-error-icon-arrive 540ms cubic-bezier(0.2,0.75,0.25,1) both,
+                auth-error-icon-pulse 2.4s 540ms ease-in-out infinite;
+        }
         @keyframes auth-panel-arrive {
             from { opacity: 0; transform: translateY(18px) scale(0.985); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -4210,6 +4218,22 @@
         @keyframes auth-icon-arrive {
             from { opacity: 0; transform: translateY(7px) scale(0.88); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes auth-success-icon-arrive {
+            from { opacity: 0; transform: translateY(8px) scale(0.68) rotate(-12deg); }
+            to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+        }
+        @keyframes auth-success-icon-glow {
+            0%, 100% { box-shadow: 0 11px 24px rgba(5,150,105,0.12), 0 0 0 0 rgba(5,150,105,0.16), inset 0 1px 0 #fff; }
+            50% { box-shadow: 0 13px 28px rgba(5,150,105,0.18), 0 0 0 8px rgba(5,150,105,0), inset 0 1px 0 #fff; }
+        }
+        @keyframes auth-error-icon-arrive {
+            from { opacity: 0; transform: translateY(8px) scale(0.72) rotate(-8deg); }
+            to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+        }
+        @keyframes auth-error-icon-pulse {
+            0%, 100% { box-shadow: 0 11px 24px rgba(220,38,38,0.12), 0 0 0 0 rgba(220,38,38,0.16), inset 0 1px 0 #fff; }
+            50% { box-shadow: 0 13px 28px rgba(220,38,38,0.18), 0 0 0 8px rgba(220,38,38,0), inset 0 1px 0 #fff; }
         }
         @keyframes auth-message-arrive {
             from { opacity: 0; transform: translateY(-4px); }
@@ -10851,8 +10875,13 @@
             iconContainer.dataset.kind = /user-xmark|user-slash|circle-xmark|triangle-exclamation/.test(icon)
                 ? 'error'
                 : 'success';
+            dialog.dataset.kind = iconContainer.dataset.kind;
+            const closeButton = document.getElementById('authNoticeCloseBtn');
+            closeButton.innerHTML = iconContainer.dataset.kind === 'error'
+                ? '<i class="fa-solid fa-arrow-rotate-right" aria-hidden="true"></i> Try again'
+                : '<i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Continue';
             if (!dialog.open) dialog.showModal();
-            document.getElementById('authNoticeCloseBtn').focus();
+            closeButton.focus();
         }
 
         function showLoadingScreen(message = 'Connecting securely…') {
@@ -11458,8 +11487,17 @@
             setAuthFormBusy(form, true);
             try {
                 await auth.signInWithEmailAndPassword(email, password);
+                showAuthNotice({
+                    title: 'Signed in successfully',
+                    message: 'Your credentials are verified. We’re checking your workspace access now.',
+                    icon: 'fa-solid fa-circle-check'
+                });
             } catch (error) {
-                setAuthMessage(authErrorMessage(error, 'signin'));
+                showAuthNotice({
+                    title: 'Sign-in unsuccessful',
+                    message: authErrorMessage(error, 'signin'),
+                    icon: 'fa-solid fa-triangle-exclamation'
+                });
             } finally {
                 setAuthFormBusy(form, false);
             }
