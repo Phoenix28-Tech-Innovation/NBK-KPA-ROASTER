@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "version": "4c7353430def0025fae720cc7002075b1b25d300",
-  "versionLabel": "v8.8.44",
-  "deployedAt": "2026-11-23T19:37:12.021Z",
-  "title": "[feature] Match published roster preview styling",
+  "version": "ad2145897cc75ba8a6dd180d07431e42d655c3ae",
+  "versionLabel": "v8.8.45",
+  "deployedAt": "2026-11-23T20:31:08.552Z",
+  "title": "[feature] Apply roster preview styling to published page",
   "notes": [
-    "Share the draft editor's roster table styles with published-week previews."
+    "Share the draft editor roster table styles with published-week previews in index.html."
   ],
   "features": [],
   "fixes": [],
@@ -13,5 +13,5 @@
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
   "adminOnly": false,
-  "sizeBytes": 561932
+  "sizeBytes": 562688
 }
