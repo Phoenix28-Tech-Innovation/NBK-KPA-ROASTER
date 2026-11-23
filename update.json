@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "version": "d734485d958df3702ea9eeab76521926dd3bff89",
-  "versionLabel": "v8.8.43",
-  "deployedAt": "2026-11-23T16:11:12.947Z",
-  "title": "Publish roster table UI to index",
+  "version": "4c7353430def0025fae720cc7002075b1b25d300",
+  "versionLabel": "v8.8.44",
+  "deployedAt": "2026-11-23T19:37:12.021Z",
+  "title": "[feature] Match published roster preview styling",
   "notes": [
-    "Copy the Island and Mainland night-shift roster styling to the published index page."
+    "Share the draft editor's roster table styles with published-week previews."
   ],
   "features": [],
   "fixes": [],
