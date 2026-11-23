@@ -6009,33 +6009,98 @@
             background: rgba(255,255,255,0.38);
         }
         #rosterSettingsPane #systemSettingsForm.system-settings-form {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
             align-items: stretch;
         }
         #rosterSettingsPane #systemSettingsForm .system-settings-group {
             align-content: start;
             min-width: 0;
+            gap: 0.9rem;
+            padding: 1.05rem;
+            border-color: rgba(205,218,237,0.82);
+            background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(241,246,253,0.72));
+            box-shadow: 0 8px 22px rgba(42,65,101,0.055), inset 0 1px 0 rgba(255,255,255,0.98);
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-group:hover {
+            border-color: rgba(137,169,215,0.82);
+            box-shadow: 0 12px 26px rgba(42,65,101,0.09), inset 0 1px 0 rgba(255,255,255,0.98);
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-group h4 {
+            color: #354660;
+            font-size: 0.75rem;
+            letter-spacing: 0.065em;
+            line-height: 1.4;
+        }
+        #rosterSettingsPane #systemSettingsFormHeading {
+            font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+        }
+        #rosterSettingsPane section[aria-labelledby="systemSettingsFormHeading"] > p {
+            max-width: 72ch;
+            font-size: 0.82rem;
+            line-height: 1.65;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-setting-toggle {
+            min-height: 3.25rem;
+            padding: 0.8rem 0.85rem;
+            font-size: 0.79rem;
+            line-height: 1.5;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-setting-toggle small {
+            font-size: 0.7rem;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-field {
+            font-size: 0.72rem;
+            line-height: 1.45;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-field textarea,
+        #rosterSettingsPane #systemSettingsForm .system-settings-field select {
+            min-height: 2.7rem;
+            font-size: 0.78rem;
+        }
+        #rosterSettingsPane #systemSettingsForm .system-settings-field textarea {
+            min-height: 5.5rem;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-accounts h4 i {
+            color: #15936b;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-visibility h4 i {
+            color: #3478e5;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-reminders h4 i {
+            color: #d97706;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-publishing h4 i {
+            color: #7654d6;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices h4 i {
+            color: #d05279;
         }
         #rosterSettingsPane #systemSettingsForm .settings-group-notices {
-            grid-column: auto;
-            grid-template-columns: minmax(0, 1fr);
+            grid-column: 1 / -1;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        #rosterSettingsPane #systemSettingsForm .settings-group-notices > * {
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices h4 {
+            grid-column: 1 / -1;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices .settings-announcement-field {
             grid-column: 1;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices .system-setting-toggle {
+            grid-column: 2;
+        }
+        #rosterSettingsPane #systemSettingsForm .settings-group-notices .settings-maintenance-field {
+            grid-column: 1 / -1;
         }
         #rosterSettingsPane #systemSettingsForm .system-settings-actions {
             grid-column: 1 / -1;
         }
+        #rosterSettingsPane #systemSettingsSaveStatus {
+            margin-right: auto;
+        }
         #rosterSettingsPane .notification-event-settings {
             grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-        }
-        @media (max-width: 1080px) {
-            #rosterSettingsPane #systemSettingsForm.system-settings-form {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            #rosterSettingsPane #systemSettingsForm .settings-group-notices {
-                grid-column: 1 / -1;
-            }
         }
         @media (max-width: 760px) {
             #rosterSettingsPane .system-settings-layout {
@@ -6046,6 +6111,15 @@
             }
             #rosterSettingsPane #systemSettingsForm .settings-group-notices,
             #rosterSettingsPane #systemSettingsForm .system-settings-actions {
+                grid-column: 1;
+            }
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices h4,
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices .settings-announcement-field,
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices .system-setting-toggle,
+            #rosterSettingsPane #systemSettingsForm .settings-group-notices .settings-maintenance-field {
                 grid-column: 1;
             }
             #rosterSettingsPane .access-request-list {
@@ -7596,6 +7670,13 @@
                             <span>Allow new account signups<small>Existing users can still sign in when signups are paused.</small></span>
                         </label>
                     </div>
+                    <div class="system-settings-group settings-group-publishing">
+                        <h4><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Publishing</h4>
+                        <label class="system-setting-toggle">
+                            <input id="systemPublishConfirmationInput" type="checkbox" />
+                            <span>Require confirmation before publishing<small>Turn off to publish immediately after selecting Publish.</small></span>
+                        </label>
+                    </div>
                     <div class="system-settings-group settings-group-visibility">
                         <h4><i class="fa-solid fa-eye" aria-hidden="true"></i> Roster visibility</h4>
                         <label class="system-setting-toggle">
@@ -7652,13 +7733,6 @@
                                 <span aria-hidden="true">:</span>
                                 <select id="systemRosterReminderMinuteInput" aria-label="Reminder minute" required></select>
                             </span>
-                        </label>
-                    </div>
-                    <div class="system-settings-group settings-group-publishing">
-                        <h4><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Publishing</h4>
-                        <label class="system-setting-toggle">
-                            <input id="systemPublishConfirmationInput" type="checkbox" />
-                            <span>Require confirmation before publishing<small>Turn off to publish immediately after selecting Publish.</small></span>
                         </label>
                     </div>
                     <div class="system-settings-group settings-group-notices">
