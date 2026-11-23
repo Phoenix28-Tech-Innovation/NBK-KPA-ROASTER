@@ -101,26 +101,18 @@
 
         .date-editable {
             cursor: text;
-            border-radius: 8px;
-            padding: 0.1rem 0.4rem;
-            display: inline-block;
+            border-radius: 0;
+            padding: 0;
+            display: inline;
             background: transparent;
-            border: 1px dashed transparent;
-            font-weight: 700 !important;
-            color: #166534;
-            transition: background 0.15s, border-color 0.15s;
-        }
-        .date-editable:hover {
-            background: #f0fdf4;
-            border-color: #86efac;
-            box-shadow: 0 0 0 3px rgba(134, 239, 172, 0.20);
+            border: 0;
+            font-weight: inherit !important;
+            color: inherit;
         }
         .date-editable:focus {
-            outline: 2px solid #22c55e;
-            outline-offset: 1px;
-            background: #ffffff;
-            border-color: #22c55e;
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+            outline: 2px solid rgba(5,150,105,0.68);
+            outline-offset: 3px;
+            border-radius: 2px;
         }
 
         .sticky-blue-pill,
@@ -3459,6 +3451,114 @@
             max-width: calc(100vw - 2rem);
             overflow-wrap: anywhere;
         }
+        .roster-location-section {
+            margin: 0 0 1.5rem;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            border: 1px solid var(--location-glass-edge);
+            border-radius: 1.65rem;
+            background:
+                radial-gradient(ellipse at 0 0, var(--location-glass-tint), transparent 68%),
+                linear-gradient(145deg, rgba(255,255,255,0.78), rgba(255,255,255,0.42));
+            box-shadow: 0 18px 42px var(--location-glass-shadow), inset 0 1px 0 rgba(255,255,255,0.92);
+            backdrop-filter: blur(24px) saturate(165%);
+            -webkit-backdrop-filter: blur(24px) saturate(165%);
+        }
+        .roster-location-section .roster-location-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.1rem;
+            padding-bottom: 0.95rem;
+            border-bottom: 1px solid var(--location-glass-edge);
+        }
+        .roster-location-section .roster-location-accent {
+            width: 0.3rem;
+            height: 3.2rem;
+            flex: 0 0 0.3rem;
+            border-radius: 999px;
+        }
+        .roster-location-section .roster-location-title {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .roster-location-section .roster-location-heading h2 {
+            margin: 0;
+            gap: 0.7rem;
+            line-height: 1.2;
+        }
+        .roster-location-section .roster-location-heading .location-badge {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .roster-location-section .roster-location-icon {
+            display: inline-grid;
+            width: 2.65rem;
+            height: 2.65rem;
+            flex: 0 0 2.65rem;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.92);
+            border-radius: 0.9rem;
+            background: rgba(255,255,255,0.78);
+            box-shadow: 0 5px 14px rgba(31,53,86,0.08), inset 0 1px 0 #fff;
+        }
+        .roster-location-section .roster-location-subtitle {
+            margin: 0.25rem 0 0;
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+        .roster-location-section .table-card {
+            border-radius: 1.1rem;
+            border: 1px solid var(--location-glass-edge) !important;
+            background:
+                radial-gradient(ellipse at 100% 0, rgba(255,255,255,0.8), transparent 52%),
+                linear-gradient(145deg, rgba(255,255,255,0.7), var(--location-glass-tint)) !important;
+            box-shadow: 0 12px 30px var(--location-glass-shadow), inset 0 1px 0 rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px) saturate(155%);
+            -webkit-backdrop-filter: blur(20px) saturate(155%);
+        }
+        .roster-location-island {
+            --location-glass-tint: rgba(16,185,129,0.14);
+            --location-glass-edge: rgba(5,150,105,0.26);
+            --location-glass-shadow: rgba(5,150,105,0.11);
+        }
+        .roster-location-island .roster-location-accent {
+            background: linear-gradient(180deg, #6ee7b7, #059669);
+            box-shadow: 0 4px 12px rgba(5,150,105,0.2);
+        }
+        .roster-location-island .roster-location-icon {
+            color: #059669;
+            border-color: rgba(5,150,105,0.18);
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(209,250,229,0.58));
+            backdrop-filter: blur(14px) saturate(150%);
+            -webkit-backdrop-filter: blur(14px) saturate(150%);
+        }
+        .roster-location-mainland {
+            --location-glass-tint: rgba(249,115,22,0.14);
+            --location-glass-edge: rgba(234,88,12,0.27);
+            --location-glass-shadow: rgba(234,88,12,0.1);
+        }
+        .roster-location-mainland .roster-location-accent {
+            background: linear-gradient(180deg, #fdba74, #ea580c);
+            box-shadow: 0 4px 12px rgba(234,88,12,0.2);
+        }
+        .roster-location-mainland .roster-location-icon {
+            color: #ea580c;
+            border-color: rgba(234,88,12,0.18);
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(255,237,213,0.58));
+            backdrop-filter: blur(14px) saturate(150%);
+            -webkit-backdrop-filter: blur(14px) saturate(150%);
+        }
+        #rosterEditorPane .roster-legend-card {
+            margin-top: 1.65rem;
+            border-color: rgba(203,216,232,0.78);
+            box-shadow: 0 10px 28px rgba(31,53,86,0.055), inset 0 1px 0 rgba(255,255,255,0.98);
+        }
+        #rosterEditorPane .roster-footer-note {
+            margin-top: 0.85rem;
+            padding-top: 1rem;
+            border-color: rgba(203,216,232,0.72);
+        }
         @media (max-width: 1100px) {
             .header-actions {
                 flex-wrap: wrap;
@@ -3555,6 +3655,35 @@
                 max-width: 100%;
                 white-space: nowrap;
             }
+            .roster-location-section {
+                margin-bottom: 1.1rem;
+                padding: 0.9rem;
+                border-radius: 1.2rem;
+            }
+            .roster-location-section .roster-location-heading {
+                align-items: flex-start;
+                gap: 0.65rem;
+                margin-bottom: 0.85rem;
+                padding-bottom: 0.75rem;
+            }
+            .roster-location-section .roster-location-accent {
+                height: 2.7rem;
+            }
+            .roster-location-section .roster-location-heading h2 {
+                gap: 0.45rem;
+            }
+            .roster-location-section .roster-location-icon {
+                width: 2.25rem;
+                height: 2.25rem;
+                flex-basis: 2.25rem;
+                border-radius: 0.75rem;
+            }
+            .roster-location-section .roster-location-subtitle {
+                font-size: 0.7rem;
+            }
+            #rosterEditorPane .roster-legend-card {
+                margin-top: 1.25rem;
+            }
             .table-card {
                 border-radius: 1rem;
             }
@@ -3586,6 +3715,11 @@
                 min-height: 2rem;
                 padding-top: 0.3rem;
                 padding-bottom: 0.3rem;
+            }
+            .date-float-card .date-editable {
+                min-height: 0;
+                padding-top: 0;
+                padding-bottom: 0;
             }
             .date-float-card {
                 min-height: 1.8rem;
@@ -6616,18 +6750,21 @@
 
     <div id="rosterEditorPane">
     <!-- ISLAND MOMBASA -->
-    <section>
-        <div class="flex items-center gap-4 mb-3">
-            <div class="w-1.5 h-8 rounded-full bg-gradient-to-b from-emerald-300 to-emerald-600 shadow-md shadow-emerald-200"></div>
-            <h2 class="text-2xl md:text-3xl font-header font-extrabold text-gray-900 tracking-tight flex items-center gap-3 flex-wrap">
-                <i class="fa-solid fa-umbrella-beach text-emerald-500 drop-shadow-sm text-xl section-icon"></i>
-                ISLAND Mombasa
-                <span class="location-badge badge-coastal">
-                    <i class="fa-solid fa-water"></i>
-                    <span>coastal</span>
-                    <i class="fa-regular fa-sun fa-fw text-[0.65rem] opacity-70"></i>
-                </span>
-            </h2>
+    <section class="roster-location-section roster-location-island">
+        <div class="roster-location-heading">
+            <div class="roster-location-accent" aria-hidden="true"></div>
+            <div class="roster-location-title">
+                <h2 class="text-2xl md:text-3xl font-header font-extrabold text-gray-900 tracking-tight flex items-center flex-wrap">
+                    <i class="fa-solid fa-umbrella-beach text-xl section-icon roster-location-icon" aria-hidden="true"></i>
+                    ISLAND Mombasa
+                    <span class="location-badge badge-coastal">
+                        <i class="fa-solid fa-water"></i>
+                        <span>coastal</span>
+                        <i class="fa-regular fa-sun fa-fw text-[0.65rem] opacity-70"></i>
+                    </span>
+                </h2>
+                <p class="roster-location-subtitle">Island operations · Mombasa</p>
+            </div>
         </div>
 
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl table-card border border-gray-100 overflow-hidden shadow-xl">
@@ -6798,18 +6935,21 @@
     </section>
 
     <!-- MAINLAND LIKONI -->
-    <section>
-        <div class="flex items-center gap-4 mb-3">
-            <div class="w-1.5 h-8 rounded-full bg-gradient-to-b from-orange-300 to-orange-500 shadow-md shadow-orange-200"></div>
-            <h2 class="text-2xl md:text-3xl font-header font-extrabold text-gray-900 tracking-tight flex items-center gap-3 flex-wrap">
-                <i class="fa-solid fa-tree-city text-orange-500 drop-shadow-sm text-xl section-icon"></i>
-                MAINLAND Likoni
-                <span class="location-badge badge-mainland">
-                    <i class="fa-solid fa-mountain"></i>
-                    <span>mainland</span>
-                    <i class="fa-solid fa-seedling fa-fw text-[0.65rem] opacity-70"></i>
-                </span>
-            </h2>
+    <section class="roster-location-section roster-location-mainland">
+        <div class="roster-location-heading">
+            <div class="roster-location-accent" aria-hidden="true"></div>
+            <div class="roster-location-title">
+                <h2 class="text-2xl md:text-3xl font-header font-extrabold text-gray-900 tracking-tight flex items-center flex-wrap">
+                    <i class="fa-solid fa-tree-city text-xl section-icon roster-location-icon" aria-hidden="true"></i>
+                    MAINLAND Likoni
+                    <span class="location-badge badge-mainland">
+                        <i class="fa-solid fa-mountain"></i>
+                        <span>mainland</span>
+                        <i class="fa-solid fa-seedling fa-fw text-[0.65rem] opacity-70"></i>
+                    </span>
+                </h2>
+                <p class="roster-location-subtitle">Mainland operations · Likoni</p>
+            </div>
         </div>
 
         <div class="bg-white/90 backdrop-blur-sm rounded-2xl table-card border border-gray-100 overflow-hidden shadow-xl">
@@ -6980,7 +7120,7 @@
     </section>
 
     <!-- LEGEND -->
-    <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 p-5 flex flex-wrap justify-between items-center gap-4 text-[0.8rem] font-body">
+    <div class="roster-legend-card bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/80 p-5 flex flex-wrap justify-between items-center gap-4 text-[0.8rem] font-body">
         <div class="flex flex-wrap items-center gap-5">
             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-100 border-2 border-emerald-400 shadow-sm"></span><span class="text-gray-700 font-bold"><i class="fa-regular fa-sun text-yellow-500 mr-1"></i>Day</span></div>
             <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600 border-2 border-blue-400 shadow-sm"></span><span class="text-gray-700 font-bold"><i class="fa-regular fa-clock text-blue-400 mr-1"></i>6:30pm</span></div>
@@ -6995,7 +7135,7 @@
         </div>
     </div>
 
-    <div class="text-center text-[0.65rem] text-gray-400 font-body border-t border-gray-200/60 pt-4 mt-2 flex justify-center gap-8 flex-wrap">
+    <div class="roster-footer-note text-center text-[0.65rem] text-gray-400 font-body border-t border-gray-200/60 pt-4 mt-2 flex justify-center gap-8 flex-wrap">
         <span><i class="fa-regular fa-pen-to-square text-blue-400 mr-2"></i> Edit any cell — names, lanes, dates, Off, 6:30pm</span>
         <span><i class="fa-regular fa-calendar text-green-500 mr-2"></i> Change Monday date → week auto‑updates</span>
         <span><i class="fa-regular fa-bold text-blue-400 mr-2"></i> All content stays bold · 8K HD ready</span>
