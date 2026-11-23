@@ -1,17 +1,19 @@
 {
   "schemaVersion": 2,
-  "version": "ad2145897cc75ba8a6dd180d07431e42d655c3ae",
-  "versionLabel": "v8.8.45",
-  "deployedAt": "2026-11-23T20:31:08.552Z",
-  "title": "[feature] Apply roster preview styling to published page",
+  "version": "c00741f383206b5996786834a152239d672a03d1",
+  "versionLabel": "v8.8.46",
+  "deployedAt": "2026-11-23T22:00:40.465Z",
+  "title": "[feature] Add animated sign-in result modals",
   "notes": [
-    "Share the draft editor roster table styles with published-week previews in index.html."
+    "Show animated success and generic credential-error feedback in Roter Admin."
   ],
-  "features": [],
+  "features": [
+    "Show animated success and generic credential-error feedback in Roter Admin."
+  ],
   "fixes": [],
   "security": [
     "Ongoing safeguard: verified-email checks gate update prompts and release notes."
   ],
-  "adminOnly": false,
+  "adminOnly": true,
   "sizeBytes": 562688
 }
