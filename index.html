@@ -3549,7 +3549,7 @@
             backdrop-filter: blur(14px) saturate(150%);
             -webkit-backdrop-filter: blur(14px) saturate(150%);
         }
-        #rosterEditorPane .roster-location-section .table-card {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .table-card {
             overflow: hidden;
             border-radius: 1rem;
             border-color: rgba(148,163,184,0.32) !important;
@@ -3557,35 +3557,35 @@
             box-shadow: 0 10px 28px rgba(15,23,42,0.075), 0 2px 6px rgba(15,23,42,0.035);
             transition: box-shadow 180ms ease, transform 180ms ease;
         }
-        #rosterEditorPane .roster-location-section .table-card:hover {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .table-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 16px 34px rgba(15,23,42,0.1), 0 3px 8px rgba(15,23,42,0.04);
         }
-        #rosterEditorPane .roster-location-section .table-card > .overflow-x-auto {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .table-card > .overflow-x-auto {
             scrollbar-color: #a7b3c4 transparent;
             scrollbar-width: thin;
         }
-        #rosterEditorPane .roster-location-section .table-card > .overflow-x-auto::-webkit-scrollbar {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .table-card > .overflow-x-auto::-webkit-scrollbar {
             height: 8px;
         }
-        #rosterEditorPane .roster-location-section .table-card > .overflow-x-auto::-webkit-scrollbar-thumb {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .table-card > .overflow-x-auto::-webkit-scrollbar-thumb {
             border: 2px solid #fff;
             border-radius: 999px;
             background: #a7b3c4;
         }
-        #rosterEditorPane .roster-location-section .compact-table thead th {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table thead th {
             background: #f7f9fc;
             color: #475569;
             border-color: #e2e8f0 !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table thead tr:first-child th {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table thead tr:first-child th {
             padding-top: 0.6rem !important;
             padding-bottom: 0.6rem !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table thead th:first-child {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table thead th:first-child {
             background: #f3f6fa;
         }
-        #rosterEditorPane .roster-location-section .compact-table .date-float-card {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .date-float-card {
             min-height: 2rem;
             padding: 0.35rem 0.65rem;
             border: 1px solid rgba(148,163,184,0.28);
@@ -3596,72 +3596,72 @@
             box-shadow: 0 2px 5px rgba(15,23,42,0.05);
             transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
         }
-        #rosterEditorPane .roster-location-island .compact-table .date-float-card i {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-island .compact-table .date-float-card i {
             color: #059669;
         }
-        #rosterEditorPane .roster-location-mainland .compact-table .date-float-card i {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-mainland .compact-table .date-float-card i {
             color: #ea580c;
         }
-        #rosterEditorPane .roster-location-section .compact-table .date-float-card:hover {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .date-float-card:hover {
             transform: translateY(-1px);
             border-color: var(--location-glass-edge);
             box-shadow: 0 4px 10px var(--location-glass-shadow);
         }
-        #rosterEditorPane .roster-location-section .compact-table .day-label {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .day-label {
             padding: 0.55rem 0.4rem !important;
             color: #64748b;
             font-size: 0.66rem !important;
             letter-spacing: 0.075em;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody td {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody td {
             padding: 0.5rem 0.45rem !important;
             border-color: #edf1f5 !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody td:first-child {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody td:first-child {
             min-width: 9rem;
             padding-left: 0.75rem !important;
             background: #fff;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody tr:not(.night-separator):not(.night-row-hover):hover {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr:not(.night-separator):not(.night-row-hover):hover {
             background-color: #f5f9ff !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody tr:not(.night-separator):not(.night-row-hover):hover td:first-child {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr:not(.night-separator):not(.night-row-hover):hover td:first-child {
             background-color: #f5f9ff;
         }
-        #rosterEditorPane .roster-location-section .compact-table .name-row {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .name-row {
             gap: 0.45rem;
             color: #1e293b;
             font-size: 0.76rem;
         }
-        #rosterEditorPane .roster-location-section .compact-table .name-row > i {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .name-row > i {
             color: #94a3b8;
         }
-        #rosterEditorPane .roster-location-section .compact-table .night-separator {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .night-separator {
             background: #26364d !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table .night-separator td {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .night-separator td {
             padding: 0.5rem 0.85rem !important;
             background: #26364d !important;
             color: #fff !important;
             letter-spacing: 0.12em;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody tr.night-row-hover {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr.night-row-hover {
             background: #1e293b !important;
             color: #e2e8f0;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody tr.night-row-hover td:first-child {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr.night-row-hover td:first-child {
             background: #1e293b !important;
         }
-        #rosterEditorPane .roster-location-section .compact-table tbody tr.night-row-hover:hover,
-        #rosterEditorPane .roster-location-section .compact-table tbody tr.night-row-hover:hover td:first-child {
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr.night-row-hover:hover,
+        :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table tbody tr.night-row-hover:hover td:first-child {
             background: #26364d !important;
         }
         @media (max-width: 640px) {
-            #rosterEditorPane .roster-location-section .compact-table .date-float-card {
+            :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .date-float-card {
                 padding: 0.3rem 0.5rem;
                 font-size: 0.68rem;
             }
-            #rosterEditorPane .roster-location-section .compact-table .day-label {
+            :is(#rosterEditorPane, #historyRosterPreview) .roster-location-section .compact-table .day-label {
                 padding: 0.45rem 0.25rem !important;
                 letter-spacing: 0.04em;
             }
